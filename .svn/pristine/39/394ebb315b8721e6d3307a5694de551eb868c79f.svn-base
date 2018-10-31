@@ -1,0 +1,60 @@
+package com.hnjk.edu.teaching.vo;
+
+import com.hnjk.edu.teaching.util.ScoreEncryptionDecryptionUtil;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class UniversalExamDetailsVO {
+	
+	public static final String MEMO_EXAMRESULT="该学生该学期已经有正考成绩，跳过";
+	public static final String MEMO_NOEXAM="该学生该课程的成绩已申请免考，跳过";
+	public static final String MEMO_ABNORMALEXAM="该学生该课程的成绩已申请缓考，跳过";
+	public static final String MEMO_NOSTUDYPLAN="该学生该课程的未创建学习计划，请先给学生创建学习计划后，再导入该成绩，跳过";
+	public static final String MEMO_UNRECOGNIZED="无法识别输入的成绩，如果是缺考，只在卷面成绩处输入 缺 或 缺考 ";
+	private Integer index=1;
+	private String gradeName;
+	private String classicName;
+	private String majorName;
+	private String classesName;
+	private String unitName;
+	private String studyNo;
+	private String studentName;
+	private String examType;//考试类型
+	private String usuallyScore;//平时成绩
+	private String integratedScore;//综合成绩
+	private String writtenScore;//卷面成绩
+	private String unScore;//卷面成绩
+	private String abnormalType;//卷面成绩
+	private String studentId;
+	private String courseName;
+	private String examSubId;
+	private String examInfoId;
+	private String courseId;
+	private String studentLearnPlanId;
+	private String planCourseId;
+	private String universalExamId;
+	private String noExamId;
+	private String abnormalExamId;
+	private String examResultId;
+	private String memo;//备注
+	private Long examCount;//考试次数
+	private String studentSignature;
+
+	public String getUsuallyScore() {
+		return this.studentId!=null?ScoreEncryptionDecryptionUtil.getInstance().decrypt(this.studentId,this.usuallyScore):this.usuallyScore;
+	}
+
+	public String getIntegratedScore() {
+		return this.studentId!=null?ScoreEncryptionDecryptionUtil.getInstance().decrypt(this.studentId,this.integratedScore):this.integratedScore;
+	}
+
+	public String getWrittenScore() {
+		return this.studentId!=null?ScoreEncryptionDecryptionUtil.getInstance().decrypt(this.studentId,this.writtenScore):this.writtenScore;
+	}
+			
+}

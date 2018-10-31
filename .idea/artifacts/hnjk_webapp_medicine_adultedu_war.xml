@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="hnjk-webapp-medicine-adultedu:war">
+    <output-path>$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/target</output-path>
+    <root id="archive" name="edu3.war">
+      <element id="artifact" artifact-name="hnjk-webapp-medicine-adultedu:war exploded" />
+    </root>
+  </artifact>
+</component>

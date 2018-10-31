@@ -1,0 +1,359 @@
+package com.hnjk.edu.finance.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.utils.ExCollectionUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.edu.basedata.model.YearInfo;
+import com.hnjk.edu.basedata.service.IYearInfoService;
+import com.hnjk.edu.finance.model.AnnualFees;
+import com.hnjk.edu.finance.model.FeeMajor;
+import com.hnjk.edu.finance.model.StudentPayment;
+import com.hnjk.edu.finance.model.YearPaymentStandard;
+import com.hnjk.edu.finance.model.YearPaymentStandardDetails;
+import com.hnjk.edu.finance.service.IAnnualFeesService;
+import com.hnjk.edu.finance.service.IFeeMajorService;
+import com.hnjk.edu.finance.service.IStudentPaymentService;
+import com.hnjk.edu.finance.service.IYearPaymentStandardService;
+import com.hnjk.edu.finance.vo.StudentPaymentInfoVo;
+import com.hnjk.edu.roll.model.StudentInfo;
+import com.hnjk.platform.system.cache.CacheAppManager;
+/**
+ * 年缴费标准服务接口实现.
+ * <code>YearPaymentStandardServiceImpl</code><p>
+ * 
+ * @author： 广东学苑教育发展有限公司
+ * @since： 2012-11-9 下午03:35:33
+ * @see 
+ * @version 1.0
+ */
+@Transactional
+@Service("yearPaymentStandardService")
+public class YearPaymentStandardServiceImpl extends BaseServiceImpl<YearPaymentStandard> implements IYearPaymentStandardService {
+
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	
+	@Autowired
+	@Qualifier("studentPaymentService")
+	private IStudentPaymentService studentPaymentService;
+	
+	@Autowired
+	@Qualifier("yearInfoService")
+	private IYearInfoService yearInfoService;
+	
+	@Autowired
+	@Qualifier("annualFeesService")
+	private IAnnualFeesService annualFeesService;
+	
+	@Autowired
+	@Qualifier("feeMajorService")
+	private IFeeMajorService feeMajorService;
+	
+	
+	@Override
+	@Transactional(readOnly=true)
+	public Page findYearPaymentStandardByCondition(	Map<String, Object> condition, Page objPage) throws ServiceException {
+		Map<String, Object> values = new HashMap<String, Object>();
+		StringBuilder hql = new StringBuilder("from "+YearPaymentStandard.class.getSimpleName()+" where isDeleted=:isDeleted ");
+		values.put("isDeleted", 0);
+		if(condition.containsKey("gradeId")){//年级
+			hql.append(" and grade.resourceid=:gradeId ");
+			values.put("gradeId",condition.get("gradeId"));
+		}
+		if(condition.containsKey("yearInfoId")){//年度
+			hql.append(" and yearInfo.resourceid=:yearInfoId ");
+			values.put("yearInfoId",condition.get("yearInfoId"));
+		}
+		if(condition.containsKey("paymentType")){//缴费类型
+			hql.append(" and paymentType=:paymentType ");
+			values.put("paymentType",condition.get("paymentType"));
+		}
+		if(condition.containsKey("standerdName")){//标准名称
+			hql.append(" and standerdName like :standerdName ");
+			values.put("standerdName",condition.get("standerdName"));
+		}
+		if(objPage.isOrderBySetted()){
+			hql.append(" order by "+objPage.getOrderBy()+" "+objPage.getOrder());
+		}
+		return findByHql(objPage, hql.toString(), values);
+	}
+
+	@Override
+	public YearPaymentStandard getYearPaymentStandard(String gradeId, String paymentType) throws ServiceException {
+		List<YearPaymentStandard> yearPaymentStandardList = findByCriteria(Restrictions.eq("isDeleted", 0),Restrictions.eq("grade.resourceid", gradeId),Restrictions.eq("paymentType", paymentType));
+		return ExCollectionUtils.isNotEmpty(yearPaymentStandardList) ? yearPaymentStandardList.get(0) : null;
+	}
+
+	/**
+	 * 根据开始缴费日期获取缴费的有关信息
+	 * @param payBeginDate
+	 * @return
+	 * @throws ServiceException
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<StudentPaymentInfoVo> findPaymentInfoByBeginDate(Date payBeginDate) throws ServiceException {
+		String payBeginDateStr = "";
+		List<StudentPaymentInfoVo> paymentInfo = new ArrayList<StudentPaymentInfoVo>();
+		List<Object> params = new ArrayList<Object>();
+		String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+		try {
+			if(payBeginDate != null){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				payBeginDateStr = sdf.format(payBeginDate);
+			}
+			params.add(payBeginDateStr);
+			StringBuffer sql = new StringBuffer("");
+			sql.append("select sf.resourceid studentPaymentId,pytm.creditfee,pytm.creditenddate,pytm.feeterm,sf.recpayfee,sf.facepayfee,sf.deratefee, ");
+			sql.append("sf.gradeid originalGrade,so.gradeid,sf.majorid originalMajor,so.majorid,pytm.teachingType ");
+			sql.append("from edu_fee_stufee sf, edu_roll_studentinfo so, (select py.gradeid,py.yearid,py.paymenttype,pyt.creditfee,pyt.creditenddate,pyt.feeterm,fm.basemajorid,fm.teachingType ");
+			sql.append("from edu_fee_payyeardetails pyt, ");
+			sql.append("edu_fee_payyear py, ");
+			sql.append("edu_fee_major fm ");
+			sql.append("where fm.isDeleted=0 and pyt.payyearid=py.resourceid ");
+			sql.append("and py.paymenttype=fm.paymenttype ");
+			sql.append("and pyt.isdeleted=0 ");
+			sql.append("and py.isdeleted=0 ");
+			sql.append("and to_char(pyt.paybegindate,'yyyy-mm-dd')=? ");
+			sql.append("group by py.gradeid,py.yearid,py.paymenttype,pyt.creditfee,pyt.creditenddate,pyt.feeterm,fm.basemajorid,fm.teachingType) pytm ");
+			sql.append("where sf.studentid=so.resourceid ");
+			sql.append("and so.majorid=pytm.basemajorid ");
+			sql.append("and so.isdeleted=0 ");
+//			sql.append("and sf.yearid=pytm.yearid ");
+			if(schoolCode.equals("10598")){
+				sql.append("and so.teachingtype=pytm.teachingType ");
+			}
+			sql.append("and so.gradeid=pytm.gradeid ");
+			sql.append("and (sf.chargeterm+1)=pytm.feeterm "); 
+			sql.append("and sf.isdeleted=0 ");
+			sql.append("and so.studentstatus in ('11','25') ");// 只处理在学和缓毕业的学生
+			
+			paymentInfo = baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql.toString(), params.toArray(), StudentPaymentInfoVo.class);
+		} catch (Exception e) {
+			logger.error("根据开始缴费日期获取缴费的有关信息出错", e);
+		}
+		return paymentInfo;
+	}
+
+	/**
+	 * 根据年级、专业和缴费期数获取缴费标准明细
+	 * @param gradeId
+	 * @param majorId
+	 * @param feeTerm
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public StudentPaymentInfoVo findByCondition(String gradeId, String majorId,Integer feeTerm) throws ServiceException {
+		Map<String, Object> params = new HashMap<String, Object>();
+		StudentPaymentInfoVo studentPaymentInfoVo = null;
+		StringBuffer sql;
+		try {
+			params.put("gradeId", gradeId);
+			params.put("majorId", majorId);
+			params.put("feeTerm", feeTerm);
+			sql = new StringBuffer("");
+			sql.append("select pyt.creditfee,pyt.feeterm,pyt.creditenddate,pyt.paybegindate ");
+			sql.append("from edu_fee_payyeardetails pyt, ");
+			sql.append("edu_fee_payyear py, ");
+			sql.append("edu_fee_major fm "); 
+			sql.append("where pyt.payyearid=py.resourceid "); 
+			sql.append("and py.paymenttype=fm.paymenttype "); 
+			sql.append("and pyt.isdeleted=0 ");
+			sql.append("and py.isdeleted=0 "); 
+			sql.append("and pyt.feeterm=:feeTerm ");
+			sql.append("and fm.basemajorid=:majorId ");
+			sql.append("and py.gradeid=:gradeId ");
+			
+			studentPaymentInfoVo = (StudentPaymentInfoVo)baseSupportJdbcDao.getBaseJdbcTemplate()
+													.findForObject(sql.toString(), StudentPaymentInfoVo.class, params);
+		} catch (Exception e) {
+			logger.error("根据年级、专业和缴费期数获取缴费标准明细出错", e);
+		}
+		
+		return studentPaymentInfoVo;
+	}
+
+	@Override
+	public int scanPaymentStandar(String resourceid) throws ServiceException {
+		// TODO Auto-generated method stub
+		try {
+			// 获取缴费即缴费标准信息
+			//while(true){
+				List<StudentPaymentInfoVo> paymentInfoList = findPaymentInfoBeforeBeginDate(new Date(),resourceid);
+ 				List<StudentPayment> updateList = new ArrayList<StudentPayment>();
+ 				List<AnnualFees> insertList = new ArrayList<AnnualFees>();//增加年度缴费
+ 				long a=System.currentTimeMillis();
+				if(ExCollectionUtils.isNotEmpty(paymentInfoList)){
+					String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+					StudentInfo si = null;
+					for(StudentPaymentInfoVo paymentInfo : paymentInfoList) {
+						StudentPayment studentPayment = studentPaymentService.get(paymentInfo.getStudentPaymentId());
+						
+						if(studentPayment != null){ 
+							si = studentPayment.getStudentInfo();
+							Double creditFee = paymentInfo.getCreditFee()==null?0:paymentInfo.getCreditFee();
+							// 原始的年级跟现在的年级不相同并且原始的专业与现在的专业相同(针对休学->复学和退学->复学)
+							if(!paymentInfo.getGradeId().equals(paymentInfo.getOriginalGrade())
+									&& paymentInfo.getMajorId().equals(paymentInfo.getOriginalMajor())){
+								StudentPaymentInfoVo _paymentInfo = findByCondition(paymentInfo.getOriginalGrade(),
+																								paymentInfo.getOriginalMajor(), paymentInfo.getFeeTerm());
+								if(_paymentInfo != null) {// 如果之前的缴费标准没有，则按现在的缴费标准走
+									creditFee = _paymentInfo.getCreditFee()==null?0:_paymentInfo.getCreditFee();// 原来缴费标准的应缴金额
+								}
+							}
+							Double recpayFee = paymentInfo.getRecpayFee()==null?0:paymentInfo.getRecpayFee();
+							Double facepayFee = paymentInfo.getFacepayFee()==null?0:paymentInfo.getFacepayFee();
+							Double derateFee = paymentInfo.getDerateFee()==null?0:paymentInfo.getDerateFee();
+							Double _facepayFee = facepayFee + derateFee;
+							Double _recpayFee = recpayFee + creditFee;
+							studentPayment.setChargeTime(paymentInfo.getCreditEndDate());
+							studentPayment.setChargeTerm(paymentInfo.getFeeTerm());
+							studentPayment.setRecpayFee(_recpayFee);// 应缴金额
+							if(_facepayFee==0){
+								studentPayment.setChargeStatus("0");
+							} else if(_facepayFee>0&& _facepayFee < _recpayFee){
+								studentPayment.setChargeStatus("-1");
+							} else if (_facepayFee.equals(_recpayFee)){
+								studentPayment.setChargeStatus("1");
+							}
+							String teachingType = "2";
+							if(schoolCode.equals("10598")){// 广西
+								teachingType = si.getTeachingType();
+							}
+							//循环增加年度缴费信息
+//							FeeMajor feeMajor  = feeMajorService.findByProperty("resourceid",studentPayment.getStudentInfo().getMajor().getResourceid());
+							FeeMajor feeMajor  = feeMajorService.findUniqueByCondition(si.getMajor().getResourceid(), teachingType);
+							if(feeMajor == null || ExStringUtils.isBlank(feeMajor.getPaymentType())){
+								logger.error("学号为:"+si.getStudyNo()+"没有专业缴费信息");
+//								continue;//没有专业缴费信息或者类别
+							}
+							
+							YearPaymentStandard yearPaymentStandard = getYearPaymentStandard(si.getGrade().getResourceid(),feeMajor.getPaymentType());//年缴费标准
+							if(yearPaymentStandard == null){
+								logger.error("学号为:"+si.getStudyNo()+"没有年级缴费标准");
+//								continue;
+							}else {//这里增加年度缴费记录
+								for (YearPaymentStandardDetails payment : yearPaymentStandard.getYearPaymentStandardDetails()) {
+									Map<String, Object> annualFeesCondition = new HashMap<String, Object>();
+									Long firstYear = (Long)(si.getGrade().getYearInfo().getFirstYear()-1+payment.getFeeTerm());
+									annualFeesCondition.put("year",firstYear);
+									annualFeesCondition.put("chargingItems","tuition");// 学费
+									annualFeesCondition.put("studentInfoId", si.getResourceid());
+									List<AnnualFees> list = annualFeesService.findAnnualFeesByCondition(annualFeesCondition );
+									if(list==null || (list!=null && list.size()==0)){
+										//生成学生年度缴费记录
+										AnnualFees annualFees = new AnnualFees();
+										annualFees.setChargeStatus(0);
+										annualFees.setChargeYear(firstYear.intValue());
+										annualFees.setDerateFee(0.0);
+										annualFees.setFacepayFee(0.0);
+										annualFees.setMemo("生成缴费信息生成");
+										annualFees.setRecpayFee(payment.getCreditFee());
+										annualFees.setReturnPremiumFee(0.0);
+										annualFees.setStudentInfo(si);
+										annualFees.setStudyNo(si.getStudyNo());
+										annualFees.setChargingItems("tuition");
+										annualFees.setPayAmount(0d);
+
+										YearInfo year = yearInfoService.findUniqueByProperty("firstYear", firstYear);
+										if(year==null){//还没有学年
+//										continue;
+										}
+										annualFees.setYearInfo(year);//第一学年
+
+										insertList.add(annualFees);//加入更新列表
+									}
+								}
+							}
+							
+							updateList.add(studentPayment);
+						}
+					}
+					long b = System.currentTimeMillis();
+					logger.info("当前程序运行消耗时间为："+(b-a)/1000f+" 秒");
+					// 批量更新学生缴费记录
+					studentPaymentService.batchSaveOrUpdate(updateList);
+					annualFeesService.batchSaveOrUpdate(insertList);
+					return 1;
+				}else {
+					//break;
+					return 0;
+				}
+			//}
+				
+		} catch (ServiceException e) {
+			logger.error("定时任务(扫描缴费标准)出错", e);
+		}
+		return 0;
+	}
+	
+	
+	/**
+	 * 根据开始缴费日期获取缴费的有关信息
+	 * @param payBeginDate
+	 * @return
+	 * @throws ServiceException
+	 */
+	@SuppressWarnings("unchecked")
+	private List<StudentPaymentInfoVo> findPaymentInfoBeforeBeginDate(Date payBeginDate,String resourceid) throws ServiceException {
+		String payBeginDateStr = "";
+		List<StudentPaymentInfoVo> paymentInfo = new ArrayList<StudentPaymentInfoVo>();
+		List<Object> params = new ArrayList<Object>();
+		String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+		try {
+			if(payBeginDate != null){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				payBeginDateStr = sdf.format(payBeginDate);
+			}
+			params.add(payBeginDateStr);
+			params.add(resourceid);
+			StringBuffer sql = new StringBuffer("");
+			sql.append("select sf.resourceid studentPaymentId,pytm.creditfee,pytm.creditenddate,pytm.feeterm,sf.recpayfee,sf.facepayfee,sf.deratefee, ");
+			sql.append("sf.gradeid originalGrade,so.gradeid,sf.majorid originalMajor,so.majorid,pytm.teachingType ");
+			sql.append("from edu_fee_stufee sf, edu_roll_studentinfo so, (select py.gradeid,py.yearid,py.paymenttype,pyt.creditfee,pyt.creditenddate,pyt.feeterm,fm.basemajorid,fm.teachingType ");
+			sql.append("from edu_fee_payyeardetails pyt, ");
+			sql.append("edu_fee_payyear py, ");
+			sql.append("edu_fee_major fm ");
+			sql.append("where pyt.payyearid=py.resourceid ");
+			sql.append("and py.paymenttype=fm.paymenttype ");
+			sql.append("and pyt.isdeleted=0 ");
+			sql.append("and py.isdeleted=0 ");
+			sql.append("and to_char(pyt.paybegindate,'yyyy-mm-dd')<=? and py.resourceid = ? ");
+			sql.append("group by py.gradeid,py.yearid,py.paymenttype,pyt.creditfee,pyt.creditenddate,pyt.feeterm,fm.basemajorid,fm.teachingType) pytm ");
+			sql.append("where sf.studentid =so.resourceid ");
+			sql.append("and so.majorid=pytm.basemajorid ");
+			sql.append("and so.isdeleted=0 ");
+//			sql.append("and sf.yearid=pytm.yearid ");
+			if(schoolCode.equals("10598")){
+				sql.append("and so.teachingtype=pytm.teachingType ");
+			}
+			sql.append("and so.gradeid=pytm.gradeid ");
+			sql.append("and (sf.chargeterm+1)=pytm.feeterm "); 
+			sql.append("and sf.isdeleted=0 ");
+			sql.append("and so.studentstatus in ('11','25') ");// 只处理在学和缓毕业的学生
+			
+			paymentInfo = baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql.toString(), params.toArray(), StudentPaymentInfoVo.class);
+		} catch (Exception e) {
+			logger.error("根据开始缴费日期获取缴费的有关信息出错", e);
+		}
+		return paymentInfo;
+	}
+}

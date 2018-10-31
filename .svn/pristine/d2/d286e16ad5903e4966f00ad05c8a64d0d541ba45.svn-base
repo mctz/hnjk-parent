@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>KindEditor</title>
+<style>
+body {
+	font-size: 12px;
+	margin: 0px;
+	background-color: #F0F0EE;
+	overflow: hidden;
+}
+
+td.left1 {
+	font-size: 12px;
+	width: 65px;
+	padding: 2px;
+}
+
+td.right1 {
+	font-size: 12px;
+	padding: 2px;
+}
+
+td.left2 {
+	font-size: 12px;
+	width: 35px;
+	padding: 2px;
+}
+
+td.right2 {
+	font-size: 12px;
+	padding: 2px;
+	width: 50px;
+}
+</style>
+<script>
+		function openMathType(){
+		window.open ('http://www.codecogs.com/latex/eqneditor.php', 'newwindow', 'height=600, width=800, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');			
+		}
+		</script>
+</head>
+<body>
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="left1">公式文本:</td>
+			<td class="right1"><input type="hidden" id="url" name="url"
+				value=" http://latex.codecogs.com/gif.latex?" /> <textarea
+					id="mathContent" name="mathContent"
+					style="width: 250px; height: 80px"></textarea></td>
+		</tr>
+		<tr>
+			<td class="left1">公式名:</td>
+			<td class="right1"><input type="text" id="imgTitle"
+				name="imgTitle" value="" maxlength="100" style="width: 220px;" /></td>
+		</tr>
+		<tr>
+			<td colspan="2">说明：<br />
+				<li>在MathType(<a
+					href="/edu3/attachs/system/software/mathtype6.9b_trial.zip">下载</a>)中选择编辑好的公式，复制并粘贴到公式文本域中
+			</li>
+				<li>或者<a href="#" onclick="openMathType()">打开在线公式编辑器</a>，复制并粘贴到公式文本域中
+			</li>
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="imgWidth" id="imgWidth" value="0"
+		maxlength="4">
+	<input type="hidden" name="imgHeight" id="imgHeight" value="0"
+		maxlength="4" />
+	<input type="hidden" name="imgBorder" id="imgBorder" value="0"
+		maxlength="1" />
+	<!--
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="left2">宽度: </td>
+				<td class="right2">
+					<input type="text" name="imgWidth" id="imgWidth" value="0" maxlength="4" style="width:40px;" />
+				</td>
+				<td class="left2">高度: </td>
+				<td class="right2">
+					<input type="text" name="imgHeight" id="imgHeight" value="0" maxlength="4" style="width:40px;" />
+				</td>
+				<td class="left2">边框: </td>
+				<td class="right2">
+					<input type="text" name="imgBorder" id="imgBorder" value="0" maxlength="1" style="width:40px;" />
+				</td>
+			</tr>
+		</table>-->
+</body>
+</html>

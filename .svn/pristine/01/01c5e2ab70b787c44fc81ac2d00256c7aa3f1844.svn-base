@@ -1,0 +1,50 @@
+<xml_api_reply version="1">
+	<weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1"
+		row="0" section="0">
+		<forecast_information>
+			<city data="Shaoguan, Guangdong" />
+			<postal_code data="shaoguan" />
+			<latitude_e6 data="" />
+			<longitude_e6 data="" />
+			<forecast_date data="2011-07-28" />
+			<current_date_time data="2011-07-28 14:00:00 +0000" />
+			<unit_system data="SI" />
+		</forecast_information>
+		<current_conditions>
+			<condition data="" />
+			<temp_f data="81" />
+			<temp_c data="27" />
+			<humidity data="湿度： 68%" />
+			<icon data="" />
+			<wind_condition data="风向： 西南、风速：1 米/秒" />
+		</current_conditions>
+		<forecast_conditions>
+			<day_of_week data="周四" />
+			<low data="26" />
+			<high data="36" />
+			<icon data="/ig/images/weather/mostly_sunny.gif" />
+			<condition data="以晴为主" />
+		</forecast_conditions>
+		<forecast_conditions>
+			<day_of_week data="周五" />
+			<low data="27" />
+			<high data="35" />
+			<icon data="/ig/images/weather/chance_of_storm.gif" />
+			<condition data="可能有暴风雨" />
+		</forecast_conditions>
+		<forecast_conditions>
+			<day_of_week data="周六" />
+			<low data="27" />
+			<high data="33" />
+			<icon data="/ig/images/weather/chance_of_storm.gif" />
+			<condition data="可能有暴风雨" />
+		</forecast_conditions>
+		<forecast_conditions>
+			<day_of_week data="周日" />
+			<low data="26" />
+			<high data="33" />
+			<icon data="/ig/images/weather/chance_of_storm.gif" />
+			<condition data="可能有暴风雨" />
+		</forecast_conditions>
+	</weather>
+</xml_api_reply>

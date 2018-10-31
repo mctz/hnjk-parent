@@ -1,0 +1,620 @@
+package com.hnjk.edu.finance.controller;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.hnjk.core.exception.WebException;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.foundation.utils.GUIDUtils;
+import com.hnjk.core.foundation.utils.HttpHeaderUtils;
+import com.hnjk.core.foundation.utils.JsonUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.support.base.controller.FileUploadAndDownloadSupportController;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.basedata.model.Grade;
+import com.hnjk.edu.basedata.service.IYearInfoService;
+import com.hnjk.edu.finance.model.FeeMajor;
+import com.hnjk.edu.finance.model.ReturnPremium;
+import com.hnjk.edu.finance.model.StudentPayment;
+import com.hnjk.edu.finance.model.StudentPaymentDetails;
+import com.hnjk.edu.finance.model.YearPaymentStandard;
+import com.hnjk.edu.finance.model.YearPaymentStandardDetails;
+import com.hnjk.edu.finance.service.IFeeMajorService;
+import com.hnjk.edu.finance.service.IReturnPremiumService;
+import com.hnjk.edu.finance.service.IStudentPaymentDetailsService;
+import com.hnjk.edu.finance.service.IStudentPaymentService;
+import com.hnjk.edu.finance.service.IYearPaymentStandardService;
+import com.hnjk.edu.finance.vo.PayDetailsVO;
+import com.hnjk.edu.roll.model.StudentInfo;
+import com.hnjk.edu.util.Condition2SQLHelper;
+import com.hnjk.extend.plugin.excel.service.IExportExcelService;
+import com.hnjk.extend.taglib.function.JstlCustFunction;
+import com.hnjk.platform.system.UserOperationLogsHelper;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.UserOperationLogs;
+import com.hnjk.platform.taglib.JstlCustomFunction;
+import com.hnjk.security.SpringSecurityHelper;
+import com.hnjk.security.model.User;
+
+/**
+ * 学生缴费标准管理.
+ * <code>StudentPaymentController</code><p>
+ * 
+ * @author： 广东学苑教育发展有限公司
+ * @since： 2012-11-12 下午04:20:31
+ * @see 
+ * @version 1.0
+ */
+@Controller
+public class ReturnPremiumController extends FileUploadAndDownloadSupportController {
+	
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	@Qualifier("yearInfoService")
+	private IYearInfoService yearInfoService; 
+	
+	@Autowired
+	@Qualifier("feeMajorService")
+	private IFeeMajorService feeMajorService;
+	
+	@Autowired
+	@Qualifier("exportExcelService")
+	private IExportExcelService exportExcelService;
+	
+	@Autowired
+	@Qualifier("returnPremiumService")
+	private IReturnPremiumService returnPremiumService;
+	
+	@Autowired
+	@Qualifier("studentPaymentService")
+	private IStudentPaymentService studentPaymentService;
+	
+	@Autowired
+	@Qualifier("yearPaymentStandardService")
+	private IYearPaymentStandardService yearPaymentStandardService;
+	
+	@Autowired
+	@Qualifier("studentPaymentDetailsService")
+	private IStudentPaymentDetailsService studentPaymentDetailsService; 
+	
+	/**
+	 * 获取年度缴费信息,缴费信息用于退费
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/refund.html")
+	public String refund(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		Map<String,Object> condition = new HashMap<String, Object>();
+		try {
+			
+			String resourceid = request.getParameter("stuPaymentId");
+			if(ExStringUtils.isBlank(resourceid)){
+				logger.error("id为空");
+			}
+			condition.put("resourceid", resourceid);
+			List<StudentPayment> list = studentPaymentService.findStudentPaymentByCondition(condition);
+			if(list!=null&&list.size()>0){
+				StudentPayment sp = list.get(0);
+				Grade grade = sp.getGrade();
+				StudentInfo si = sp.getStudentInfo();
+				String teachingType = "2";
+				String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+				if(schoolCode.equals("10598")){// 广西
+					teachingType = si.getTeachingType();
+				}
+//				FeeMajor feeMajor  = feeMajorService.findByProperty("resourceid",sp.getMajor().getResourceid());
+				FeeMajor feeMajor  = feeMajorService.findUniqueByCondition(sp.getMajor().getResourceid(), teachingType);
+				YearPaymentStandard yearPaymentStandard = yearPaymentStandardService.getYearPaymentStandard(grade.getResourceid(),feeMajor.getPaymentType());//年缴费标准
+				model.addAttribute("yearPaymentStandard", yearPaymentStandard);
+				
+				//创建学年对应期数map
+				Map<String,Object> yearMap = new HashMap<String, Object>();
+				for(YearPaymentStandardDetails temp: yearPaymentStandard.getYearPaymentStandardDetails()){
+					condition.put("studentInfoId", si.getResourceid());
+					condition.put("year", String.valueOf((grade.getYearInfo().getFirstYear()-1+temp.getFeeTerm())));
+					
+					List<ReturnPremium> returnList = returnPremiumService.findReturnPremiumByCondition(condition);					
+					Double returnPremiumFee = 0.0;
+					for(ReturnPremium returnPremium : returnList){
+						returnPremiumFee+=returnPremium.getReturnPremiumFee();
+					}
+					temp.setCreditFee(temp.getCreditFee()-returnPremiumFee);
+					yearMap.put(String.valueOf((grade.getYearInfo().getFirstYear()-1+temp.getFeeTerm())), temp);
+				}
+				model.addAttribute("yearMap", yearMap);
+			}else{
+				logger.error("学生缴费信息为空");
+			}
+			model.addAttribute("condition", condition);
+		} catch (Exception e) {
+			logger.error("退费出错", e);
+		}
+		return "/edu3/finance/studentpayment/studentpayment-refund";
+	}
+	
+	/**
+	 * 获取退费记录list
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/returnList.html")
+	public String refundList(HttpServletRequest request,HttpServletResponse response,ModelMap model,Page page) throws WebException{
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+			String brSchool = request.getParameter("brSchool");
+			String resourceid = request.getParameter("stuPaymentId");
+			if(ExStringUtils.isNotBlank(resourceid)){
+				condition.put("resourceid", resourceid);
+			}
+			User user = SpringSecurityHelper.getCurrentUser();
+			//判断是否为校外学习中心人员
+			if(user.getOrgUnit().getUnitType().equals(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())){
+				brSchool = user.getOrgUnit().getResourceid();
+				model.addAttribute("isBrschool",true);
+				model.addAttribute("schoolname",ExStringUtils.trim(user.getOrgUnit().getUnitName()));
+			}
+			if(ExStringUtils.isNotBlank(brSchool)){
+				condition.put("brSchool", brSchool);
+			}
+			page = returnPremiumService.findReturnPremiumByCondition(condition,page);					
+			
+			model.addAttribute("returnPremiumList", page);
+			
+			model.addAttribute("condition", condition);
+		} catch (Exception e) {
+			logger.error("获取退费list出错", e);
+		}
+		
+		return "/edu3/finance/studentpayment/studentpayment-refund-list";
+	}
+	
+	/**
+	 * 导出退费记录list
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/studentPayment-refund-export.html")
+	public void refundExport(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+			//condition=getReturnPremiumCondition(request);
+			List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);					
+			for(ReturnPremium rp :list){
+				rp.setPaymentMethod(JstlCustomFunction.dictionaryCode2Value("CodePaymentMethod", rp.getPaymentMethod()));
+			}
+			setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+	 	    GUIDUtils.init();
+	 		//导出
+			File excelFile = null;
+			File disFile   = new File(getDistfilepath()+ File.separator + GUIDUtils.buildMd5GUID(false) + ".xls");
+			
+			//初始化配置参数
+			exportExcelService.initParmasByfile(disFile, "studentpayment_refund_exprot", list,condition);
+			exportExcelService.getModelToExcel().setRowHeight(300);//设置行高
+			
+			excelFile = exportExcelService.getExcelFile();//获取导出的文件
+			logger.info("获取导出的excel文件:{}",excelFile.getAbsoluteFile());
+			model.addAttribute("condition", condition);
+			
+			String downloadFileName = "退费详细记录信息.xls";
+			String downloadFilePath = excelFile.getAbsolutePath();
+						
+			downloadFile(response, downloadFileName,downloadFilePath,true);
+		} catch (Exception e) {
+			logger.error("导出退费list出错", e);
+			renderHtml(response, "<script>alert('导出excel文件出错,请联系管理员')</script>");		
+		}
+	}
+	
+	/**
+	 * 打印前返回查询所得的数量,向用户获取收据号
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/studentPayment-refund-count.html")
+	public String queryForPrint(HttpServletRequest request,HttpServletResponse response, Page objPage,ModelMap model) throws WebException{
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+			// 处理参数
+			//condition = getReturnPremiumCondition(request);
+			condition.put("print", "Y");
+			List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);
+			//List<StudentPaymentDetails> spdList = studentPaymentDetailsService.findStudentPaymentDetailsByCondition(condition);
+			model.addAttribute("total", list.size());
+			model.addAttribute("condition", condition);
+		} catch (Exception e) {
+			logger.error("获取退费列表出错", e);
+		} 
+		
+		return "/edu3/finance/studentpayment/studentpayment-refund-count";
+	}
+	
+	/**
+	 * 检查收据号重复
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/studentPayment-refund-checkReceiptNumber.html")
+	public void checkReceiptNumber(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		Map<String,Object> condition = new HashMap<String, Object>();
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			String receiptNumber_begin = request.getParameter("receiptNumber_begin");// 收据号开始
+			String receiptNumber_end = request.getParameter("receiptNumber_end");// 收据号结尾
+			if(ExStringUtils.isNotEmpty(receiptNumber_begin)) {
+				condition.put("receiptNumber_begin", receiptNumber_begin);
+			}
+			if(ExStringUtils.isNotEmpty(receiptNumber_end)) {
+				condition.put("receiptNumber_end", receiptNumber_end);
+			}else if(ExStringUtils.isNotEmpty(receiptNumber_begin)){
+				condition.put("receiptNumber_end", receiptNumber_begin);
+			}
+			
+			// 增加检验票据号是否重复
+			List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);
+			if(list!=null && list.size()>0){
+				StringBuffer message = new StringBuffer();
+				for(ReturnPremium details : list){
+					message.append("已经存在票据号:"+details.getReceiptNumber()+"</br>");
+				}
+				map.put("statusCode", 300);
+				map.put("message", message.toString());
+			}else{
+				map.put("statusCode", 200);
+			}
+		}catch (Exception e) {
+			logger.error("检查票据号重复出错:{}",e.fillInStackTrace());		
+			map.put("statusCode", 300);
+			map.put("message", "检查票据号重复出错:<br/>"+e.getMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));		
+	}
+	
+	/**
+	 * 打印学生退费明细列表
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/studentPayment-refund-printList.html")
+	public void printStudentPaymentDetails(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+//			objPage.setOrderBy(" spd.studentInfo.studyNo,spd.operateDate ");
+//			objPage.setOrder(Page.DESC);
+			
+			// 处理参数
+			condition.put("print", "Y");
+			String _drawerString = (String) condition.get("drawer");
+			String _receiptNumber_begin = (String) condition.get("receiptNumber_begin");
+			condition.remove("drawer");
+			condition.remove("receiptNumber_begin");
+			condition.remove("receiptNumber_end");
+			List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);
+			
+			int receiptNumber_begin = Integer.parseInt(_receiptNumber_begin);
+			//中文出现乱码,解密
+			condition.put("drawer",URLDecoder.decode(_drawerString,"UTF-8"));
+
+//			SysConfiguration config = CacheAppManager.getSysConfigurationByCode("feeReceiptNumberPrefix");
+			//先修改,然后打印,增加修改开票人
+			Date now = new Date();
+			for(ReturnPremium returnPremium : list){
+				returnPremium.setDrawer(condition.get("drawer")!=null?(String)condition.get("drawer"):"");
+				returnPremium.setPrintDate(now);
+				//detail.setReceiptNumber(config.getParamValue()+receiptNumber_begin);//保存不加前缀,用纯数字,然后去判断重复
+				returnPremium.setReceiptNumber(receiptNumber_begin+"");
+				receiptNumber_begin++;
+			}
+			List<PayDetailsVO> payDetailsVOs = createPrintPayDetailsVO(list);
+			
+			//打印
+			Map<String, Object> param = new HashMap<String, Object>();
+			JasperPrint jasperPrint   = null;//输出的报表
+
+			for (PayDetailsVO vo : payDetailsVOs) {
+				List<String> temp = new ArrayList<String>();
+				temp.add(vo.getCheckPayable());
+				JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(temp);
+				String reprotFile = "";
+				reprotFile = URLDecoder.decode(request.getSession().getServletContext().getRealPath(File.separator+"reports"+
+						File.separator+"finance"+File.separator+"paymentDetails.jasper"),"utf-8");
+				
+				
+				param.put("type","4");//默认类型为成人大学生,根据票据为1,2,3,4,5,6,7
+				param.put("payMethod",vo.getPrintPayMethod());
+				param.put("payable",vo.getCheckPayable());			
+				param.put("className",vo.getClassName());
+				param.put("year",vo.getPrintYear());
+				param.put("month",vo.getPrintMonth());
+				param.put("day",vo.getPrintDay());
+				//大写金额
+				if(ExStringUtils.isNotBlank(vo.getPrintUpperMoney())){
+					param.put("wan",vo.getPrintUpperMoney().substring(0, 1));
+					param.put("qian",vo.getPrintUpperMoney().substring(1, 2));
+					param.put("bai",vo.getPrintUpperMoney().substring(2, 3));
+					param.put("shi",vo.getPrintUpperMoney().substring(3, 4));
+					param.put("yuan",vo.getPrintUpperMoney().substring(4, 5));
+					param.put("jiao",vo.getPrintUpperMoney().substring(5, 6));
+					param.put("fen",vo.getPrintUpperMoney().substring(6, 7));
+				}
+				
+				param.put("yearInfo",vo.getYear()+"学年");
+				param.put("brschool",vo.getBrSchool());
+				param.put("payAmount",vo.getPrintPayAmount());
+				param.put("operatorName",vo.getOperatorName());
+				param.put("drawer",condition.get("drawer")!=null?(String)condition.get("drawer"):"");
+					
+				if (null!=jasperPrint&&jasperPrint.getPages().size()>0) {
+					JasperPrint jasperPage = JasperFillManager.fillReport(reprotFile, param,dataSource); // 填充报表
+					List jsperPageList=jasperPage.getPages();
+					for (int j = 0; j < jsperPageList.size(); j++) {
+						jasperPrint.addPage((JRPrintPage) jsperPageList.get(j));
+					}
+					jasperPage = null;//清除临时报表的内存占用
+				}else {
+					jasperPrint = JasperFillManager.fillReport(reprotFile, param,dataSource); // 填充报表
+				}
+			}
+			if (null!=jasperPrint) {
+				returnPremiumService.batchSaveOrUpdate(list);
+				renderStream(response, jasperPrint);
+			}else {
+				renderHtml(response,"缺少打印数据！");
+			}
+		} catch (Exception e) {
+			logger.error("打印学生退费明细出错", e);
+		} 
+	}
+	
+	/**
+	 * 撤销打印
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/cancelPrint.html")
+	public void cancelPrint(HttpServletRequest request,HttpServletResponse response){
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			// 处理参数
+			if(condition.containsKey("detailIds")){
+				List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);
+				for(ReturnPremium rPremium:list){
+					rPremium.setReceiptNumber(null);
+					rPremium.setDrawer(null);
+					rPremium.setPrintDate(null);
+				}
+				returnPremiumService.batchSaveOrUpdate(list);
+				UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.REPEAL,"撤销票据：参数："+JsonUtils.mapToJson(Condition2SQLHelper.getConditionFromResquestByIterator(request)));
+				map.put("statusCode", 200);
+				map.put("message", "撤销成功！");
+			}	
+
+		} catch (Exception e) {
+			logger.error("撤销票据号,开票人,打印时间出错:{}",e.fillInStackTrace());		
+			map.put("statusCode", 300);
+			map.put("message", "撤销出错:<br/>"+e.getMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	
+	/**
+	 * 确认退费操作
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/comfirmRefund.html")
+	public void refundComfirm(HttpServletRequest request,HttpServletResponse response) throws WebException{
+		Map<String,Object> condition = new HashMap<String, Object>();
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {		
+			String resourceid = request.getParameter("resourceid");
+			String year = request.getParameter("year");
+			String recpayfee = request.getParameter("recpayfee");
+			String refund = request.getParameter("refund");
+			String paymentMethod = request.getParameter("paymentMethod");
+			
+			if(ExStringUtils.isBlank(resourceid) || ExStringUtils.isBlank(refund) || ExStringUtils.isBlank(year)|| ExStringUtils.isBlank(paymentMethod)){
+				logger.error("参数错误");
+				map.put("statusCode", 300);
+				map.put("message", "退费失败:参数错误<br/>请联系管路员");
+			}
+			condition.put("resourceid", resourceid);
+			List<StudentPayment> list = studentPaymentService.findStudentPaymentByCondition(condition);
+			if(list!=null&&list.size()>0){
+				StudentPayment studentPayment = list.get(0);
+				Grade grade = studentPayment.getGrade();
+				StudentInfo si = studentPayment.getStudentInfo();
+				String teachingType = "2";
+				String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+				if(schoolCode.equals("10598")){// 广西
+					teachingType = si.getTeachingType();
+				}
+//				FeeMajor feeMajor  = feeMajorService.findByProperty("resourceid",sp.getMajor().getResourceid());
+				FeeMajor feeMajor  = feeMajorService.findUniqueByCondition(studentPayment.getMajor().getResourceid(), teachingType);
+				YearPaymentStandard yearPaymentStandard = yearPaymentStandardService.getYearPaymentStandard(grade.getResourceid(),feeMajor.getPaymentType());//年缴费标准
+				//创建学年对应期数map
+				Map<String,YearPaymentStandardDetails> yearMap = new HashMap<String, YearPaymentStandardDetails>();
+				for(YearPaymentStandardDetails temp: yearPaymentStandard.getYearPaymentStandardDetails()){
+					yearMap.put(String.valueOf((grade.getYearInfo().getFirstYear()-1+temp.getFeeTerm())), temp);
+				}
+				
+				if(yearMap.containsKey(year)){
+					condition.put("studentInfoId", si.getResourceid());
+					condition.put("year", year);
+					
+					List<StudentPaymentDetails> detailList = studentPaymentDetailsService.findStudentPaymentDetailsByCondition(condition);					
+					Double facepayFee = 0.0;
+					for(StudentPaymentDetails details : detailList){
+						facepayFee+=details.getPayAmount();
+					}
+					ReturnPremium returnPremium = new ReturnPremium();
+					returnPremium.setCreateDate(new Date());
+					returnPremium.setFacepayFee(facepayFee);
+					returnPremium.setOperator(SpringSecurityHelper.getCurrentUser());
+					returnPremium.setOperatorName(SpringSecurityHelper.getCurrentUser().getCnName());
+					returnPremium.setRecpayFee(studentPayment.getRecpayFee()-Double.parseDouble(refund));
+					returnPremium.setReturnPremiumFee(Double.parseDouble(refund));
+					returnPremium.setStudentInfo(si);
+					returnPremium.setStudyNo(si.getStudyNo());
+					returnPremium.setYearInfo(yearInfoService.getByFirstYear(Long.parseLong(year)));
+					returnPremium.setPaymentMethod(paymentMethod);
+					
+					studentPayment.setRecpayFee(studentPayment.getRecpayFee()-Double.parseDouble(refund));
+					studentPayment.setReturnPremiumFee(Double.parseDouble(refund)+(studentPayment.getReturnPremiumFee()!=null?studentPayment.getReturnPremiumFee():0.0));
+					
+					returnPremiumService.saveOrUpdate(returnPremium);
+					studentPaymentService.saveOrUpdate(studentPayment);
+				}
+				map.put("statusCode", 200);
+				map.put("message", "退费成功:<br/>");
+				map.put("reloadUrl", request.getContextPath()+"/edu3/finance/studentpayment/list.html");
+			}
+		} catch (Exception e) {
+			logger.error("退费出错", e);
+			map.put("statusCode", 300);
+			map.put("message", "退费失败:<br/>"+e.getLocalizedMessage()+"请联系管路员");
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	
+	/**
+	 * 创建打印缴费VO
+	 * @param paymentDetail
+	 * @return
+	 */
+	private List<PayDetailsVO> createPrintPayDetailsVO(List<ReturnPremium> returnPremiums) {
+		List<PayDetailsVO> payDetailsVOs = new ArrayList<PayDetailsVO>();
+		for(ReturnPremium returnPremium : returnPremiums) {
+			PayDetailsVO payDetailsVO = new PayDetailsVO();
+//			payDetailsVO.setClassName(returnPremium.getStudentInfo().getClasses()!=null?returnPremium.getStudentInfo().getClasses().getClassname():"");
+			payDetailsVO.setClassName(returnPremium.getClassName()!=null?returnPremium.getClassName():"");
+			payDetailsVO.setPrintPayMethod("付款方式："+JstlCustomFunction.dictionaryCode2Value("CodePaymentMethod", returnPremium.getPaymentMethod()));
+			payDetailsVO.setPrintYear(JstlCustFunction.getTimeByPattern(returnPremium.getCreateDate(), "yyyy"));
+			payDetailsVO.setPrintMonth(JstlCustFunction.getTimeByPattern(returnPremium.getCreateDate(), "MM"));
+			payDetailsVO.setPrintDay(JstlCustFunction.getTimeByPattern(returnPremium.getCreateDate(), "dd"));
+			payDetailsVO.setPrintUpperMoney(JstlCustFunction.getCN(new BigDecimal(returnPremium.getReturnPremiumFee())));
+			payDetailsVO.setPrintPayAmount((new BigDecimal(returnPremium.getReturnPremiumFee()*-1).setScale(2,RoundingMode.HALF_UP)).toString());
+			payDetailsVO.setCheckPayable(returnPremium.getStudentInfo().getStudentName()+"("+returnPremium.getStudyNo()+")");
+			
+			payDetailsVO.setYear(String.valueOf(returnPremium.getYearInfo().getFirstYear()));
+			payDetailsVO.setOperatorName(returnPremium.getOperatorName());
+			payDetailsVO.setBrSchool(returnPremium.getStudentInfo().getBranchSchool().getUnitName());
+			payDetailsVOs.add(payDetailsVO);
+		}
+		return payDetailsVOs;
+	}
+	
+	/**
+	 * 退费签领表预览
+	 * @param request
+	 * @param response
+	 * @param objPage
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/printBillView.html")
+	public String printBillView(HttpServletRequest request,HttpServletResponse response, Page objPage,ModelMap model) throws WebException{
+		try {
+			Condition2SQLHelper.addMapFromResquestByIterator(request, model);
+		} catch (Exception e) {
+			logger.error("打印学生缴费明细", e);
+		} 
+		model.addAttribute("url", "/edu3/finance/studentPayment/printBill.html");
+		return "/edu3/finance/studentPaymentDetails/printBill-view";
+	}
+	
+	/**
+	 * 打印退费签领表
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/studentPayment/printBill.html")
+	public void prinBill(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		JasperPrint jasperPrint = null;
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+			// 处理参数
+			List<ReturnPremium> list = returnPremiumService.findReturnPremiumByCondition(condition);
+			int i = 0;
+			List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
+			for (ReturnPremium vo : list) {
+				StudentInfo studentInfo = vo.getStudentInfo();
+				if(studentInfo!=null){
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("order", String.valueOf(++i));
+					map.put("unitName", studentInfo.getBranchSchool().getUnitName());
+					map.put("gradeName", studentInfo.getGrade().getYearInfo().getFirstYear().toString());
+					map.put("studyNo", studentInfo.getStudyNo());
+					map.put("stuName", studentInfo.getStudentName());
+					map.put("majorName", studentInfo.getMajor().getMajorName());
+					map.put("returnFee", vo.getReturnPremiumFee());
+					dataList.add(map);
+				}
+			}
+			String schoolName = CacheAppManager.getSysConfigurationByCode("graduateData.schoolName").getParamValue();
+			String schoolConnectName = CacheAppManager.getSysConfigurationByCode("graduateData.schoolConnectName").getParamValue();
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("title", schoolName+schoolConnectName+"学生退学费发票签领表");
+			String reportPath = File.separator+"reports"+File.separator+"finance"+File.separator+"receiptlist_returnpremium.jasper";
+			String reprotFile = URLDecoder.decode(request.getSession().getServletContext().getRealPath(reportPath),"utf-8");
+			File reprot_file   = new File(reprotFile);
+			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);	
+			jasperPrint = JasperFillManager.fillReport(reprot_file.getPath(),param,dataSource); // 填充报表
+				
+		} catch (Exception e) {
+			logger.error("打印学生缴费明细出错", e);
+		} 
+		if (null!=jasperPrint) {
+			renderStream(response, jasperPrint);
+		}else {
+			renderHtml(response,"缺少打印数据！");
+		}
+	}
+}

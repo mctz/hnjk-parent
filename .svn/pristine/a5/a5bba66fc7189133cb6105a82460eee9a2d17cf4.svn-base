@@ -1,0 +1,52 @@
+package com.hnjk.edu.teaching.vo;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+/**
+ * 排课导出
+ * @author qca
+ *
+ */
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class ArrangingCourseVo implements Serializable{
+	/**
+	 * 专业
+	 */
+	private String major;
+
+	/**
+	 * 层次
+	 */
+	private String classic;
+
+	/**
+	 * 年级
+	 */
+	private String grade;
+
+	/**
+	 * 班级
+	 */
+	private String classes;
+
+	/**
+	 * 班级人数
+	 */
+	private String stunumber;
+
+	/**
+	 * 学期
+	 */
+	private String term;
+
+	/**
+	 * 课程
+	 */
+	private String course;
+	
+}

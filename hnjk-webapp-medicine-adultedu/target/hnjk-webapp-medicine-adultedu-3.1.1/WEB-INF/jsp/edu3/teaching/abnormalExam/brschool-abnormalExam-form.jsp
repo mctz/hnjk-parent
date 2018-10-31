@@ -1,0 +1,277 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>缓考申请</title>
+</head>
+<body>
+
+	<div class="page">
+		<div class="pageHeader">
+			<form id="brSchool_abnormalExam_search_form"
+				onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/teaching/abnormalExam/abnormalExam-brschool-form.html?studentId=${AEstudentInfo.resourceid}"
+				method="post">
+				<div class="searchBar">
+					<ul class="searchContent">
+						<li><label>姓名：</label> <input type="text" readonly="readonly"
+							value=" ${AEstudentInfo.studentName }" /></li>
+						<li><label>学号：</label> <input type="text" readonly="readonly"
+							value=" ${AEstudentInfo.studyNo }" /></li>
+						<li><label>年级：</label> <input type="text" readonly="readonly"
+							value=" ${AEstudentInfo.grade.gradeName }" /></li>
+					</ul>
+					<ul class="searchContent">
+						<li><label>层次：</label> <input type="text" readonly="readonly"
+							value=" ${AEstudentInfo.classic.classicName }" /></li>
+						<li><label>专业：</label> <input type="text" readonly="readonly"
+							value=" ${AEstudentInfo.major.majorName }" /></li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="pageContent">
+			<gh:resAuth parentCode="RES_TEACHING_ABNORMALEXAM_BYBRSCHOOL_LIST"
+				pageType="subList"></gh:resAuth>
+			<form id="brSchool_abnormalExam_save_form"
+				onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/teaching/abnormalExam/abnormalExam-brschool-save.html?studentId=${AEstudentInfo.resourceid}"
+				method="post">
+				<table class="list" style="width: 100%" layouth="160">
+					<thead>
+						<tr>
+							<%--<th width="4%">序号</th> --%>
+							<th width="10%">课程名称</th>
+							<th width="8%">建议学期</th>
+							<th width="4%">学分</th>
+							<th width="8%">课程性质</th>
+							<th width="8%">教学方式</th>
+							<th width="8%">考试形式</th>
+							<th width="8%">审核状态</th>
+							<th width="8%">申请类型</th>
+							<th width="8%">考试类型</th>
+							<th width="20%">申请理由</th>
+							<th width="11%">附件</th>
+						</tr>
+					</thead>
+					<tbody id="brSchool_abnormalExam_formBody">
+						<c:forEach items="${planCousreList}" var="info" varStatus="vs">
+							<tr height="35">
+								<td>${info['COURSENAME'] }</td>
+								<td>${ghfn:dictCode2Val('CodeTermType',info['TERM'])}</td>
+								<td>${info['CREDITHOUR'] }</td>
+								<td>${ghfn:dictCode2Val('CodeCourseType',info['COURSETYPE'])}</td>
+								<td>${ghfn:dictCode2Val('teachType',info['TEACHTYPE'])}</td>
+								<td>${ghfn:dictCode2Val('CodeCourseExamType',info['EXAMTYPE'])}</td>
+								<c:if test="${not empty info['ISIDENTED'] }">
+									<td><font color="blue">统考 <c:choose>
+												<c:when test="${info['ISIDENTED'] eq 'Y'}">（已认定）</c:when>
+												<c:otherwise>（未认定）</c:otherwise>
+											</c:choose>
+									</font></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</c:if>
+								<c:if test="${not empty info['NOEXAMSTATUS'] }">
+									<td><font color="blue">
+											${ghfn:dictCode2Val('CodeUnScoreStyle',info['UNSCORE'])}（${ghfn:dictCode2Val('CodeCheckStatus',info['NOEXAMSTATUS'])}）</font>
+									</td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</c:if>
+								<c:if
+									test="${empty info['ISIDENTED'] && empty info['NOEXAMSTATUS']}">
+									<td>${ghfn:dictCode2Val('CodeCheckStatus',info['CHECKSTATUS'])}
+										<c:if test="${info['CHECKSTATUS'] eq '0' }">
+											<a href="#"
+												onclick="revokeAbnormalExam('${info['ABNORMALEXAMID'] }')">(撤销)</a>
+										</c:if>
+									</td>
+									<td><c:choose>
+											<c:when test="${not empty info['ABNORMALTYPE']}">
+		            		   ${ghfn:dictCode2Val('CodeAbnormalType',info['ABNORMALTYPE'])}
+		            		</c:when>
+											<c:otherwise>
+												<gh:select
+													id="abnormalExam_abnormalType_${info['COURSEID'] }"
+													name="abnormalType" dictionaryCode="CodeAbnormalType"
+													value="${info['ABNORMALTYPE']}"
+													onchange="changeAbnormalType(this)" filtrationStr="1" />
+												<input type="hidden"
+													id="abnormalExam_courseId_${info['COURSEID'] }"
+													name="courseId" value="${info['COURSEID'] }" />
+												<input type="hidden"
+													id="abnormalExam_planCourseId_${info['COURSEID'] }"
+													name="planCourseId" value="${info['planCourseId'] }" />
+												<input type="hidden"
+													id="abnormalExam_abnormalExamId_${info['COURSEID'] }"
+													name="abnormalExamId" value="${info['ABNORMALEXAMID'] }" />
+												<input type="hidden"
+													id="abnormalExam_courseType_${info['COURSEID'] }"
+													name="courseType" value="${info['COURSETYPE'] }" />
+											</c:otherwise>
+										</c:choose></td>
+									<td><c:choose>
+											<c:when test="${not empty info['AEEXAMTYPE']}">
+		            		   ${ghfn:dictCode2Val('CodeAbnormalExamType',info['AEEXAMTYPE'])}
+		            		</c:when>
+											<c:otherwise>
+												<%-- TODO:目前只有缓考类型，并且缓考只有正考才能申请 --%>
+												<gh:select id="abnormalExam_AEexamType_${info['COURSEID'] }"
+													name="AEexamType" dictionaryCode="CodeAbnormalExamType"
+													value="N" disabled="disabled" style="display: none;" />
+											</c:otherwise>
+										</c:choose></td>
+									<td><c:choose>
+											<c:when test="${not empty info['REASON']}">
+											<input type="text" name="reason" value="${info['REASON']}" maxlength="254" style="width: 98%" disabled="disabled" />
+		            		</c:when>
+											<c:otherwise>
+												<input type="text"
+													id="abnormalExam_reason_${info['COURSEID'] }" name="reason"
+													maxlength="254" style="width: 98%" title="请录入申请理由"
+													class="required" />
+												<input class="required" type="text"
+													id="abnormalExamScore_${info['COURSEID'] }"
+													name="abnormalExamScore" value="0"
+													style="width: 10%; display: none;" title="请录入成绩" />
+											</c:otherwise>
+										</c:choose></td>
+										<td><c:choose>
+											<c:when
+												test="${schoolCode eq '12962' and info['CHECKSTATUS'] eq 0}">
+												<gh:upload hiddenInputName="attachId" uploadType="attach"
+													baseStorePath="users,${user.username}"
+													extendStorePath="attachs" formType="ABNORMALEXAMAPPLY"
+													formId="${info['ABNORMALEXAMID'] }"
+													attachList="${attMap[info['ABNORMALEXAMID']] }" />
+											</c:when>
+											<c:otherwise></c:otherwise>
+										</c:choose></td>
+								</c:if>
+								
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+	//关闭navTab事件
+		var tabid = "RES_TEACHING_ABNORMALEXAM_APPLY_BYBRSCHOOL_FORM";
+		$(".navTab-tab li[tabid='"+tabid+"']").find(navTab._op.close$).unbind("click").click(function(){
+			console.info("herer");
+			var showAlert=false;
+			$("#brSchool_abnormalExam_formBody input[name='reason']").each(function(index){
+				 if($(this).val()){
+					 if(!$(this).parent().parent().find("input[name='attachId']").val()||$(this).parent().parent().find("input[name='attachId']").val()=='undefined'){
+						 showAlert = true;						 
+					 }
+				 }
+			});
+			if(showAlert){
+				alertMsg.confirm("你还有申请未上传附件，确定要关闭当前页面吗？",{okName:"确定",okCall:function(){
+					navTab.closeCurrentTab();
+				}});
+			}else{
+				navTab.closeCurrentTab();
+			}
+			
+		});
+	});
+	
+    function changeAbnormalType(obj) {
+    	 var selectedCourseId = $(obj).attr("id").split("abnormalExam_abnormalType_")[1];
+    	 var selectedValue = $(obj).val();
+    	 if(selectedValue==1){
+    		 $("#abnormalExam_AEexamType_"+selectedCourseId).show();
+    	 }else {
+    		 $("#abnormalExam_AEexamType_"+selectedCourseId).hide();
+    	 }
+    	 
+    }
+   
+	// 撤销
+	function revokeAbnormalExam(id){
+		var url = "${baseUrl}/edu3/teaching/abnormalExam/revoke1.html";
+	    var $search_form = $("#brSchool_abnormalExam_search_form");
+	    alertMsg.confirm("确定要撤销此课程的申请吗?", {
+             okCall: function(){
+           	  $.post(url,{resourceid:id,type:"Single"},function(json){
+           		  var msg = json.message;
+           		  if (json.statusCode == 200){
+           			 alertMsg.info(msg);
+           			 navTab.reload($search_form.attr("action"));
+           		  }else{
+           			  alertMsg.warn(msg); 
+           		  }
+           	  });
+             }
+       });
+	}
+	
+	//保存
+	function abnormalExamAdd(){
+		var courseTypes 	 = new Array();
+		var abnormalTypes 	 = new Array();
+		var courseIds 	 = new Array();
+		var planCourseIds 	 = new Array();
+		var abnormalExamIds 	 = new Array();
+		var scores 	 = new Array();
+		var AEexamTypes 	 = new Array();
+		var reasons 	 = new Array();
+		var $save_form 	 = $("#brSchool_abnormalExam_save_form");
+		var $search_form = $("#brSchool_abnormalExam_search_form");
+		var checked = true;// 申请理由不能为空
+		$("#brSchool_abnormalExam_formBody select[name='abnormalType']").each(function(index){
+			 if($(this).val()){
+				 var selectedCourseId = $(this).attr("id").split("abnormalExam_abnormalType_")[1];
+				 abnormalTypes.push($(this).val());
+				 courseTypes.push($("#abnormalExam_courseType_"+selectedCourseId).val());
+				 courseIds.push($("#abnormalExam_courseId_"+selectedCourseId).val());
+				 planCourseIds.push($("#abnormalExam_planCourseId_"+selectedCourseId).val());
+				 abnormalExamIds.push($("#abnormalExam_abnormalExamId_"+selectedCourseId).val());
+				 scores.push($("#abnormalExamScore_"+selectedCourseId).val());
+				 AEexamTypes.push($("#abnormalExam_AEexamType_"+selectedCourseId).val());
+				 reasons.push($("#abnormalExam_reason_"+selectedCourseId).val());
+				 if($("#abnormalExam_reason_"+selectedCourseId).val()==""){
+					 checked = false;
+				 }
+			 }
+		});
+		
+		if(!checked){
+			alertMsg.warn("保存申请失败。请填写申请理由。");
+			return false;	
+		}
+		
+		alertMsg.confirm("您确定要保存这些记录吗？", {
+			okCall: function(){		
+				$.ajax({
+					type:'POST',
+					url:$save_form.attr("action"),
+					data:{"courseTypes":courseTypes,"abnormalTypes":abnormalTypes,"courseIds":courseIds,"planCourseIds":planCourseIds,
+						"abnormalExamIds":abnormalExamIds,"scores":scores,"AEexamTypes":AEexamTypes,"reasons":reasons},
+					dataType:"json",
+					cache: false,
+					success: function (json){
+						var msg = json.message;
+						if (json.statusCode == 200){
+							navTab.reload($search_form.attr("action"));
+							alertMsg.info(msg);
+						}else{
+							alertMsg.warn(msg);
+						}
+					},						
+					error: DWZ.ajaxError
+				});	
+			}
+		});
+	}
+</script>
+</body>
+</html>

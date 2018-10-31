@@ -1,0 +1,114 @@
+package com.hnjk.edu.basedata.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.utils.ExCollectionUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.edu.basedata.model.YearInfo;
+import com.hnjk.edu.basedata.service.IYearInfoService;
+import com.hnjk.extend.plugin.excel.util.DateUtils;
+
+/**
+ * <code>YearInfoServiceImpl</code>基础数据-年度-服务实现.<p>
+ * 
+ * @author： 广东学苑教育发展有限公司
+ * @since： 2010-3-15 下午02:32:19
+ * @see 
+ * @version 1.0
+ */
+@Service("yearInfoService")
+@Transactional
+public class YearInfoServiceImpl extends BaseServiceImpl<YearInfo> implements IYearInfoService{
+
+	
+	
+	/* (non-Javadoc)
+	 * @see com.hnjk.core.support.base.service.BaseServiceImpl#saveOrUpdate(java.lang.Object)
+	 */
+	@Override
+	public void saveOrUpdate(YearInfo entity) throws ServiceException {	
+		super.saveOrUpdate(entity);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Page findYearInfoByCondition(Map<String, Object> condition, Page objPage) {
+		Map<String,Object> values =  new HashMap<String, Object>();
+		String hql = " from "+YearInfo.class.getSimpleName()+" where 1=1 ";
+		hql += " and isDeleted = :isDeleted ";
+		values.put("isDeleted", 0);
+		if(condition.containsKey("yearName")){
+			hql += " and yearName like :yearName ";
+			values.put("yearName", "%"+condition.get("yearName")+"%");
+		}
+		hql += " order by "+objPage.getOrderBy() +" "+ objPage.getOrder();
+		
+		return exGeneralHibernateDao.findByHql(objPage, hql, values);
+	}
+
+	@Override
+	public void batchCascadeDelete(String[] ids) throws ServiceException{
+		if(ids!=null && ids.length>0){
+			for(String id : ids){
+				delete(id);				
+				logger.info("批量删除="+id);
+			}
+		}
+	}
+
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<YearInfo> findYearInfoListForOrderOperater() throws ServiceException {
+		
+		Date date =  new Date();
+		String orderDate = DateUtils.getFormatDate(date, "yyyy-MM-dd");
+		StringBuffer hql = new StringBuffer("from YearInfo year where year.isDeleted=0 ");
+		hql.append(" and to_char(to_date('"+orderDate+"','yyyy-MM-dd'),'yyyy-MM-dd') >= (to_char(year.firstMondayOffirstTerm,'yyyy-MM-dd'))");
+		hql.append(" and to_char(to_date('"+orderDate+"','yyyy-MM-dd'),'yyyy-mm-dd') <= (to_char(year.firstMondayOfSecondTerm+year.secondTermWeekNum*7,'yyyy-MM-dd'))");
+		return (List<YearInfo>) this.exGeneralHibernateDao.findByHql(hql.toString());
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<YearInfo> findAllByOrder(){
+		String hql="from "+YearInfo.class.getSimpleName()+" where isDeleted = ? order by firstMondayOffirstTerm desc";
+		return (List<YearInfo>) this.exGeneralHibernateDao.findByHql(hql.toString(), 0);
+	}
+
+	/**
+	 * 根据起始年份获取年度
+	 */
+	@Override
+	public YearInfo getByFirstYear(Long firstYear) throws ServiceException {
+		String hql = "from "+YearInfo.class.getSimpleName()+" y where y.isDeleted=0 and y.firstYear=? " ;
+		return exGeneralHibernateDao.findUnique(hql, firstYear);
+	}
+
+	/**
+	 * 获取所有年度信息，年度名称为key键
+	 * @return
+	 */
+	@Override
+	public Map<String, YearInfo> getYearInfoMapByName() {
+		Map<String, YearInfo> yearInfoMap = new HashMap<String, YearInfo>(20);
+		StringBuffer hql = new StringBuffer(200);
+		hql.append("from ").append(YearInfo.class.getSimpleName()).append(" where isDeleted=0 order by firstYear desc");
+		List<YearInfo> yearInfoList = findByHql(hql.toString());
+		if(ExCollectionUtils.isNotEmpty(yearInfoList)){
+			for(YearInfo y : yearInfoList){
+				yearInfoMap.put(y.getYearName(), y);
+			}
+		}
+		return yearInfoMap;
+	}
+	
+}

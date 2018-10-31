@@ -1,0 +1,982 @@
+package com.hnjk.edu.teaching.controller;
+
+import com.hnjk.core.exception.WebException;
+import com.hnjk.core.foundation.utils.*;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.controller.FileUploadAndDownloadSupportController;
+import com.hnjk.core.support.base.model.AttachInfo;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.core.support.context.SystemContextHolder;
+import com.hnjk.edu.basedata.model.Course;
+import com.hnjk.edu.basedata.model.Edumanager;
+import com.hnjk.edu.basedata.service.IEdumanagerService;
+import com.hnjk.edu.teaching.service.ICourseService;
+import com.hnjk.edu.teaching.service.ITeachingPlanCourseTimePeriodService;
+import com.hnjk.edu.teaching.vo.TeacherVo;
+import com.hnjk.edu.util.Condition2SQLHelper;
+import com.hnjk.extend.plugin.excel.service.IExportExcelService;
+import com.hnjk.extend.plugin.excel.service.IImportExcelService;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.service.IDictionaryService;
+import com.hnjk.security.SpringSecurityHelper;
+import com.hnjk.security.model.OrgUnit;
+import com.hnjk.security.model.Role;
+import com.hnjk.security.model.User;
+import com.hnjk.security.service.IOrgUnitService;
+import com.hnjk.security.service.IRoleService;
+import com.hnjk.security.service.IUserService;
+
+import jxl.format.Alignment;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.util.*;
+
+/**
+ * 教师管理controller. <code>EduManagerController</code>
+ * <p>
+ * 
+ * @author：广东学苑教育发展有限公司
+ * @since： 2010-8-11
+ * @see
+ * @version 1.0
+ */
+@Controller
+public class TeacherManageController extends FileUploadAndDownloadSupportController {
+
+	private static final long serialVersionUID = -8770672617093069438L;	
+	
+	@Autowired
+	@Qualifier("edumanagerService")
+	private IEdumanagerService edumanagerService;
+	
+	@Autowired
+	@Qualifier("userService")
+	private IUserService userService;
+	
+	@Autowired
+	@Qualifier("orgUnitService")
+	private IOrgUnitService orgUnitService;
+	
+	
+	@Autowired
+	@Qualifier("roleService")
+	private IRoleService roleService;
+	
+	@Autowired
+	@Qualifier("courseService")
+	private ICourseService courseService;
+	
+	@Autowired
+	@Qualifier("exportExcelService")
+	private IExportExcelService exportExcelService;
+	
+	@Autowired
+	@Qualifier("dictService")
+	private IDictionaryService dictionaryService;
+	
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	@Autowired
+	@Qualifier("teachingPlanCourseTimePeriodService")
+	private ITeachingPlanCourseTimePeriodService teachingPlanCourseTimePeriodService;
+	
+	@Autowired
+	@Qualifier("importExcelService")
+	private IImportExcelService importExcelService;
+
+	@RequestMapping(value={"/edu3/teaching/edumanager/list.html","/edu3/teaching/edumanager/exportTeacherInfo.html"})
+	public String listEdumanager(HttpServletRequest request, Page objPage, ModelMap model,HttpServletResponse response) throws WebException {
+		String cnName = ExStringUtils.trimToEmpty(request.getParameter("cnName"));
+		String teacherCode = ExStringUtils.trimToEmpty(request.getParameter("teacherCode"));
+		String unitId = request.getParameter("unitId");
+		String teacherType = request.getParameter("teacherType");
+		String teachingType = request.getParameter("teachingType");
+		String username = ExStringUtils.trimToEmpty(request.getParameter("username"));
+		String titleOfTechnical = request.getParameter("titleOfTechnical");
+		String educationalLevel = request.getParameter("educationalLevel");
+		String courseId = request.getParameter("courseId");
+		
+		String orderBy = ExStringUtils.trimToEmpty(request.getParameter("orderBy"));
+		String orderType = ExStringUtils.defaultIfEmpty(ExStringUtils.trimToEmpty(request.getParameter("orderType")), Page.ASC);
+		if(ExStringUtils.isNotEmpty(orderBy) && ExStringUtils.isNotEmpty(orderType)){//如果排序条件不为空，则加入排序
+			objPage.setOrderBy(orderBy);
+			objPage.setOrder(orderType);
+		}else{
+			objPage.setOrderBy(" teacherCode ");
+			objPage.setOrder(Page.ASC);
+		}	
+		
+		String advanseCon = ExStringUtils.trimToEmpty(request.getParameter("con"));//高级查询页面
+		
+		User user = SpringSecurityHelper.getCurrentUser();
+		if(user.getOrgUnit().getUnitType().indexOf(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())>=0){//如果为校外学习中心人员
+			unitId = user.getOrgUnit().getResourceid();
+			model.addAttribute("isBrschool", true);
+		}
+		
+		Map<String, Object> condition = new HashMap<String, Object>();// 查询条件
+		if (ExStringUtils.isNotEmpty(cnName)) {
+			condition.put("cnName", cnName);
+		}
+		if (ExStringUtils.isNotEmpty(teacherCode)) {
+			condition.put("teacherCode", teacherCode);
+		}
+		if (ExStringUtils.isNotEmpty(unitId)) {
+			condition.put("unitId", unitId);
+		}
+		if (ExStringUtils.isNotEmpty(teacherType)) {
+			condition.put("teacherType", teacherType);
+		}
+		if (ExStringUtils.isNotEmpty(teachingType)) {
+			condition.put("teachingType", teachingType);
+		}
+		if (ExStringUtils.isNotEmpty(username)) {
+			condition.put("username", username);
+		}
+		if (ExStringUtils.isNotEmpty(titleOfTechnical)){
+			condition.put("titleOfTechnical", titleOfTechnical);
+		}
+		if (ExStringUtils.isNotEmpty(educationalLevel)) {
+			condition.put("educationalLevel", educationalLevel);
+		}
+		if (ExStringUtils.isNotEmpty(courseId)) {
+			condition.put("courseId", courseId);
+		}
+		model.addAttribute("condition", condition);
+		
+		if ("advance".equals(advanseCon)) {
+			return "/edu3/teaching/teacher/edumanager-search";// 返回到高级检索
+		}
+		
+		condition.put("roleCode", CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue());
+		String operatorType		=	ExStringUtils.toString(request.getParameter("operatorType"));
+		
+		
+		if("export".equalsIgnoreCase(operatorType)){
+			List<Edumanager> list = edumanagerService.findEdumanagerByCondition(condition);
+			
+			setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+			try {
+				//导出
+				File excelFile = null;
+				GUIDUtils.init();
+				File disFile = new File(getDistfilepath()+ File.separator + GUIDUtils.buildMd5GUID(false) + ".xls");
+				Map<String,Object> templateMap = new HashMap<String, Object>();//设置模板参数
+				templateMap.put("exportDate", ExDateUtils.formatDateStr(new Date(), ExDateUtils.PATTREN_DATE_CN));
+				
+				List<String> dictCodeList = new ArrayList<String>();
+				
+				dictCodeList.add("CodeTeacherType");
+				dictCodeList.add("CodeSex");
+				dictCodeList.add("CodeTitleOfTechnicalCode");
+				dictCodeList.add("CodeHireType");
+				dictCodeList.add("CodeRank");
+				dictCodeList.add("teacherOrgUnitType");
+				dictCodeList.add("yesOrNo");
+				dictCodeList.add("CodeHighestEducation");
+				dictCodeList.add("CodeTeacherCertification");
+				dictCodeList.add("CodeExternalDegree");
+				dictCodeList.add("yesOrNo");
+				dictCodeList.add("CodeSpecialty");
+				dictCodeList.add("courseNature");
+				Map<String,Object> valueMap = new HashMap<String, Object>();
+				valueMap = dictionaryService.getDictionByMap(dictCodeList, true,IDictionaryService.PREKEY_TYPE_BYCODE);
+				valueMap.put("CodeClassic_1","专升本" );
+				valueMap.put("CodeClassic_2","高起本" );
+				valueMap.put("CodeClassic_4" ,"专科");
+				valueMap.put("CodeIsOtherTeacher_1","是" );
+				valueMap.put("CodeIsOtherTeacher_0","否" );
+				//模板文件路径
+				String templateFilepathString = "teacherDetailInfo.xls";
+				
+				//初始化配置参数
+				exportExcelService.initParmasByfile(disFile, "teacherDetailInfo", list,valueMap);
+				exportExcelService.getModelToExcel().setRowHeight(500);//设置行高
+				exportExcelService.getModelToExcel().setTemplateParam(templateFilepathString, 1, templateMap);		
+				excelFile = exportExcelService.getExcelFile();//获取导出的文件
+				logger.info("获取导出的excel文件:{}",excelFile.getAbsoluteFile());
+			
+				downloadFile(response, "教师信息.xls", excelFile.getAbsolutePath(),true);
+			} catch (Exception e) {
+				logger.error("导出excel文件出错："+e.fillInStackTrace());
+				renderHtml(response, "<script>alertMsg.error(\"导出excel文件出错"+e.fillInStackTrace()+"\")" );
+			}
+			return null;
+//			String fileName = "";
+//			try {
+//				fileName = new String("教师详细信息表".getBytes("GBK"), "iso8859-1");
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//			response.setCharacterEncoding("GB2312");
+//			response.setContentType("application/vnd.ms-excel");
+//			response.setHeader("Content-Disposition", "attachment; filename="+fileName+".xls");
+//
+//			return  "/edu3/teaching/teacher/edumanager-table";
+		}else{
+			Page edumanagerListPage = edumanagerService.findEdumanagerByCondition(condition, objPage);
+
+			model.addAttribute("edumanagerListPage", edumanagerListPage);		
+			
+			//载入老师角色
+			List<Role> roleList = roleService.findByHql("from "+Role.class.getSimpleName()+" where isDeleted=0 and roleCode like ?","%"+CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue()+"%");
+			model.addAttribute("roleList", roleList);
+			
+			return "/edu3/teaching/teacher/edumanager-list";
+		}
+		
+	}
+
+	/**
+	 * 新增编辑表单
+	 * 
+	 * @param resourceid
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/edit.html")
+	public String editEdumanager(String resourceid, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws WebException {
+		User cureentUser = SpringSecurityHelper.getCurrentUser();
+		String school = CacheAppManager.getSysConfigurationByCode("graduateData.schoolName").getParamValue();
+		String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+
+		Edumanager user;
+		OrgUnit orgUnit = null;
+		if (ExStringUtils.isNotBlank(resourceid)) { // -----编辑
+			user = edumanagerService.get(resourceid);
+			user.getOrgUnit();
+		} else { // ----------------------------------------新增
+			user = new Edumanager();
+			if(cureentUser.getOrgUnit().getUnitType().
+					indexOf(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())>=0){//如果校外学习中心，则显示默认单位为他自己所在学习中心
+				orgUnit = cureentUser.getOrgUnit();				
+			}else{
+				//orgunit.local.teach
+				orgUnit = orgUnitService.findUnique("from OrgUnit t where t.isDeleted=0 and t.unitCode = ? ",
+						CacheAppManager.getSysConfigurationByCode("orgunit.local.teach").getParamValue());
+			}
+//			DecimalFormat fmt = new DecimalFormat("0000"); 
+//			Map<String, Object> param = new HashMap<String, Object>();
+//			param.put("unitId", orgUnit.getResourceid());
+//			String teacherCode = "";
+//			long num;
+//			try {
+//				num = baseSupportJdbcDao.getBaseJdbcTemplate().findForLong("select count(*) from hnjk_sys_users u join edu_base_edumanager e on e.sysuserid=u.resourceid where u.isdeleted=0 and e.teachertype is not null and u.usertype='edumanager' and u.unitid=:unitId", param);
+//				teacherCode = orgUnit.getUnitCode()+fmt.format(++num).toString();
+//				while (userService.isExistsUser(teacherCode)) {
+//					teacherCode = orgUnit.getUnitCode()+fmt.format(++num).toString();						
+//				}
+//			} catch (Exception e) {
+//				
+//				logger.error("查询教师编号出错"+e.fillInStackTrace());
+//			}
+			user.setOrgUnit(orgUnit);
+			user.setUserType(CacheAppManager.getSysConfigurationByCode("sysuser.usertype.edumanager").getParamValue());
+
+		}
+		//教师编号
+		if (ExStringUtils.isBlank(user.getTeacherCode())) {
+			String teacherCodeRule = CacheAppManager.getSysConfigurationByCode("teacherCode.Rule").getParamValue();
+			String teacherCode = edumanagerService.getTeacherCode(teacherCodeRule,orgUnit);
+			user.setTeacherCode(teacherCode);
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("school",school);
+		model.addAttribute("schoolCode",schoolCode);
+		//载入老师角色
+		List<Role> roleList = roleService.findByHql("from "+Role.class.getSimpleName()+" where isDeleted=0 and roleCode like ?","%"+CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue()+"%");
+		model.addAttribute("roleList", roleList);
+		//如果校外学习中心，则显示默认单位为他自己所在学习中心
+		if(cureentUser.getOrgUnit().getUnitType().
+				indexOf(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())>=0){
+			model.addAttribute("isBrschool", true);
+		}
+		//拿到附件映射的全局URL"
+		model.addAttribute("rootUrl", request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()
+				+ CacheAppManager.getSysConfigurationByCode("web.uploadfile.rooturl").getParamValue());
+		return "/edu3/teaching/teacher/edumanager-form";
+	}
+
+	/**
+	 * 保存教师表单
+	 * 
+	 * @param user
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/save.html")
+	public void saveEdumanager(Edumanager user, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws WebException {
+		Map<String,Object> map = new HashMap<String, Object>();
+		String unitId = ExStringUtils.trimToEmpty(request.getParameter("unitId"));
+		String courseId = ExStringUtils.trimToEmpty(request.getParameter("courseId"));
+		//是否是班主任
+		String isMaster	= ExStringUtils.trimToEmpty(request.getParameter("isMaster"));
+		String orgUnitType = ExStringUtils.trimToEmpty(request.getParameter("orgUnitType"));
+		//最高学历
+		String educationalLevel=ExStringUtils.trimToEmpty(request.getParameter("educationalLevel"));
+		//职级
+		String positionLevel=ExStringUtils.trimToEmpty(request.getParameter("positionLevel"));
+		//首次聘用时间
+		String hiringTime=ExStringUtils.trimToEmpty(request.getParameter("hiringTime"));
+		//最高获得学位
+		String degree=ExStringUtils.trimToEmpty(request.getParameter("degree"));
+		//教师资格证
+		String teacherCertPhoto=ExStringUtils.trimToEmpty(request.getParameter("teacherCertPhoto"));
+		//最高获得学位证书
+		String teacherCertPhoto1=ExStringUtils.trimToEmpty(request.getParameter("teacherCertPhoto1"));
+		//其他从业证书
+		String teacherCertPhoto2=ExStringUtils.trimToEmpty(request.getParameter("teacherCertPhoto2"));
+		//当前担任课程类型
+		String currentCourseType=ExStringUtils.trimToEmpty(request.getParameter("currentCourseType"));
+		//其他职业（执业）
+		String qualification=ExStringUtils.trimToEmpty(request.getParameter("qualification"));
+		//教师编号
+		String teacherCode = ExStringUtils.trimToEmpty(request.getParameter("teacherCode"));
+		//首次聘用时间
+		user.setHiringTime(ExDateUtils.convertToDate(hiringTime));
+		//是否在线教学
+		String isOnline = ExStringUtils.trimToEmpty(request.getParameter("isOnline"));
+		user.setIsMaster(isMaster);
+		try {
+			if(ExStringUtils.isBlank(user.getPassword())) {
+				user.setPassword(CacheAppManager.getSysConfigurationByCode("sysuser.initpwd").getParamValue());
+			}
+			List<String> roleCodes = new ArrayList<String>();
+			//如果是班主任加上班主任角色
+			if(Constants.BOOLEAN_YES.equals(isMaster)){
+				roleCodes.add(CacheAppManager.getSysConfigurationByCode("sysuser.role.master").getParamValue());
+			}
+
+			//edumanagerService.update(persistUser);
+			//如果是在线教学，则加上在线教学这个角色
+			if(Constants.BOOLEAN_YES.equals(isOnline)){
+				roleCodes.add(CacheAppManager.getSysConfigurationByCode("sysuser.role.online").getParamValue());
+			}
+			//默认为主讲老师
+			if (!(Constants.BOOLEAN_YES.equals(isMaster) || Constants.BOOLEAN_YES.equals(isOnline))) {
+				roleCodes.add(CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher.duty").getParamValue());
+			}
+			if(ExStringUtils.isNotBlank(user.getResourceid())){//---------编辑
+				Edumanager persistUser = edumanagerService.get(user.getResourceid());
+				
+				if(!teacherCode.equals(persistUser.getTeacherCode())){
+					if(edumanagerService.isExistsTeacherCode(teacherCode)){
+						throw new WebException("教师编号已存在，请重新输入教师编号！");
+					}
+					user.setUsername(teacherCode);
+				}
+				
+				if(!user.getPassword().equals(persistUser.getPassword())){	//更改密码，如果前后密码发生变化，则MD5加密					
+					user.setPassword(BaseSecurityCodeUtils.getMD5(user.getPassword()));
+				}
+						
+				ExBeanUtils.copyProperties(persistUser, user);
+				//设置默认单位
+				if(ExStringUtils.isNotEmpty(unitId)){
+					OrgUnit orgUnit = orgUnitService.get(unitId);
+					persistUser.setOrgUnit(orgUnit);
+					orgUnit.getUser().add(persistUser);
+				}
+				
+				if(ExStringUtils.isNotEmpty(courseId)){
+					Course currentCourse = courseService.get(courseId);
+					persistUser.setCurrentCourse(currentCourse);					
+				}
+
+				List<Role> roles = new ArrayList<Role>(0);
+				for (Role role : persistUser.getRoles()) {
+					//查出取消关联的角色
+					if(role.getRoleCode().indexOf(teacherCode)!=-1 && !roleCodes.contains(role.getRoleCode())){//是教师角色并且不在当前分配列表
+						roles.add(role);
+					} else if (role.getRoleCode().indexOf(teacherCode)!=-1 && roleCodes.contains(role.getRoleCode())) {
+						roleCodes.remove(role.getRoleCode());//如果已经存在该角色，则不需要保存
+					}
+				}
+				persistUser.getRoles().removeAll(roles);//删除角色
+				user = persistUser;
+			}else{ //---------------------------------------------------新增				
+				if(edumanagerService.isExistsTeacherCode(user.getTeacherCode())){
+					throw new WebException("教师编号已存在，请重新输入教师编号！");
+				}
+				String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+
+				OrgUnit orgUnit = null;
+				if(ExStringUtils.isNotEmpty(unitId)){
+					orgUnit = orgUnitService.get(unitId);
+				} else {
+					User currentUser = SpringSecurityHelper.getCurrentUser();
+					if(currentUser.getOrgUnit().getUnitType().equals(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())){
+						orgUnit = currentUser.getOrgUnit();
+					} else {
+						orgUnit = orgUnitService.findUnique("from OrgUnit t where t.isDeleted=0 and t.unitCode = ? ",
+								CacheAppManager.getSysConfigurationByCode("orgunit.local.teach").getParamValue());
+					}
+				}				
+				
+				//设置默认单位					
+				user.setOrgUnit(orgUnit);
+				orgUnit.getUser().add(user);
+				String teacherCodeRule = CacheAppManager.getSysConfigurationByCode("teacherCode.Rule").getParamValue();
+
+				if (!user.getTeacherCode().startsWith(ExStringUtils.getPinYinHeadChar(orgUnit.getUnitName()))) {
+
+					String teacherCode_1 = edumanagerService.getTeacherCode(teacherCodeRule,orgUnit);
+					user.setTeacherCode(teacherCode_1);
+				}
+
+
+				user.setPassword(BaseSecurityCodeUtils.getMD5(user.getPassword()));
+
+				//如果教师编号为空，则按顺序给编号
+				if(ExStringUtils.isBlank(teacherCode)){
+					Map<String, Object> param = new HashMap<String, Object>();
+					param.put("unitId", orgUnit.getResourceid());
+					long num = baseSupportJdbcDao.getBaseJdbcTemplate().findForLong("select count(*) from hnjk_sys_users u join edu_base_edumanager e on e.sysuserid=u.resourceid where u.isdeleted=0 and e.teachertype is not null and u.usertype='edumanager' and u.unitid=:unitId", param);
+
+					DecimalFormat fmt = new DecimalFormat("0000");
+					teacherCode = orgUnit.getUnitCode()+fmt.format(++num).toString();
+					while (userService.isExistsUser(teacherCode)) {
+						teacherCode = orgUnit.getUnitCode()+fmt.format(++num).toString();
+					}
+				}
+//					if(userService.isExistsUser(teacherCode)){
+//						teacherCode = orgUnit.getUnitCode()+fmt.format(++num).toString();
+//					}
+				user.setTeacherCertPhoto(teacherCertPhoto);
+				user.setQualification(qualification);
+				user.setCurrentCourseType(currentCourseType);//当前担任课程类型
+				user.setTeacherCertPhoto1(teacherCertPhoto2);//其他从业证书
+				user.setTeacherCertPhoto1(teacherCertPhoto1);//最高学位证书
+				user.setDegree(degree);//最高学位
+
+				user.setPositionLevel(positionLevel);
+				user.setEducationalLevel(educationalLevel);//最高学历
+				user.setOrgUnitType(orgUnitType);//编制
+				user.setTeacherCode(teacherCode);
+				user.setUsername(teacherCode);
+				user.setEnabled(false);//默认停用
+				//设置当前课程
+				if(ExStringUtils.isNotEmpty(courseId)){
+					Course currentCourse = courseService.get(courseId);
+					System.out.println(currentCourse);
+					user.setCurrentCourse(currentCourse);
+				}
+			}
+			//把新的角色分配给用户
+			for (String code : roleCodes) {
+				Role role = roleService.findUnique("from Role t where t.isDeleted=0 and t.roleCode = ? ",code);
+				user.getRoles().add(role);
+			}
+			edumanagerService.saveOrUpdate(user);
+			map.put("statusCode", 200);
+			map.put("message", "保存成功！");
+			map.put("navTabId", "editTeacherTab");
+			user.setCurrentCourse(null);
+			user.setUserExtends(null);
+			user.setRoles(null);
+			user.setOrgUnit(null);
+			map.put("user1",user);
+			map.put("reloadUrl", request.getContextPath() +"/edu3/teaching/edumanager/edit.html?resourceid="+user.getResourceid());
+		} catch (Exception e) {
+			logger.error("保存用户错误:"+e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "保存失败:<br/>"+e.getMessage());							
+		}
+//		Edumanager u=(Edumanager)map.get("user");
+//		String crucou=u.getCurrentCourse().getResourceid();
+//		System.out.println(crucou);
+		String json=JsonUtils.mapToJson(map);
+		renderJson(response, json);
+	}
+
+	/**
+	 * 删除教师
+	 * 
+	 * @param resourceid
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/delete.html")
+	public void removeEdumanager(String resourceid, HttpServletRequest request,
+								 HttpServletResponse response, ModelMap model) throws WebException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			if (ExStringUtils.isNotBlank(resourceid)) {
+				if (resourceid.split("\\,").length > 1) {// 批量删除
+//					teachingPlanCourseTimePeriodService.batchCascadeDelete(resourceid
+//							.split("\\,"));
+					edumanagerService.batchCascadeDelete(resourceid.split("\\,"));
+				} else {// 单个删除
+//					teachingPlanCourseTimePeriodService.delete(resourceid);
+					edumanagerService.delete(resourceid);
+				}
+				map.put("statusCode", 200);
+				map.put("message", "删除成功！");
+				map.put("forward", request.getContextPath()
+						+ "/edu3/teaching/edumanager/edumanager-list.html");
+			}
+		} catch (Exception e) {
+			logger.error("删除教师出错:{}", e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "删除出错！");
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	/**
+	 * 注册教师账号
+	 * 
+	 * @param resourceid
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws WebException
+	 */
+//	@RequestMapping("/edu3/teaching/edumanager/regist.html")
+//	public void registEdumanager(String resourceid, HttpServletRequest request,	HttpServletResponse response, ModelMap model) throws WebException {
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		try {
+//			if (ExStringUtils.isNotBlank(resourceid)) {
+//				if (resourceid.split("\\,").length > 1) {// 批量注册
+//					edumanagerService.batchRegist(resourceid.split("\\,"));
+//				} else {// 单个注册
+//					User user = userService.get(resourceid);
+//					user.setEnabled(true);					
+//					userService.update(user);
+//				}
+//				map.put("statusCode", 200);
+//				map.put("message", "注册账号成功！");
+//				map.put("forward", request.getContextPath()
+//						+ "/edu3/teaching/edumanager/edumanager-list.html");
+//			}
+//		} catch (Exception e) {
+//			logger.error("注册账号出错:{}", e.fillInStackTrace());
+//			map.put("statusCode", 300);
+//			map.put("message", "注册账号出错！");
+//		}
+//		renderJson(response, JsonUtils.mapToJson(map));
+//	}
+	
+	/**
+	 * 检查教师编号唯一性
+	 * @param teacherCode
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/framework/system/teachercode/validateCode.html")
+	public void validateTeacherCode(String teacherCode, HttpServletRequest request, HttpServletResponse response) throws WebException {
+		String msg = "";
+		if(ExStringUtils.isNotBlank(teacherCode)){
+			if(edumanagerService.isExistsTeacherCode(teacherCode)){
+				msg = "exist";
+			}
+		}			
+		renderText(response, msg);
+	}
+	/**
+	 * 导出教师信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/export.html")
+	public void exportEdumanager(HttpServletRequest request, HttpServletResponse response) throws WebException {
+		String cnName = ExStringUtils.trimToEmpty(request.getParameter("cnName"));
+		String teacherCode = ExStringUtils.trimToEmpty(request.getParameter("teacherCode"));
+		String unitId = request.getParameter("unitId");
+		String teacherType = request.getParameter("teacherType");
+		String teachingType = request.getParameter("teachingType");
+
+		Map<String, Object> condition = new HashMap<String, Object>();// 查询条件
+		if (ExStringUtils.isNotEmpty(cnName)) {
+			condition.put("cnName", cnName);
+		}
+		if (ExStringUtils.isNotEmpty(teacherCode)) {
+			condition.put("teacherCode", teacherCode);
+		}
+		if (ExStringUtils.isNotEmpty(unitId)) {
+			condition.put("unitId", unitId);
+		}
+		if (ExStringUtils.isNotEmpty(teacherType)) {
+			condition.put("teacherType", teacherType);
+		}
+		if (ExStringUtils.isNotEmpty(teachingType)) {
+			condition.put("teachingType", teachingType);
+		}
+		condition.put("roleCode", CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue());
+		List<Edumanager> list = edumanagerService.findEdumanagerByCondition(condition);
+		
+		setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+		try {
+			//导出
+			File excelFile = null;
+			GUIDUtils.init();
+			File disFile = new File(getDistfilepath()+ File.separator + GUIDUtils.buildMd5GUID(false) + ".xls");
+			Map<String,Object> templateMap = new HashMap<String, Object>();//设置模板参数
+			templateMap.put("exportDate", ExDateUtils.formatDateStr(new Date(), ExDateUtils.PATTREN_DATE_CN));
+			
+			List<String> dictCodeList = new ArrayList<String>();
+			dictCodeList.add("CodeTeachingType");
+			dictCodeList.add("CodeSex");
+			dictCodeList.add("CodeTitleOfTechnicalCode");
+			dictCodeList.add("teacherOrgUnitType");
+			//模板文件路径
+			String templateFilepathString = "teacher.xls";
+			
+			//初始化配置参数
+			exportExcelService.initParmasByfile(disFile, "teacher", list,dictionaryService.getDictionByMap(dictCodeList, true,IDictionaryService.PREKEY_TYPE_BYCODE));
+			exportExcelService.getModelToExcel().setRowHeight(500);//设置行高
+			exportExcelService.getModelToExcel().setTemplateParam(templateFilepathString, 3, templateMap);		
+			excelFile = exportExcelService.getExcelFile();//获取导出的文件
+			logger.info("获取导出的excel文件:{}",excelFile.getAbsoluteFile());
+		
+			downloadFile(response, "教师信息.xls", excelFile.getAbsolutePath(),true);
+		} catch (Exception e) {
+			logger.error("导出excel文件出错："+e.fillInStackTrace());
+		}
+		
+	}
+	/**
+	 * 个人信息管理
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/info.html")
+	public String viewTeacher(ModelMap model) throws WebException {
+		User user = SpringSecurityHelper.getCurrentUser();
+		Edumanager edumanager = edumanagerService.get(user.getResourceid());
+		model.addAttribute("edumanager", edumanager);	
+		return "/edu3/teaching/teacher/edumanager-view";
+	}
+	@RequestMapping("/edu3/teaching/edumanager/upload.html")
+	public String importEdumanager(HttpServletRequest request, HttpServletResponse response, ModelMap map) throws WebException {
+		return "/edu3/teaching/teacher/edumanager-upload";
+	}
+
+	/**
+	 * 导入教师信息
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/import.html")
+	public void doXlsImportTeacher(HttpServletRequest request, HttpServletResponse response) throws WebException {
+		String exportAct = ExStringUtils.defaultIfEmpty(request.getParameter("act"), "");
+		//提示信息字符串
+		String  rendResponseStr = "";
+		
+		//List<TeacherVo> falseList = new ArrayList<TeacherVo>();
+		
+		int sucssCount = 0;//成功操作数
+		int count = 0;//总数
+		//int wCount = 0;//未操作总数
+		
+		User user 		    = SpringSecurityHelper.getCurrentUser();
+		
+		/*String branchSchool = "";
+		if (CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue().equals(user.getOrgUnit().getUnitType())) { //校外学习中心只操作本部数据
+			branchSchool 	= user.getOrgUnit().getResourceid();
+		}*/
+		if("import".equals(exportAct)){
+			//设置目标文件路径
+			setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH + request.getParameter("importFile"));
+			try {
+				//上传文件到服务器
+				List<AttachInfo> list = doUploadFile(request, response, null);
+				AttachInfo attachInfo = list.get(0);
+				//创建EXCEL对象 获得待导入的excel的内容
+				File excel = new File(attachInfo.getSerPath() + File.separator+ attachInfo.getSerName());
+				
+				importExcelService.initParmas(excel, "TeacherVo",null);
+				importExcelService.getExcelToModel().setSheet(0);// 设置excel sheet 0
+				//获得待导入excel内容的List
+				List modelList = importExcelService.getModelList();
+				if(modelList==null){
+					throw new Exception("导入教师模版错误！");
+				}
+				//专业学科类别
+				Map<String,String> specialtyCodeMap = dictionaryService.getMapByParentDictCode("CodeSpecialty");
+				//教师类型
+				Map<String,String> teacherTypeCodeMap = dictionaryService.getMapByParentDictCode("CodeTeacherType");
+				//聘用类型
+				Map<String,String> hireTypeCodeMap = dictionaryService.getMapByParentDictCode("CodeHireType");
+				//转换为对应类型的List
+				List<TeacherVo> teacherVoList = new ArrayList<TeacherVo>();
+				List<TeacherVo> failteacherVoList = new ArrayList<TeacherVo>();
+				TeacherVo teacher;
+				for (int i = 0; i < modelList.size(); i++) {
+					teacher = (TeacherVo) modelList.get(i);
+					teacherVoList.add(teacher);
+				}
+				//遍历需要导入的List 将对应内容写进DB 并同时检测数据的合法性
+				if (null != teacherVoList) {
+					GUIDUtils.init();
+					Edumanager eduuser = new Edumanager();
+					OrgUnit unit;
+					User user1;
+					for(TeacherVo vo : teacherVoList){
+						count ++;
+						String message= "";
+						boolean isTeacherVo = true;
+
+						if(ExStringUtils.isBlank(vo.getName())){
+							message = message+"教师名称不能为空；";
+							vo.setMessage(message);
+							isTeacherVo= false;
+						}
+						if(ExStringUtils.isBlank(vo.getSex())){
+							message = message+"性别不能为空；";
+							vo.setMessage(message);
+							isTeacherVo= false;
+						}
+						if(ExStringUtils.isBlank(vo.getTelphone())){
+							message = message+"联系电话不能为空；";
+							vo.setMessage(message);
+							isTeacherVo= false;
+						}
+						if(ExStringUtils.isBlank(vo.getUnitName())){
+							message = message+"所属教学站不能为空；";
+							vo.setMessage(message);
+							isTeacherVo= false;
+						}
+						//教学点*
+						unit = orgUnitService.findUniqueByProperty("unitName", vo.getUnitName());
+						if(unit !=null){
+							String orgunit = unit.getResourceid();
+							eduuser.setOrgUnit(unit);
+						}else{
+							vo.setMessage("教学站名称错误");
+							failteacherVoList.add(vo);
+							continue;
+						}
+						if(ExStringUtils.isBlank(vo.getUsername())){
+							//自动生成教师编号
+							String teacherCodeRule = CacheAppManager.getSysConfigurationByCode("teacherCode.Rule").getParamValue();
+							String teacherCode = edumanagerService.getTeacherCode(teacherCodeRule,unit);
+							vo.setUsername(teacherCode);
+						}
+						if(isTeacherVo==false){
+							failteacherVoList.add(vo);
+							continue;
+						}else{
+							if(ExStringUtils.isNotBlank(vo.getUsername())){
+								user1 = userService.findUniqueByProperty("username",vo.getUsername());
+								//判断用户是否存在
+								if(null==user1){
+									//logger.info("用户不存在，可新增加");
+									//账号*
+									eduuser.setUsername(vo.getUsername());
+									//名称*
+									eduuser.setCnName(vo.getName());
+									//性别*
+									//CodeSex
+									String ssex = "";
+									ssex = "男".equals(ExStringUtils.trim(vo.getSex())) || "man".equalsIgnoreCase(ExStringUtils.trim(vo.getSex())) ? "1":"2";
+									eduuser.setGender(ssex);
+
+									//移动电话*
+									eduuser.setMobile(vo.getTelphone());
+									//用户密码  设置为11
+									if(ExStringUtils.isBlank(eduuser.getPassword())) {
+										eduuser.setPassword(CacheAppManager.getSysConfigurationByCode("sysuser.initpwd").getParamValue());
+										eduuser.setPassword(BaseSecurityCodeUtils.getMD5(eduuser.getPassword()));
+									}
+									//添加教师角色
+									if("是".equals(ExStringUtils.trim(vo.getIsTeacher()))
+											||"Y".equals(ExStringUtils.trim(vo.getIsTeacher().toUpperCase()))
+											||"YES".equals(ExStringUtils.trim(vo.getIsTeacher().toUpperCase()))
+											){
+										eduuser.setTeacherType(CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher.duty").getParamValue());
+										Role role = roleService.findUnique("from Role t where t.isDeleted=0 and t.roleCode = ? ",CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher.duty").getParamValue());
+										eduuser.getRoles().add(role);
+									}															
+									//添加班主任角色
+									if("是".equals(ExStringUtils.trim(vo.getIsMaster()))
+											||"Y".equals(ExStringUtils.trim(vo.getIsMaster().toUpperCase()))
+											||"YES".equals(ExStringUtils.trim(vo.getIsMaster().toUpperCase()))
+											){
+										String type = ExStringUtils.isBlank(eduuser.getTeacherType()) ? "" : eduuser.getTeacherType()+",";
+										eduuser.setTeacherType(type+CacheAppManager.getSysConfigurationByCode("sysuser.role.master").getParamValue());
+										Role role1 = roleService.findUnique("from Role t where t.isDeleted=0 and t.roleCode = ? ",CacheAppManager.getSysConfigurationByCode("sysuser.role.master").getParamValue());
+										eduuser.getRoles().add(role1);
+									}
+									//专业学科类别
+									if (specialtyCodeMap.containsKey(vo.getSpecialty())) {
+										eduuser.setSpecialty(specialtyCodeMap.get(vo.getSpecialty()));
+									}else {
+										eduuser.setSpecialty(vo.getSpecialty());
+									}
+									//教师类型
+									if (teacherTypeCodeMap.containsKey(vo.getTeacherType())) {
+										eduuser.setTeacherType(teacherTypeCodeMap.get(vo.getTeacherType()));
+									} else {
+										eduuser.setTeacherType(vo.getTeacherType());
+									}
+									//聘用类型
+									if (hireTypeCodeMap.containsKey(vo.getHireType())) {
+										eduuser.setHireType(hireTypeCodeMap.get(vo.getHireType()));
+									} else {
+										eduuser.setHireType(vo.getHireType());
+									}
+									//担任课程层次
+									if (ExStringUtils.isNotBlank(vo.getCourseClassic())){
+										eduuser.setCourseClassic(vo.getCourseClassic());
+									}
+									//授课班级
+									if (ExStringUtils.isNotBlank(vo.getCourseClasses())) {
+										eduuser.setCourseClasses(vo.getCourseClasses());
+									}
+									//现工作单位
+									if (ExStringUtils.isNotBlank(vo.getWorkPlace())) {
+										eduuser.setWorkPlace(vo.getWorkPlace());
+									}
+									//添加老师编号
+									eduuser.setTeacherCode(vo.getUsername());
+									//设置为教务员类别的用户
+									eduuser.setUserType(CacheAppManager.getSysConfigurationByCode("sysuser.usertype.edumanager").getParamValue());
+									//设置账号可用
+									eduuser.setEnabled(true);
+									edumanagerService.save(eduuser);
+									sucssCount++;
+								}
+								else{
+									vo.setMessage("用户名已经存在");
+									failteacherVoList.add(vo);
+									continue;
+								}
+							}
+						}						
+					}
+				}
+				
+				//导出教师信息导入失败的信息以及原因
+				if(failteacherVoList!=null&&failteacherVoList.size()>0){
+					setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+					File excelFile = null;
+					String fileName = GUIDUtils.buildMd5GUID(false);
+					File disFile 	= new File(getDistfilepath()+ File.separator + fileName + ".xls");				
+					
+					exportExcelService.initParmasByfile(disFile, "TeacherVofail", failteacherVoList ,null);
+					exportExcelService.getModelToExcel().setHeader("导入老师信息表");//设置大标题					
+					exportExcelService.getModelToExcel().setRowHeight(500);//设置行高
+					WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+					font.setBoldStyle(WritableFont.BOLD);
+			        WritableCellFormat format = new WritableCellFormat(font);
+					format.setAlignment(Alignment.CENTRE);
+			        format.setBackground(Colour.YELLOW);
+			        format.setBorder(Border.ALL, BorderLineStyle.THIN);
+					exportExcelService.getModelToExcel().setTitleCellFormat(format);
+					exportExcelService.getModelToExcel().setRowHeight(300);
+					excelFile 	= exportExcelService.getExcelFile();//获取导出的文件
+					
+					logger.info("获取导出教师失败记录的excel文件:{}",excelFile.getAbsoluteFile());
+					
+//					downloadFile(response, "导入缴费信息失败名单.xls", excelFile.getAbsolutePath(),true);
+					String upLoadurl = "/edu3/teaching/edumanager/importfailed.html";
+					rendResponseStr = "{statusCode:200,message:'"+"导入成功"+ sucssCount 
+					+"条 | 导入失败"+ (count - sucssCount)
+					+"条！',forwardUrl:'"+upLoadurl+"?excelFile="+ fileName +"'};";
+				}
+				if(ExStringUtils.isBlank(rendResponseStr)){
+					rendResponseStr = "{statusCode:200,message:'"+"导入成功"+ sucssCount 
+					+"条 | 导入失败"+ (count - sucssCount)
+					+"条！',forwardUrl:''};";
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				rendResponseStr = "{statusCode:300,message:'操作失败!"+e.getMessage()+"'};";
+			}
+		}
+		StringBuffer html = new StringBuffer();
+		html.append("<script>");
+		html.append("var response = "+rendResponseStr);
+		html.append("if(window.parent.donecallback) window.parent.donecallback(response);");
+		html.append("</script>");
+		renderHtml(response, html.toString());
+	}
+	/**
+	 * 导出教师失败列表
+	 * @param excelFile
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/importfailed.html")
+	public void teacherImportfailed(String excelFile, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+		File disFile = new File(getDistfilepath()+ File.separator + excelFile+".xls");
+		downloadFile(response, "导出教师失败信息列表.xls", disFile.getAbsolutePath(),true);
+	}
+	/**
+	 * 导出教师导入的模板
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/edumanager/exportModel.html")
+	public void exportTeacherModel(HttpServletRequest request, HttpServletResponse response, ModelMap model)
+				throws WebException {
+		try{
+			setDistfilepath(Constants.EDU3_DATAS_LOCALROOTPATH+"exportfiles");
+			String schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+			String modelFile = "teacherexportmodel.xls";
+			//广外个性化模版
+			if("11846".equals(schoolCode)){
+				modelFile = "teacherexportmodel_gdwy.xls";
+			}
+			//模板文件路径
+			String templateFilepathString = modelFile;
+			downloadFile(response, "教师导入模板.xls", templateFilepathString,false);
+		}catch(Exception e){			
+			String msg = "导出excel文件出错：找不到该文件-教师导入模板.xls";
+			logger.error("下载教师导入模板出错", e);
+			renderHtml(response, "<script>alertMsg.warn("+"\""+msg+"\""+")</script>");
+		}
+	}
+
+	/**
+	 * 获取教师编号流水号
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/framework/system/getTeacherCode.html")
+	public void getTeacherCode(HttpServletRequest request, HttpServletResponse response) throws WebException {
+		String teacherCodeRule = CacheAppManager.getSysConfigurationByCode("teacherCode.Rule").getParamValue();
+		String unitId = request.getParameter("unitId");
+		OrgUnit orgUnit = orgUnitService.get(unitId);
+		String teacherCode = edumanagerService.getTeacherCode(teacherCodeRule,orgUnit);
+
+		renderText(response, teacherCode);
+	}
+}

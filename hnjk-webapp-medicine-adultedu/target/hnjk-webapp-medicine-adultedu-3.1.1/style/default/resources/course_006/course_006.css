@@ -1,0 +1,9 @@
+@charset "utf-8";
+/*c++*/
+html, body {
+	margin: 0 auto;
+	padding: 0;
+	background: #c3e4f7 url(images/index_bg2.jpg) top center repeat-y;
+	text-align: center;
+	font-size: 12px;
+}

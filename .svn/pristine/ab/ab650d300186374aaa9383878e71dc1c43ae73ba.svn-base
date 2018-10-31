@@ -1,0 +1,622 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>年级教学计划课程开课列表</title>
+<style type="text/css">
+.recordScoreTeacher {
+	cursor: pointer;
+}
+</style>
+</head>
+<body>
+	<script type="text/javascript">
+$(document).ready(function(){
+	//$("#teachingPlanCourseStatus_majorid1").flexselect();
+	courseStatusQueryBegin();
+});
+
+//打开页面或者点击查询（即加载页面执行）
+function courseStatusQueryBegin() {
+	var defaultValue = "${condition['brSchoolid']}";
+	var schoolId = "";
+	var isBrschool = "${isBrschool}";
+	if(isBrschool==true || isBrschool=="true"){
+		schoolId = defaultValue;
+	}
+	var gradeId = "${condition['gradeid']}";
+	var classicId = "${condition['classicid']}";
+	var teachingType = "${condition['teachingType']}";
+	var majorId = "${condition['majorid']}";
+	var classesId = "${condition['classesid']}";
+	var selectIdsJson = "{unitId:'teachingPlanCourseStatus_brSchoolid1',gradeId:'teachingPlanCourseStatus_gradeid1',classicId:'teachingPlanCourseStatus_classicid1',teachingType:'teachingPlanCourseStatus_teachingType1',majorId:'teachingPlanCourseStatus_majorid1',classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("begin", defaultValue, schoolId, gradeId, classicId,teachingType, majorId, classesId, selectIdsJson);
+}
+
+// 选择教学点
+function courseStatusQueryUnit() {
+	var defaultValue = $("#teachingPlanCourseStatus_brSchoolid1").val();
+    var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+    var classicId = $("#teachingPlanCourseStatus_classicid1").val();
+    var teachingTypeId = $("#teachingPlanCourseStatus_teachingType1").val();
+	var selectIdsJson = "{gradeId:'teachingPlanCourseStatus_gradeid1',classicId:'teachingPlanCourseStatus_classicid1',teachingType:'teachingPlanCourseStatus_teachingType1',majorId:'teachingPlanCourseStatus_majorid1',classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("unit", defaultValue, "", gradeId, classicId, teachingTypeId, "", "",selectIdsJson);
+}
+
+// 选择年级
+function courseStatusQueryGrade() {
+	var defaultValue = $("#teachingPlanCourseStatus_brSchoolid1").val();
+	var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+	var selectIdsJson = "{classicId:'teachingPlanCourseStatus_classicid1',teachingType:'teachingPlanCourseStatus_teachingType1',majorId:'teachingPlanCourseStatus_majorid1',classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("grade", defaultValue, "", gradeId, "", "", "", "",selectIdsJson);
+}
+
+// 选择层次
+function courseStatusQueryClassic() {
+	var defaultValue = $("#teachingPlanCourseStatus_brSchoolid1").val();
+	var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+	var classicId = $("#teachingPlanCourseStatus_classicid1").val();
+	var selectIdsJson = "{teachingType:'teachingPlanCourseStatus_teachingType1',majorId:'teachingPlanCourseStatus_majorid1',classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("classic", defaultValue, "", gradeId, classicId, "", "", "", selectIdsJson);
+}
+
+// 选择学习形式
+function courseStatusQueryTeachingType() {
+	var defaultValue = $("#teachingPlanCourseStatus_brSchoolid1").val();
+	var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+	var classicId = $("#teachingPlanCourseStatus_classicid1").val();
+	var teachingTypeId = $("#teachingPlanCourseStatus_teachingType1").val();
+	var selectIdsJson = "{majorId:'teachingPlanCourseStatus_majorid1',classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("teachingType", defaultValue, "", gradeId, classicId,teachingTypeId, "", "", selectIdsJson);
+}
+
+// 选择专业
+function courseStatusQueryMajor() {
+	var defaultValue = $("#teachingPlanCourseStatus_brSchoolid1").val();
+	var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+	var classicId = $("#teachingPlanCourseStatus_classicid1").val();
+	var teachingTypeId = $("#teachingPlanCourseStatus_teachingType1").val();
+	var majorId = $("#teachingPlanCourseStatus_majorid1").val();
+	var selectIdsJson = "{classesId:'teachingPlanCourseStatus_classesid1'}";
+	cascadeQuery("major", defaultValue, "", gradeId, classicId,teachingTypeId, majorId, "", selectIdsJson);
+}
+
+function listHistoryCourseTimetable(){
+	$.pdialog.open(baseUrl+"/edu3/teaching/teachingplancoursetimetable/history.html", 'RES_TEACHING_TEACHINGPLANCOURSETIMETABLE_HISTORY', '调课查询', {width: 800, height: 600});
+}
+function exportCourseTimetable(){
+	var classesid = $("#teachingPlanCourseStatus_classesid1").val();
+	var term = $("#teachingPlanCourseStatus_term1").val();
+	if(classesid=="" || term==""){
+		alertMsg.warn("请选择下载课表的班级和学期");
+		return false;
+	}
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/export.html?classesid="+classesid+"&term="+term;
+	downloadFileByIframe(url,"teachingPlanCourseStatus_classesidIframe");
+}
+function exportTimetable(){
+	var param = getUrlByParam(2);
+	var term = $("#teachingPlanCourseStatus_term1").val();//学期
+	var brschoolId = $('#teachingPlanCourseStatus_brSchoolid1').val(); //教学站
+	if(brschoolId=="" || term==""){
+		alertMsg.warn("请选择下载课表的教学站和学期");
+		return false;
+	}
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/exporttimetable.html?"+param;
+	downloadFileByIframe(url,"teachingPlanCourseStatus_classesidIframe");
+}
+function exportKCAP(){
+	var param = getUrlByParam(2);
+	var term = $("#teachingPlanCourseStatus_term1").val();//学期
+	if(term==""){
+		alertMsg.warn("请选择上课学期");
+		return false;
+	}
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/exportKCAP.html?"+param;
+	navTab.openTab("KCAP",url,"课程安排表");	
+	//downloadFileByIframe(url,"teachingPlanCourseStatus_KCAPIframe");
+}
+function imputCourseTimetable(){
+	var isBrschool = '${isBrschool}';
+	if(isBrschool=="false"||!isBrschool){
+		alertMsg.warn("只有教学站才有权限导入！");
+		return false;
+	}
+	$.pdialog.open(baseUrl+"/edu3/teaching/teachingplancoursetimetable/coursestatus-forarrang-imput.html", 'RES_TEACHING_TEACHINGPLANCOURSETIMETABLE_INPUT', '课表导入', {width: 600, height: 360});
+}
+//导出model
+function exportTimetableImpModel(){
+	var url = baseUrl+"/edu3/teaching/teachingplancoursetimetable/selectModelExp.html";
+    $.pdialog.open(url+getUrlParamForTimetableModel(), 'RES_TEACHING_TEACHINGPLANCOURSETIMETABLE_INPUT', '模版导出', {width: 300, height: 100});
+
+}
+
+/**
+ * 按照编辑模版导出
+ */
+function exportModelList() {
+    var url = baseUrl+"/edu3/teaching/teachingplancourse/courseArrangementModelExp.html";
+    downloadFileByIframe(url+getUrlParamForTimetableModel()+"&exportType=data","RES_TEACHING_TEACHINGPLANCOURSETIMETABLE_EXPORT");
+}
+
+function getUrlParamForTimetableModel() {
+    var id="";
+    $("#teachingPlanCourseStatusBody1 input[name='resourceid']:checked").each(function(){
+        id+=$(this).val()+"-"+$(this).attr("classesid")+",";
+
+    });
+    var url = "?couId="+id;
+    var classesid = $("#teachingPlanCourseStatus_classesid1").val();//班级
+    var term = $("#teachingPlanCourseStatus_term1").val();//学期
+    var gradeId = $("#teachingPlanCourseStatus_gradeid1").val(); //年级
+    var classic = $("#teachingPlanCourseStatus_classicid1").val(); //层次
+    var majorId = $('#teachingPlanCourseStatus_majorid1').val(); //专业
+    var brschoolId = $('#teachingPlanCourseStatus_brSchoolid1').val(); //教学站
+    var teachingType = $("#teachingPlanCourseStatus_teachingType1").val();//学习方式
+    var examSubId = $("#allexam_ExamSub").val();//考试批次
+    var courseId = $("#coursestatus_forarrange_list_courseId").val();//课程名称
+    var lecturer = $("#lecturer").val();//登分老师
+    var teachername = $("#teachername").val();//老师名称
+    var status = $("#status").val();//排课
+    var isAdjust = $("#isAdjust").val();//调整
+    url += "&classesid="+classesid+"&gradeid="+gradeId+"&classicid="+classic+"&majorid="+majorId+"&brSchoolid="+brschoolId+"&examSubId="+examSubId
+        +"&teachingType="+teachingType+"&courseId="+courseId+"&lecturer="+lecturer+"&teachername="+teachername+"&term="+term+"&status="+status+"&isAdjust="+isAdjust;
+    return url;
+}
+
+//导出页面
+function exportArrangePageList(){
+	var param = getUrlByParam(3);
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursearrange/list.html?"+param+"&flag=export";
+	downloadFileByIframe(url,"exportArrangePageListIframe" );
+}
+
+// 批量设置登分老师
+function setTeach(str){//record  lecturer  
+	var teachtype = str;
+	var opt = "null";
+	if(str.indexOf("del")>=0){
+		opt = "del";
+		teachtype = str.substring(3,str.length);
+	}
+	var resIds = "";
+	var gpIds = "";
+	var pcIds = "";
+	var unitIds = "";
+	var unitId = "";
+	var classesIds = "";
+	var courseIds = "";
+	var isDefault = "${isDefault}";//批量设置默认老师
+	var hasTeacher = true;
+	var check = true;
+	$("#teachingPlanCourseStatusBody1 input[name='resourceid']:checked").each(function(){
+		var checekObj = $(this);
+		if(unitId != "" && unitId != checekObj.attr("unitid")){
+			check = false;
+		}
+		if(checekObj.attr("teacherid")==""){
+			hasTeacher=false;
+		}
+		unitId = checekObj.attr("unitid");
+		if(""==resIds){
+			resIds += checekObj.val();
+			classesIds += checekObj.attr("classesid");
+			gpIds += checekObj.attr("guiplanid");
+			pcIds += checekObj.attr("plancourseid");
+			unitIds += checekObj.attr("unitid");
+			courseIds += checekObj.attr("courseid");
+    	}else{
+    		resIds += ","+checekObj.val();
+    		classesIds += ","+checekObj.attr("classesid");
+			gpIds += ","+checekObj.attr("guiplanid");
+			pcIds += ","+checekObj.attr("plancourseid");
+			unitIds += ","+checekObj.attr("unitid");
+			courseIds += ","+checekObj.attr("courseid");
+    	}
+    });
+	if(resIds == ""){
+		alertMsg.warn("请您至少选择一条记录进行分配操作");
+		return;
+	}
+	//alert(isDefault+";"+hasTeacher);
+	if(isDefault=='Y' && !hasTeacher){
+		isDefault='Y';
+	}else{
+		isDefault='N';
+	}
+	if(!check){// 选择了不同的教学点
+	//	alertMsg.warn("请您选择同一个教学点的课程！");
+	//	return;
+		unitIds = "-1";
+		unitId = "-1";
+	}
+	
+	// 赋值
+	$("#cs_selector_resIds").val(resIds);
+	$("#cs_selector_unitIds").val(unitIds);
+	$("#cs_selector_gpIds").val(gpIds);
+	$("#cs_selector_pcIds").val(pcIds);
+	$("#cs_selector_classesIds").val(classesIds);
+	$("#cs_selector_courseIds").val(courseIds);
+	$("#cs_selector_teachtype").val(teachtype);
+	if(opt=="del"){//批量删除
+		alertMsg.confirm("确定要删除登分老师吗？", {
+			okCall: function(){	
+				setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,"del","Y");
+			}
+		});
+	}else{//批量设置
+		//alert(teachtype);
+		if(teachtype=="record"){//登分老师
+			if(isDefault=='Y'){
+				alertMsg.confirm("  默认老师为上一个年级这门教学计划课程所设置的登分老师<br>", {
+					okCall: function(){setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,"default","Y");},
+					okName:"设置默认老师",
+					cancelCall : function() {setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,"set","Y");},
+					cancelName:"自定义老师"
+				});
+			}else{
+				setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,"set","Y");
+			}
+			
+		}else{//任课老师
+			setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,"set","Y");
+		}
+		
+	}
+}
+
+// 给特定某条记录设置登分老师
+function  setRecordScordTeach(resIds,gpIds,pcIds,unitIds,classesIds,courseIds,teachtype,opt,isBatch){
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/setTeachSave.html?opt="+opt;
+	url += "&isBatch="+isBatch+"&unitids="+unitIds+"&resids="+resIds+"&classesids="+classesIds
+		+"&guiplanids="+gpIds+"&plancourseids="+pcIds+"&courseids="+courseIds+"&teachtype="+teachtype;
+	//alert(opt+";"+isBatch);
+	var unitId = $('#teachingPlanCourseStatus_brSchoolid1').val(); //教学站
+	if(opt=='set'){//设置
+		if(unitId==''){
+			alertMsg.warn("请选择教学点！");
+			return false;
+		}
+		url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/teacher_1.html";
+		$.pdialog.open(url+"?type=0&classesIds="+classesIds+"&resIds="+resIds+"&unitIds="+unitId+"&courseIds="+courseIds
+				/* +"&gpIds="+gpIds+"&pcIds="+pcIds */+"&isBatch="+isBatch+"&teachtype="+teachtype
+				,"SelectTeacher","选择登分老师",{height:600,width:800});
+		//$.pdialog.open(url+"?teachtype="+teachtype+"&type=0&isBatch="+isBatch,"SelectTeacher","选择老师",{height:600,width:800});
+	}else{//默认设置，删除
+		$.ajax({
+			type:"post",
+			url:url,
+			data:{},
+			dataType:"json",
+			success:function(data){
+				if(data.statusCode==200){
+					alertMsg.correct(data.message);
+					navTab.reload('${baseUrl }/edu3/teaching/teachingplancoursearrange/list.html',$("#coursta").serializeArray(),'RES_TEACHING_TEACHINGPLANCOURSETIMETABLE');
+				}else{
+					alertMsg.error(data.message)
+				}
+			}
+		});
+	}
+}
+
+function  setLecturer(obj){
+	var targetObject = $(obj).parent().find("input[name='resourceid']:first");
+	var resIds = targetObject.val();
+	var gpIds = targetObject.attr("guiplanid");
+	var pcIds = targetObject.attr("plancourseid");
+	var unitIds = targetObject.attr("unitid");
+	var classesIds = targetObject.attr("classesid");
+	var courseIds = targetObject.attr("courseid");
+	
+	var url = "${baseUrl}/edu3/teaching/teachingplancoursetimetable/lecturer.html";
+	$.pdialog.open(url+"?type=0&unitIds="+unitIds+"&resIds="+resIds+"&classesIds="+classesIds
+			+"&gpIds="+gpIds+"&pcIds="+pcIds+"&courseIds="+courseIds+"&isBatch=N"
+			,"SelectTeacher","选择任课老师",{height:600,width:800});
+}
+
+function settimetable(obj,classesid,plancourseid,courseterm,resourceid,stunumber){
+	var teacherId = $(obj).next(".recordScoreTeacherId:first").val();
+	var url = "${baseUrl }/edu3/teaching/teachingplancoursetimetable/list.html?teacherName="+encodeURI(teacherId)+"&classesid="+classesid+"&plancourseid="+plancourseid+"&term="+courseterm+"&cid="+resourceid;
+	url += "&stunumber="+stunumber;
+	navTab.openTab("setTimeTableTab",url,"排课详情");
+}
+
+function arrangeExamination(classesid,plancourseid,courseStatusid,stunumber) {
+    var url = "${baseUrl }/edu3/teaching/teachingplancourse/examinationList.html?classesid="+classesid+"&plancourseid="+plancourseid+"&courseStatusid="+courseStatusid;
+    url += "&stunumber="+stunumber;
+    navTab.openTab("arrangeExaminationTab",url,"排考详情");
+}
+//查询条件约束检查
+function validateSearch(){
+	var gradeId = $("#teachingPlanCourseStatus_gradeid1").val();
+
+	if(''==gradeId){
+		alertMsg.warn("年级不能为空!");
+		return false;
+	}
+	return true;
+}
+function exportCourseAndTeacher(){
+	var term = $("#teachingPlanCourseStatus_term1").val();	
+	if(''==term){
+		alertMsg.warn("请选择上课学期");
+		return;
+	}
+    var param = getUrlByParam(3);
+	//var unitid = $("#teachingPlanCourseStatus_brSchoolid1").val();
+	downloadFileByIframe("${baseUrl}/edu3/teaching/exam/plan/exportCourseAndTeacher.html?term="+term+"&"+param,"exportCourseAndTeacherIframe" );
+}
+
+function exportTeacherSchedule(){
+	var param = getUrlByParam(3);
+	var url = "${baseUrl}/edu3/teaching/plancourseArrange/teacherSchedule-print-view.html?"+param;
+	$.pdialog.open(url, "RES_TEACHING_TEACHINGPLANCOURSETIMETABLE_TEACHERSCHEDULE_EXPORT", "任课老师表", {width:800,height:600});
+}
+
+function studentAttendance(){
+	var param = getUrlByParam(1);
+	if(param == ""){
+		alertMsg.warn("请您至少选择一条记录进行分配操作.");
+		return;
+	}
+	var url = "${baseUrl}/edu3/teaching/plancourseArrange/studentAttendance-print-view.html?"+param;
+	$.pdialog.open(url, "RES_TEACHING_TIMETABLE_STUDENT_ATTENDANCE", "班级考勤表", {width:800,height:600});
+}
+
+function getUrlByParam(type){//1:勾选；2：查询；3勾选或查询
+	var resIds = "";
+	var gpIds = "";
+	var pcIds = "";
+	var unitIds = "";
+	var unitId = "";
+	var classesIds = "";
+	var courseIds = "";
+	var terms = "";
+	var teacherids = "";
+	var check = true;
+	$("#teachingPlanCourseStatusBody1 input[name='resourceid']:checked").each(function(){
+		var checekObj = $(this);
+		if(""==resIds){
+			resIds += checekObj.val();
+			classesIds += checekObj.attr("classesid");
+			gpIds += checekObj.attr("guiplanid");
+			pcIds += checekObj.attr("plancourseid");
+			unitIds += checekObj.attr("unitid");
+			courseIds += checekObj.attr("courseid");
+			terms += checekObj.attr("term");
+			teacherids += checekObj.attr("teacherid");
+    	}else{
+    		resIds += ","+checekObj.val();
+    		classesIds += ","+checekObj.attr("classesid");
+			gpIds += ","+checekObj.attr("guiplanid");
+			pcIds += ","+checekObj.attr("plancourseid");
+			unitIds += ","+checekObj.attr("unitid");
+			courseIds += ","+checekObj.attr("courseid");
+			terms += ","+checekObj.attr("term");
+			teacherids += ","+checekObj.attr("teacherid");
+    	}
+    });
+	if(resIds == "" && type==3 || type==2 ){//查询
+		var classesid = $("#teachingPlanCourseStatus_classesid1").val();//班级
+		var term = $("#teachingPlanCourseStatus_term1").val();//学期
+		var gradeId = $("#teachingPlanCourseStatus_gradeid1").val(); //年级
+		var classic = $("#teachingPlanCourseStatus_classicid1").val(); //层次
+		var majorId = $('#teachingPlanCourseStatus_majorid1').val(); //专业
+		var brschoolId = $('#teachingPlanCourseStatus_brSchoolid1').val(); //教学站
+		var teachingType = $("#teachingPlanCourseStatus_teachingType1").val();//学习方式
+		var examSubId = $("#allexam_ExamSub").val();//考试批次
+		var courseId = $("#coursestatus_forarrange_list_courseId").val();//课程名称
+		var lecturer = $("#lecturer").val();//登分老师
+		var teachername = $("#teachername").val();//老师名称
+		var status = $("#status").val();//排课
+		var isAdjust = $("#isAdjust").val();//调整
+		return "classesid="+classesid+"&gradeid="+gradeId+"&classicid="+classic+"&majorid="+majorId+"&brSchoolid="+brschoolId+"&examSubId="+examSubId
+		+"&teachingType="+teachingType+"&courseId="+courseId+"&lecturer="+lecturer+"&teachername="+teachername+"&term="+term+"&status="+status+"&isAdjust="+isAdjust;
+	}else{//勾选
+		return "resIds="+resIds+"&classesIds="+classesIds+"&courseIds="+courseIds+"&unitIds="+unitIds+"&terms="+terms+"&pcIds="+pcIds+"&teacherids="+teacherids;
+	}
+}
+</script>
+	<div class="page">
+		<div class="pageHeader" style="height: 100px;">
+			<form onsubmit="return navTabSearch(this);" id="coursta"
+				action="${baseUrl }/edu3/teaching/teachingplancoursearrange/list.html"
+				method="post">
+				<input type="hidden" name="showList" value="Y" /> <input
+					type="hidden" id="cs_selector_resIds" name="resIds"
+					value="${resIds}"> <input type="hidden"
+					id="cs_selector_gpIds" name="gpIds" value="${gpIds}"> <input
+					type="hidden" id="cs_selector_pcIds" name="pcIds" value="${pcIds}">
+				<input type="hidden" id="cs_selector_unitIds" name="unitIds"
+					value="${unitIds}"> <input type="hidden"
+					id="cs_selector_classesIds" name="classesIds" value="${classesIds}">
+				<input type="hidden" id="cs_selector_courseIds" name="courseIds"
+					value="${courseIds}">
+				<div class="searchBar">
+					<ul class="searchContent">
+						<li class="custom-li"><label>教学站：</label> <c:choose>
+								<c:when test="${not isBrschool }">
+									<span sel-id="teachingPlanCourseStatus_brSchoolid1"
+										sel-name="brSchoolid" sel-onchange="courseStatusQueryUnit()"
+										sel-classs="flexselect" ></span>
+									<%-- <input type="hidden" value="${condition['brSchoolid']}"
+										id="teachingPlanCourseStatus_brSchoolid2"> --%>
+								</c:when>
+								<c:otherwise>
+									<input type="hidden" value="${school}"
+										id="teachingPlanCourseStatus_brSchoolid1">
+									<%-- <input type="hidden" value="${school}"
+										id="teachingPlanCourseStatus_brSchoolid2"> --%>
+									<input type="text" value="${schoolname}" style="width: 240px;" readonly="readonly">
+								</c:otherwise>
+							</c:choose></li>
+						<li><label>年级：</label> <span
+							sel-id="teachingPlanCourseStatus_gradeid1" sel-name="gradeid"
+							sel-onchange="courseStatusQueryGrade()" sel-style="width: 130px"></span>
+
+							<span style="color: red;">*</span> <input type="hidden"
+							id="teachingPlanCourseStatus_gradeid2"
+							value="${condition['gradeid']}"></li>
+						<li><label>层次：</label> <span
+							sel-id="teachingPlanCourseStatus_classicid1" sel-name="classicid"
+							sel-onchange="courseStatusQueryClassic()"
+							sel-style="width: 130px"></span> <input type="hidden"
+							id="teachingPlanCourseStatus_classicid2"
+							value="${condition['classicid']}"></li>
+						<li><label>学习方式：</label> <span
+							sel-id="teachingPlanCourseStatus_teachingType1"
+							sel-name="teachingType"
+							sel-onchange="courseStatusQueryTeachingType()"
+							dictionaryCode="CodeTeachingType" sel-style="width: 100px"></span>
+							<input type="hidden" value="${condition['teachingType']}"
+							id="teachingPlanCourseStatus_teachingType2"></li>
+
+					</ul>
+					<ul class="searchContent">
+						<li class="custom-li"><label>专业：</label><span
+							sel-id="teachingPlanCourseStatus_majorid1" sel-name="majorid"
+							sel-onchange="courseStatusQueryMajor()" sel-classs="flexselect"></span>
+							<%-- <input type="hidden" id="teachingPlanCourseStatus_majorid2" value="${condition['majorid']}"> --%>
+						</li>
+						<li><label>考试批次：</label> <gh:selectModel id="allexam_ExamSub"
+								name="examSubId" bindValue="resourceid" displayValue="batchName"
+								style="width:130px;"
+								modelClass="com.hnjk.edu.teaching.model.ExamSub"
+								value="${condition['examSubId']}"
+								condition="isDeleted='0' and batchType='exam' "
+								orderBy="examType,term desc,examinputStartTime desc" /></li>
+						<li><label>上课学期：</label> <gh:select
+								id="teachingPlanCourseStatus_term1" name="term"
+								value="${condition['term']}" dictionaryCode="CodeCourseTermType"
+								style="width:130px;" /> <input type="hidden"
+							value="${condition['term']}" id="teachingPlanCourseStatus_term2">
+						</li>
+						<li><label>是否已排课：</label> <gh:select id="status"
+								name="status" value="${condition['status']}"
+								dictionaryCode="yesOrNo" style="width:100px;" /> <input
+							type="hidden" value="${condition['status']}" id="status2">
+						</li>
+					</ul>
+					<ul class="searchContent">
+						<li id="teachingPlanCourseStatus_classesli" class="custom-li"><label>班级：</label>
+							<span sel-id="teachingPlanCourseStatus_classesid1"
+							sel-name="classesid" sel-classs="flexselect"></span> 
+							<%-- <input type="hidden" value="${condition['classesid']}" id="teachingPlanCourseStatus_classesid2"> --%>
+						</li>
+						
+						<li><label>任课老师名称：</label> <input id="lecturer"
+							name="lecturer" type="text" value="${condition['lecturer']}" /> 
+						</li>
+						<li><label>登分老师名称：</label> <input id="teachername"
+							name="teachername" type="text"
+							value="${condition['teachername']}" /> </li>
+						<li><label>调整开课：</label> <gh:select name="isAdjust"
+								value="${condition['isAdjust']}" dictionaryCode="yesOrNo"
+								style="width:100px;" /></li>
+						
+					</ul>
+					<ul class="searchContent">
+						<li class="custom-li"><label>课程名称：</label> <gh:courseAutocomplete
+								name="courseId" tabindex="1"
+								id="coursestatus_forarrange_list_courseId"
+								value="${condition['courseId']}" displayType="code"
+								isFilterTeacher="Y" style="width:240px;" /> 
+							<%-- <input type="hidden" value="${condition['courseId']}" id="coursestatus_forarrange_list_courseId2"> --%>
+						</li>
+						<div class="buttonActive" style="float: right;">
+							<div class="buttonContent">
+								<button type="submit" onclick="return validateSearch();">
+									查 询</button>
+							</div>
+						</div>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="pageContent">
+			<gh:resAuth parentCode="RES_TEACHING_TEACHINGPLANCOURSETIMETABLE" pageType="hlist"></gh:resAuth>
+			<table class="table" layouth="190">
+				<thead>
+					<tr>
+						<th width="2%"><input type="checkbox" name="checkall"
+							id="check_all_teachingPlanCourseStatus1"
+							onclick="checkboxAll('#check_all_teachingPlanCourseStatus1','resourceid','#teachingPlanCourseStatusBody1')" /></th>
+						<th width="12%">班级</th>
+						<th width="4%">年级</th>
+						<th width="4%">层次</th>
+						<th width="5%">学习方式</th>
+						<th width="10%">专业</th>
+						<th width="10%">教学站</th>
+						<th width="8%">课程</th>
+						<th width="8%">上课学期</th>
+						<th width="5%">班级人数</th>
+						<th width="5%">排课状态</th>
+						<th width="6%">任课老师</th>
+						<th width="6%">登分老師</th>
+						<th width="4%">排课</th>
+						<th width="4%">排考</th>
+					</tr>
+				</thead>
+				<tbody id="teachingPlanCourseStatusBody1">
+					<c:forEach items="${coursePage.result}" var="c" varStatus="vs">
+						<tr>
+							<td><input type="checkbox" name="resourceid"
+								value="${c.resourceid}" guiplanid="${c.guiplanid }"
+								plancourseid="${c.plancourseid}" autocomplete="off"
+								unitid="${c.brschoolid}" classesid="${c.classesid}"
+								courseid="${c.cid}" term="${c.courseterm }"
+								teacherid="${c.teacherId }" stunumber="${c.stunumber}"/>
+							</td>
+							<td title="${c.classesname }">${c.classesname }</td>
+							<td>${c.gradeName }</td>
+							<td>${c.classicName }</td>
+							<td>${ghfn:dictCode2Val('CodeTeachingType',c.teachingType) }</td>
+							<td>${c.majorName }</td>
+							<td>${c.unitName }</td>
+							<td>${c.courseName }</td>
+							<td>${ghfn:dictCode2Val('CodeCourseTermType',c.courseterm) }</td>
+							<td>${c.stunumber}</td>
+							<td><c:choose>
+									<c:when test="${c.status eq 0 }">未排课</c:when>
+									<c:otherwise>已排课</c:otherwise>
+								</c:choose></td>
+
+							<td style="cursor: pointer;" onclick="setLecturer(this)"
+								id="setlecturerid"><a href="javaScript:void(0)" title="${c.lecturerName }"
+								class="setLecturerName">${c.lecturerName }</a></td>
+							<td style="cursor: pointer;" id="setteacherid">
+								<a href="javaScript:void(0)" title="${c.teacherName }" class="recordScoreTeacher" onclick="setRecordScordTeach('${c.resourceid}','${c.guiplanid }','${c.plancourseid}','${c.brschoolid}','${c.classesid}','${c.cid}','record','set','N')">
+									${fn:length(c.teacherName)==0?"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;":fn:length(c.teacherName)>4?"...........":c.teacherName}</a>
+								<c:if test="${not empty c.teacherName}">
+									<a href="javaScript:void(0)" title="删除" class="recordScoreTeacher" onclick="setRecordScordTeach('${c.resourceid}','${c.guiplanid }','${c.plancourseid}','${c.brschoolid}','${c.classesid}','${c.cid}','record','del','N')" style="color: red;">
+										${fn:length(c.teacherName)==2?"&nbsp;&nbsp;&nbsp;&nbsp;":""}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✘</a>
+								</c:if>
+							</td>
+							<td>
+								<%--<a href="${baseUrl }/edu3/teaching/teachingplancoursetimetable/list.html?teacherName=${c.teacherName}&classesid=${c.classesid}&plancourseid=${c.plancourseid}&term=${c.courseterm}&cid=${c.resourceid}&"  target="navTab" rel="timetable" title="排课" >排课</a> --%>
+								<a href="javaScript:void(0)"
+								onclick="settimetable(this,'${c.classesid}','${c.plancourseid}','${c.courseterm}','${c.resourceid}','${c.stunumber}')"
+								title="排课">排课</a> <input type="hidden" value='${c.teacherId}'
+								class="recordScoreTeacherId" />
+
+							</td>
+							<td>
+								<a href="javaScript:void(0)"
+								   onclick="arrangeExamination('${c.classesid}','${c.plancourseid}','${c.courseStatusid}','${c.stunumber}')"
+								   title="排考">排考</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		
+		</div>
+		<div  class="pageContent" style="position: absolute;bottom: 0px;width: 100%">
+			<gh:page page="${coursePage}"
+				goPageUrl="${baseUrl }/edu3/teaching/teachingplancoursearrange/list.html"
+				pageType="sys" condition="${condition}" /></div>
+	</div>
+</body>
+</html>

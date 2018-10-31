@@ -1,0 +1,49 @@
+package com.hnjk.edu.finance.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.hnjk.edu.basedata.model.Major;
+
+/**
+ * 课程缴费类别
+ * @author hzg
+ *
+ */
+@Entity
+@Table(name="EDU_FEE_MAJOR")
+@PrimaryKeyJoinColumn(name = "BASEMAJORID")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class FeeMajor extends Major{
+ 
+	private static final long serialVersionUID = -5556797352097091470L;
+	
+	@Column(name="PAYMENTTYPE")
+	private String paymentType;//缴费类别:字典值
+
+	/**
+	 * @return the paymentType
+	 */
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	/**
+	 * @param paymentType the paymentType to set
+	 */
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+	
+	
+}

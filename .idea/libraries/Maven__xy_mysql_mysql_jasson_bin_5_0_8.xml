@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: xy.mysql:mysql.jasson:bin:5.0.8">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/xy/mysql/mysql.jasson/5.0.8/mysql.jasson-5.0.8-bin.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/xy/mysql/mysql.jasson/5.0.8/mysql.jasson-5.0.8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/xy/mysql/mysql.jasson/5.0.8/mysql.jasson-5.0.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

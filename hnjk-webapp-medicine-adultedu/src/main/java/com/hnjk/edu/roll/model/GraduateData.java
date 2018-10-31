@@ -1,0 +1,360 @@
+package com.hnjk.edu.roll.model;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.hnjk.core.support.base.model.BaseModel;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.roll.model.StudentInfo;
+import com.hnjk.platform.system.cache.CacheAppManager;
+
+/**
+ * 毕业生数据表
+ * <code>GraduateData</code>
+ * <p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-10-19 下午02:32:29
+ * @see
+ * @version 1.0
+ */
+@Entity
+@Table(name = "EDU_TEACH_GRADUATEDATA")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class GraduateData extends BaseModel {
+
+	@OneToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
+	@JoinColumn(name = "STUDENTID", unique = true)
+	private StudentInfo studentInfo;// 学生学籍
+
+	@Column(name = "DIPLOMANUM", length = 50, unique = true)
+	private String diplomaNum;// 毕业证书编号
+
+	@Column(name = "DEGREENUM", length = 50)
+	private String degreeNum;// 学位证书编号
+
+	@Column(name = "DEGREENAME", length = 50)
+	private String degreeName;// 学位名称
+
+	@Column(name = "GRADUATETYPE")
+	private String graduateType;// 毕业类型 来自字典：毕业/结业/肄业/预毕业
+	
+	@Column(name = "DEGREESTARUS")
+	private String degreeStatus;//学位状态
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "GRADUATEDATE")
+	private Date graduateDate;// 毕业日期
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "ENTRANCEDATE")
+	private Date entranceDate;// 入学日期
+	
+	@Column(name = "ISALLOWSECGRADUATE")
+	private String isAllowSecGraduate=Constants.BOOLEAN_MOVE;//是否允许（符合）结业换毕业 Y/N/D  是/否/删除 默认是删除状态
+	
+	@Column(name = "ISALLOWAUDITDEGREE")
+	private String isAllowAuditDegree=Constants.BOOLEAN_YES;//是否允许申请学位
+	
+	@Column(name = "PUBLISHSTATUS")
+	private String publishStatus=Constants.BOOLEAN_WAIT;//发布状态  默认待审核
+	
+	@Column(name = "DEGREEAPPLYSTATUS")
+	private String degreeApplyStatus;// 学位申请状态
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DEGREEAPPLYDATE")
+	private Date degreeApplyDate;// 学位申请日期
+	
+	//毕业生明细导出表补充字段
+	@Transient
+	private String schoolName;//学校名称
+	@Transient
+	private String schoolCode;//学校代码
+	@Transient
+	private String schoolSite;//学校地址
+	@Transient
+	private String schoolmasterName;//学校校长姓名
+	@Transient
+	private String minorMajor;//辅助专业
+	@Transient
+	private String transactForm;//办学形式
+	@Transient
+	private String transactType;//办学类型
+	@Transient
+	private String transactTime;//
+	@Transient
+	private String enteyWay;
+	
+	@Column(name = "COURSEAVG")
+	private String courseAvg;
+	
+	@Column(name="graduationthesisscore")
+	private String graduationthesisscore;
+	
+	@Transient
+	private Double avg;//平均分
+	@Transient
+	private String thesisScore; //论文成绩
+	@Transient
+	private String degreeEnglish;//学位英语
+	@Transient
+	private String studentRecord;//赏罚记录
+	@Transient
+	private Double avgCreditHour = 0d;// 平均学分绩点
+	
+	
+	
+	public String getIsAllowAuditDegree() {
+		return isAllowAuditDegree;
+	}
+	public void setIsAllowAuditDegree(String isAllowAuditDegree) {
+		this.isAllowAuditDegree = isAllowAuditDegree;
+	}
+	public String getIsAllowSecGraduate() {
+		return isAllowSecGraduate;
+	}
+	public void setIsAllowSecGraduate(String isAllowSecGraduate) {
+		this.isAllowSecGraduate = isAllowSecGraduate;
+	}
+	public String getGraduationthesisscore() {
+		return graduationthesisscore;
+	}
+	public void setGraduationthesisscore(String graduationthesisscore) {
+		this.graduationthesisscore = graduationthesisscore;
+	}
+	public String getCourseAvg() {
+		return courseAvg;
+	}
+	public void setCourseAvg(String courseAvg) {
+		this.courseAvg = courseAvg;
+	}
+	public Double getAvg() {
+		return avg;
+	}
+	public void setAvg(Double avg) {
+		this.avg = avg;
+	}
+	public String getThesisScore() {
+		return thesisScore;
+	}
+	public void setThesisScore(String thesisScore) {
+		this.thesisScore = thesisScore;
+	}
+	
+	public String getDegreeEnglish() {
+		return degreeEnglish;
+	}
+	public void setDegreeEnglish(String degreeEnglish) {
+		this.degreeEnglish = degreeEnglish;
+	}
+	public String getStudentRecord() {
+		return studentRecord;
+	}
+	public void setStudentRecord(String studentRecord) {
+		this.studentRecord = studentRecord;
+	}
+	//记录有无学籍异动
+	@Transient
+	private boolean hasStuChange;
+	public void setHasStuChange(boolean hasStuChange){
+		this.hasStuChange = hasStuChange;
+	}
+	public boolean getHasStuChange(){
+		return this.hasStuChange;
+	}
+	//记录对应学籍有无个人基本信息
+	@Transient
+	private boolean hasBaseInfo;
+	
+	public boolean isHasBaseInfo() {
+		return hasBaseInfo;
+	}
+	public void setHasBaseInfo(boolean hasBaseInfo) {
+		this.hasBaseInfo = hasBaseInfo;
+	}
+
+	
+	public String getDegreeStatus() {
+		return degreeStatus;
+	}
+
+	public void setDegreeStatus(String degreeStatus) {
+		this.degreeStatus = degreeStatus;
+	}
+
+	public String getEnteyWay() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.enteyWay").getParamValue();
+	}
+
+	public void setEnteyWay(String enteyWay) {
+		this.enteyWay = enteyWay;
+	}
+
+	public String getTransactTime() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.transactTime").getParamValue();
+	}
+
+	public void setTransactTime(String transactTime) {
+		this.transactTime = transactTime;
+	}
+
+	public String getMinorMajor() {
+		return "";
+	}
+
+	public void setMinorMajor(String minorMajor) {
+		this.minorMajor = minorMajor;
+	}
+
+	public String getTransactForm() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.transactForm").getParamValue();
+	}
+
+	public void setTransactForm(String transactForm) {
+		this.transactForm = transactForm;
+	}
+
+	public String getTransactType() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.transactType").getParamValue();
+	}
+
+	public void setTransactType(String transactType) {
+		this.transactType = transactType;
+	}
+
+	public String getSchoolmasterName() {
+		return  CacheAppManager.getSysConfigurationByCode("graduateData.schoolmasterName").getParamValue();
+	}
+
+	public void setSchoolmasterName(String schoolmasterName) {
+		this.schoolmasterName = schoolmasterName;
+	}
+
+	public String getSchoolName() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.schoolName").getParamValue();
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+	public String getSchoolCode() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
+	}
+
+	public String getSchoolSite() {
+		return CacheAppManager.getSysConfigurationByCode("graduateData.schoolSite").getParamValue();
+	}
+
+	public void setSchoolSite(String schoolSite) {
+		this.schoolSite = schoolSite;
+	}
+	
+	public String getDegreeName() {
+		return degreeName;
+	}
+
+	public void setDegreeName(String degreeName) {
+		this.degreeName = degreeName;
+	}
+
+	public String getDegreeNum() {
+		return degreeNum;
+	}
+
+	public void setDegreeNum(String degreeNum) {
+		this.degreeNum = degreeNum;
+	}
+
+	public String getDiplomaNum() {
+		return diplomaNum;
+	}
+
+	public void setDiplomaNum(String diplomaNum) {
+		this.diplomaNum = diplomaNum;
+	}
+
+	public Date getEntranceDate() {
+		return entranceDate;
+	}
+
+	public void setEntranceDate(Date entranceDate) {
+		this.entranceDate = entranceDate;
+	}
+
+	public Date getGraduateDate() {
+		return graduateDate;
+	}
+
+	public void setGraduateDate(Date graduateDate) {
+		this.graduateDate = graduateDate;
+	}
+
+	public String getGraduateType() {
+		return graduateType;
+	}
+
+	public void setGraduateType(String graduateType) {
+		this.graduateType = graduateType;
+	}
+
+	public StudentInfo getStudentInfo() {
+		return studentInfo;
+	}
+
+	public void setStudentInfo(StudentInfo studentInfo) {
+		this.studentInfo = studentInfo;
+	}
+	//发布状态
+	public String getPublishStatus() {
+		return publishStatus;
+	}
+	public void setPublishStatus(String publishStatus) {
+		this.publishStatus = publishStatus;
+	}
+	// 获取平均学分绩点
+	public Double getAvgCreditHour() {
+		if(this.avg!=null && this.avg >= 60){
+			avgCreditHour = 1+(this.avg-60)/10;
+		}
+		BigDecimal decimal = new BigDecimal(avgCreditHour);
+		return decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+	public String getDegreeApplyStatus() {
+		return degreeApplyStatus;
+	}
+	public void setDegreeApplyStatus(String degreeApplyStatus) {
+		this.degreeApplyStatus = degreeApplyStatus;
+	}
+	public Date getDegreeApplyDate() {
+		return degreeApplyDate;
+	}
+	public void setDegreeApplyDate(Date degreeApplyDate) {
+		this.degreeApplyDate = degreeApplyDate;
+	}
+	
+}

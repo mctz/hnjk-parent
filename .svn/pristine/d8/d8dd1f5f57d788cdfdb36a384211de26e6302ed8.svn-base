@@ -1,0 +1,839 @@
+package com.hnjk.edu.teaching.service.impl;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.utils.ExCollectionUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.learning.model.StudentLearnPlan;
+import com.hnjk.edu.learning.service.IStudentLearnPlanService;
+import com.hnjk.edu.roll.model.StudentInfo;
+import com.hnjk.edu.teaching.model.TeachingGuidePlan;
+import com.hnjk.edu.teaching.model.TeachingPlan;
+import com.hnjk.edu.teaching.service.IExamResultsService;
+import com.hnjk.edu.teaching.service.IStudentExamResultsService;
+import com.hnjk.edu.teaching.service.ITeachingGuidePlanService;
+import com.hnjk.edu.teaching.service.ITeachingPlanCourseService;
+import com.hnjk.edu.teaching.service.ITeachingPlanService;
+import com.hnjk.edu.teaching.vo.StudentExamResultsVo;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.Dictionary;
+import com.hnjk.platform.taglib.JstlCustomFunction;
+
+/**
+ * 
+ * <code>TeachingPlanServiceImpl</code><p>
+ * 
+ * @author： 广东学苑教育发展有限公司
+ * @since： 2010-6-24 下午04:35:50
+ * @see 
+ * @version 1.0
+ */
+@Transactional
+@Service("teachingplanservice")
+public class TeachingPlanServiceImpl extends BaseServiceImpl<TeachingPlan> implements ITeachingPlanService {
+
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	
+	@Autowired
+	@Qualifier("teachingguideplanservice")
+	private ITeachingGuidePlanService teachingguideplanservice;
+	
+	@Autowired
+	@Qualifier("examResultsService")
+	private IExamResultsService examResultsService;
+	
+	@Autowired
+	@Qualifier("studentExamResultsService")
+	private IStudentExamResultsService studentExamResultsService;
+	
+	@Autowired
+	@Qualifier("teachingPlanCourseService")
+	private ITeachingPlanCourseService teachingPlanCourseService ;
+	
+	@Autowired
+	@Qualifier("studentLearnPlanService")
+	private IStudentLearnPlanService studentLearnPlanService;//注入学习计划服务
+	
+	@Override
+	@Transactional(readOnly=true)
+	public Page findTeachingPlanByCondition(Map<String, Object> condition, Page objPage) {
+		Map<String,Object> values =  new HashMap<String, Object>();
+		StringBuffer sb = new StringBuffer(128);
+		
+		sb.append(" from "+TeachingPlan.class.getSimpleName()+" where isDeleted = :isDeleted ");		
+		values.put("isDeleted", 0);
+		
+		if(condition.containsKey("schoolType")){//教学类型
+			sb.append(" and schoolType =:schoolType ");
+			values.put("schoolType", condition.get("schoolType"));
+		}
+		if(condition.containsKey("roleModules")){//教学类型
+			sb.append(" and schoolType in (:roleModules) ");
+			values.put("roleModules", condition.get("roleModules"));
+		}
+		if(condition.containsKey("isUsed")){//是否使用
+			sb.append(" and isUsed = :isUsed");
+			values.put("isUsed", condition.get("isUsed"));
+		}
+		if(condition.containsKey("classic")){//层次
+			sb.append(" and classic.resourceid = :classic");
+			values.put("classic", condition.get("classic"));
+		}
+		if(condition.containsKey("major")){//专业
+			sb.append(" and major.resourceid = :major");
+			values.put("major", condition.get("major"));
+		}
+		if(condition.containsKey("plan")){//教学计划
+			sb.append(" and resourceid = :plan");
+			values.put("plan", condition.get("plan"));
+		}
+		if(condition.containsKey("orgUnitId")){//按组织
+			sb.append(" and orgUnit.resourceid = :orgUnitId ");
+			values.put("orgUnitId", condition.get("orgUnitId"));
+		}
+		
+		sb.append(" order by "+objPage.getOrderBy() +" "+ objPage.getOrder());
+		return exGeneralHibernateDao.findByHql(objPage, sb.toString(), values);
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<TeachingPlan> findTeachingPlanByCondition(Map<String, Object> condition) {
+		Map<String,Object> values =  new HashMap<String, Object>();
+		StringBuffer sb = new StringBuffer(128);
+		
+		sb.append(" from "+TeachingPlan.class.getSimpleName()+" p where p.isDeleted = :isDeleted ");		
+		values.put("isDeleted", 0);
+		
+		if(condition.containsKey("schoolType")){//教学类型
+			sb.append(" and p.schoolType =:schoolType ");
+			values.put("schoolType", condition.get("schoolType"));
+		}else if (condition.containsKey("teachingType")) {
+			sb.append(" and p.schoolType =:teachingType ");
+			values.put("teachingType", condition.get("teachingType"));
+		}
+		if(condition.containsKey("planName")){//计划名称
+			sb.append(" and p.planName =:planName ");
+			values.put("planName", condition.get("planName"));
+		}
+		if(condition.containsKey("roleModules")){//教学类型
+			sb.append(" and p.schoolType in (:roleModules) ");
+			values.put("roleModules", condition.get("roleModules"));
+		}
+		if(condition.containsKey("isUsed")){//是否使用
+			sb.append(" and p.isUsed = :isUsed");
+			values.put("isUsed", condition.get("isUsed"));
+		}
+		if(condition.containsKey("classic")){//层次
+			sb.append(" and p.classic.resourceid = :classic");
+			values.put("classic", condition.get("classic"));
+		}else if (condition.containsKey("classicId")) {
+			sb.append(" and p.classic.resourceid = :classicId");
+			values.put("classicId", condition.get("classicId"));
+		}
+		if(condition.containsKey("major")){//专业
+			sb.append(" and p.major.resourceid = :major");
+			values.put("major", condition.get("major"));
+		}else if (condition.containsKey("majorId")) {
+			sb.append(" and p.major.resourceid = :majorId");
+			values.put("majorId", condition.get("majorId"));
+		}
+		
+		if(condition.containsKey("orgUnitId")){//按组织
+			sb.append(" and p.orgUnit.resourceid = :orgUnitId ");
+			values.put("orgUnitId", condition.get("orgUnitId"));
+		}
+		if(condition.containsKey("grade")){
+			sb.append(" and exists ( from " +TeachingGuidePlan.class.getSimpleName() + " g where g.isDeleted =:isDeleted and g.teachingPlan.resourceid = p.resourceid  " );
+			sb.append(" and g.grade.resourceid =:grade ) ");
+			values.put("grade", condition.get("grade"));
+		}else if (condition.containsKey("gradeId")) {
+			sb.append(" and exists ( from " +TeachingGuidePlan.class.getSimpleName() + " g where g.isDeleted =:isDeleted and g.teachingPlan.resourceid = p.resourceid  " );
+			sb.append(" and g.grade.resourceid =:gradeId ) ");
+			values.put("gradeId", condition.get("gradeId"));
+		}
+		if(condition.containsKey("version")){
+			sb.append(" and to_char(p.versionNum) =:version ) ");
+			values.put("version", condition.get("version"));
+		}
+		if(condition.containsKey("addSql")){
+			sb.append(condition.get("addSql"));
+		}
+		sb.append(" order by p.major,p.classic,p.schoolType,p.versionNum ");
+		return (List<TeachingPlan>) exGeneralHibernateDao.findByHql(sb.toString(), values);
+	}
+		
+	@Override
+	public void delete(Serializable id) throws ServiceException {
+		TeachingPlan teachingPlan = get(id);
+		if(Constants.BOOLEAN_YES.equals(teachingPlan.getIsUsed())){
+			throw new ServiceException(teachingPlan.getMajor().getMajorName()+" - "+teachingPlan.getClassic().getClassicName()+
+					" ("+teachingPlan.getVersionNum()+")已使用，不能删除！");
+		}				
+		super.delete(id);
+//		//删除子表
+//		Set<TeachingPlanCourse> teachingPlanCourses = teachingPlan.getTeachingPlanCourses();
+//		if(teachingPlanCourses.size()>0){
+//			for(Iterator<TeachingPlanCourse> it = teachingPlanCourses.iterator();it.hasNext();){
+//				TeachingPlanCourse teachingPlanCourse = it.next();
+//				exGeneralHibernateDao.delete(TeachingPlanCourse.class, teachingPlanCourse.getResourceid());
+//			}
+//		}
+	}
+
+	@Override
+	public void batchCascadeDelete(String[] ids) {
+		if(ids!=null && ids.length>0){
+			for(String id : ids){
+				delete(id);					
+			}
+		}
+	}
+
+	@Override
+	public Integer getNextVersionNum(String majorId, String classicId) throws ServiceException {
+		String hql = "select max(versionNum) from "+TeachingPlan.class.getSimpleName()+" where isDeleted=0 and major.resourceid=? and classic.resourceid=? ";
+		Integer nextVersionNum = exGeneralHibernateDao.findUnique(hql, majorId,classicId);
+		return (null!=nextVersionNum)?(nextVersionNum+1):1;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TeachingPlan> findLatestTeachingPlan(Map<String, Object> condition) throws ServiceException {
+		//Session session  = exGeneralHibernateDao.getSessionFactory().getCurrentSession();
+		Map<String, Object> values = new HashMap<String, Object>();
+		StringBuffer sql = new StringBuffer("select t.resourceid,t.trainingtarget,t.eduyear,t.learningdescript,t.memo,t.planname,")
+		.append(" m.majorname as majorName,c.classicname as classicName,t.minresult,t.schooltype,t.brschoolid,t.applypaperminresult,")
+		.append("t.optionalcoursenum,t.degreename,t.version,t.isused,t.fillindate,t.versionNum,u.unitShortName,t.majorid majorId,t.classicid classicId ")
+		.append(" from edu_teach_plan t join edu_base_classic c on t.classicid=c.resourceid join edu_base_major m on t.majorid=m.resourceid left join hnjk_sys_unit u on t.brschoolid=u.resourceid ")
+		.append(" where t.isdeleted=0 ")
+		.append(" and exists ( ")
+		.append("  select * from ")
+		.append("  ( select p.classicid,p.majorid,p.schooltype,p.brschoolid,max(p.versionNum) versionNum ")
+		.append("    from edu_teach_plan p where p.isdeleted=0 ")
+		.append("    group by p.classicid,p.majorid,p.schooltype,p.brschoolid ")
+		.append("  ) s ")
+		.append("  where s.classicid=t.classicid and s.majorid=t.majorid and s.schooltype=t.schooltype and nvl(s.brschoolid,' ')=nvl(t.brschoolid,' ') ");
+		
+		if(condition.containsKey("classic")){//层次
+			sql.append(" and t.classicid = :classic");
+			values.put("classic", condition.get("classic"));
+		}
+		if(condition.containsKey("major")){//专业
+			sql.append(" and t.majorid = :major");
+			values.put("major", condition.get("major"));
+		}
+		if(condition.containsKey("schoolType")){//教学类型
+			sql.append(" and t.schooltype =:schoolType ");
+			values.put("schoolType", condition.get("schoolType"));
+		}
+		if(condition.containsKey("version")){
+			sql.append(" and (s.versionnum=t.versionnum or to_char(t.versionnum) =:version ) ");
+			values.put("version", condition.get("version"));
+		}else {
+			sql.append(" and s.versionnum=t.versionnum ");
+		}
+		sql.append(" ) ")
+		//.append(" and t.classicid=c.resourceid and t.majorid=m.resourceid ")
+		.append(" order by t.majorid,t.classicid,t.schooltype,t.versionnum ");
+		//SQLQuery query = session.createSQLQuery(sql.toString()).addEntity(TeachingPlan.class);
+		try {
+			return (List<TeachingPlan>)baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql.toString(), TeachingPlan.class,values);
+		} catch (Exception e) {
+			
+		}
+		return null;
+		//return query.list();
+	}
+	
+	/**
+	 * 获取教学计划关联的专业
+	 * @param condition
+	 * @return
+	 */
+	@Override
+	public List<Map<String,Object>> getUnitTeachingPlanMajor(Map<String,Object> condition) throws ServiceException{
+		StringBuffer sql = new StringBuffer();
+		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>(0);
+		sql.append(" select distinct m.resourceid ,m.majorcode||'-'||m.majorname majorinfo,m.majorname ,m.majorcode ");
+		sql.append(" from edu_teach_plan tp,edu_base_major m  ");
+		sql.append(" where tp.majorid = m.resourceid and m.isdeleted = 0 and tp.isdeleted = 0 "); 
+		if(condition.containsKey("unitId")){
+			sql.append(" and (tp.brschoolid= '"+condition.get("unitId")+"' or tp.brschoolid is null )");
+		}
+		sql.append(" order by m.majorcode asc ");
+		try {
+			result = this.baseSupportJdbcDao.getBaseJdbcTemplate().findForList(sql.toString(),null);
+		} catch (Exception e) {
+			logger.error("获取教学计划关联专业出异常：{}"+e.fillInStackTrace());
+;		}
+		return result;
+
+	} 
+	
+	/**
+	 * 按班级打印成绩
+	 * @param studentInfos
+	 * @param terms
+	 * @param degreeUnitExam
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public LinkedList<String> printResultsByClassesTitleListMap(List<StudentInfo> studentInfos,String terms,String degreeUnitExam) throws  Exception  {
+		LinkedList<String> 					resultSet	= 	new LinkedList<String>();
+		LinkedList<String> 					resultSet1 	= 	new LinkedList<String>();
+		List<StudentExamResultsVo>			examlist	= 	new ArrayList<StudentExamResultsVo>(0);
+		resultSet.add("1_学号");
+		resultSet.add("1_姓名");
+
+		Map<String, Map<String, Object>> electiveExamCountMap = studentExamResultsService.getElectiveExamCountMapByStuList(studentInfos);
+		for(StudentInfo stu : studentInfos){
+			Integer examCount = Integer.parseInt(electiveExamCountMap.get(stu.getResourceid()).get("examcount").toString());
+			examlist 		= studentExamResultsService.studentExamResultsList(stu,"print",examCount); //取出全部成绩
+			List<StudentExamResultsVo> subList = new ArrayList<StudentExamResultsVo>();
+			for (StudentExamResultsVo vo : examlist) {
+				if (!"4".equals(ExStringUtils.trimToEmpty(vo.getCheckStatusCode()))) {
+					subList.add(vo);
+				}
+			}
+			examlist.removeAll(subList);
+			if(null != examlist && examlist.size() > 0){
+				List<String> tempList  = new ArrayList<String>(0);
+				if(ExStringUtils.isNotBlank(terms)){
+					String[] term_array = terms.split(",");
+					tempList = Arrays.asList(term_array);
+				}else{
+					tempList = null;
+				}
+				//打印选择方式 （1单打计划外，2单打计划内，3混打）
+				examlist = printOutOrInExam(examlist,tempList,stu,degreeUnitExam);
+				
+				for(StudentExamResultsVo vo :examlist){
+					if(ExStringUtils.isNotEmpty(vo.getCourseId())){
+						String content 	= "";
+						String term = vo.getCourseTerm();
+						//System.out.println(stu.getStudentName()+"|"+vo.getCourseName()+"|"+vo.getCourseTerm());
+						if(Constants.BOOLEAN_YES.equals(vo.getIsDegreeUnitExam())){
+							term = "学位英语";
+						}else if(ExStringUtils.isNotBlank(vo.getCourseTerm()) && Constants.BOOLEAN_YES.equals(vo.getIsStateExamResults()) && "11".contains(vo.getCourseTypeCode()) && "成绩已认定".equals(vo.getCheckStatus())){
+							term = "统考鉴定";
+						}else if(ExStringUtils.isBlank(vo.getCourseTerm())){
+							term = "6";
+						}
+						content 	= 	"2_"+vo.getCourseId()+"_"+vo.getCourseName()+"_"+term+"_"+vo.getIsOutplancourse();
+						if(!resultSet1.contains(content)){
+							resultSet1.add(content);
+						}
+					}
+				}
+			}
+		}
+		for(String string :resultSet1){
+			if(string.contains("学位英语") && "Y".equals(degreeUnitExam)){
+				resultSet.add(string.replace("学位英语", "学位英语成绩"));
+			}
+			resultSet.add(string);	
+		}
+		
+		for(int i = 0 ; i < resultSet.size() ; i ++){
+			for(int j = i+1 ; j < resultSet.size() ; j ++){
+				String s1 = resultSet.get(i);
+				String s2 = resultSet.get(j);
+				String[] str1 = s1.split("_");
+				String[] str2 = s2.split("_");
+				if(str2.length == 5 && str1.length == 5){
+					int i1 =  0;
+					int	i2 = 0;
+					try {
+						i1 = Integer.parseInt(str1[3]);					
+					} catch (Exception e) {
+					
+					}
+					try {
+						i2 = Integer.parseInt(str2[3]);				
+					} catch (Exception e) {
+						
+					}
+					if(i1 >= i2){
+						resultSet.set(i, s2);
+						resultSet.set(j, s1);
+					}
+				}
+			}
+		}	
+		return resultSet;
+	}
+
+	@Override
+	public LinkedList<String> printResultsByClassesTitleListMap_new(List<StudentExamResultsVo> examlist,String terms,String degreeUnitExam) throws  Exception  {
+		LinkedList<String> 					resultSet	= 	new LinkedList<String>();
+		LinkedList<String> 					resultSet1 	= 	new LinkedList<String>();
+		resultSet.add("1_学号");
+		resultSet.add("1_姓名");
+
+		if(null != examlist && examlist.size() > 0){
+			StringBuilder content 	= new StringBuilder();
+			for(StudentExamResultsVo vo :examlist){
+				if(ExStringUtils.isNotEmpty(vo.getCourseId())){
+					content.setLength(0);
+					String term = vo.getCourseTerm();
+					//System.out.println(stu.getStudentName()+"|"+vo.getCourseName()+"|"+vo.getCourseTerm());
+					if(Constants.BOOLEAN_YES.equals(vo.getIsDegreeUnitExam())){
+						term = "学位英语";
+					}else if(ExStringUtils.isNotBlank(vo.getCourseTerm()) && Constants.BOOLEAN_YES.equals(vo.getIsStateExamResults()) && "11".contains(vo.getCourseTypeCode()) && "成绩已认定".equals(vo.getCheckStatus())){
+						term = "统考鉴定";
+					}else if(ExStringUtils.isBlank(vo.getCourseTerm())){
+						term = "6";
+					}
+					content.append("2_").append(vo.getCourseCode().replaceAll("_","#")).append("_").append(vo.getCourseName())
+							.append("_").append(term).append("_").append(vo.getIsOutplancourse());
+					if(!resultSet1.contains(content.toString())){
+						resultSet1.add(content.toString());
+					}
+				}
+			}
+		}
+
+		for(String string :resultSet1){
+			if(string.contains("学位英语") && "Y".equals(degreeUnitExam)){
+				resultSet.add(string.replace("学位英语", "学位英语成绩"));
+			}
+			resultSet.add(string);
+		}
+
+		for(int i = 0 ; i < resultSet.size() ; i ++){
+			for(int j = i+1 ; j < resultSet.size() ; j ++){
+				String s1 = resultSet.get(i);
+				String s2 = resultSet.get(j);
+				String[] str1 = s1.split("_");
+				String[] str2 = s2.split("_");
+				if(str2.length == 5 && str1.length == 5){
+					int i1 =  0;
+					int	i2 = 0;
+					try {
+						i1 = Integer.parseInt(str1[3]);
+					} catch (Exception e) {
+
+					}
+					try {
+						i2 = Integer.parseInt(str2[3]);
+					} catch (Exception e) {
+
+					}
+					if(i1 >= i2){
+						resultSet.set(i, s2);
+						resultSet.set(j, s1);
+					}
+				}
+			}
+		}
+		return resultSet;
+	}
+
+	/**
+	 * 成绩计划内/计划外 混打或单打
+	 */
+	private List<StudentExamResultsVo> printOutOrInExam(List<StudentExamResultsVo> list,List<String> tempList,StudentInfo stu,String degreeUnitExam){
+		List<StudentExamResultsVo> printList = new ArrayList<StudentExamResultsVo>(0);
+		if(null != tempList && tempList.size() > 0){ //开始过滤
+			if(tempList.contains("-1")){//-1为打印计划外课程成绩
+				if(tempList.size() > 1){
+					printList = getOutOrInExam(list,"all",stu,tempList,degreeUnitExam);; //打印混合
+				}else{
+					printList = getOutOrInExam(list,"out",stu,tempList,degreeUnitExam); //打印计划内外
+				}
+			}else{
+				printList = getOutOrInExam(list,"in",stu,tempList,degreeUnitExam); //打印计划内
+			}
+			
+			
+		}else{ //无过滤 则直接返回
+			printList = list;
+		}
+		return printList;
+	}
+	
+	
+	/**
+	 * 取出计划外 or 计划内成绩
+	 * @return
+	 */
+	private List<StudentExamResultsVo> getOutOrInExam(List<StudentExamResultsVo> list,String type,StudentInfo stu,List<String> tempList,String degreeUnitExam){
+		List<StudentLearnPlan> slpList = new ArrayList<StudentLearnPlan>(0);
+		List<StudentExamResultsVo> rtIntList = new ArrayList<StudentExamResultsVo>(0); //计划内
+		List<StudentExamResultsVo> rtOutList = new ArrayList<StudentExamResultsVo>(0); //计划外
+		List<StudentExamResultsVo> rtList = new ArrayList<StudentExamResultsVo>(0); 
+		try {
+			slpList = studentLearnPlanService.getStudentLearnPlanListBySql(stu.getResourceid(), null);
+			List<StudentLearnPlan> _planOutlearnPlanList = new ArrayList<StudentLearnPlan>();
+			if(null !=slpList && !slpList.isEmpty()){
+				for(StudentLearnPlan plan : slpList){
+					if(ExStringUtils.isNotBlank(plan.getPlanOutcourseId())){
+						_planOutlearnPlanList.add(plan);
+					}
+				}
+			}
+			if(null != _planOutlearnPlanList && _planOutlearnPlanList.size() > 0){
+				for(StudentExamResultsVo vo : list){
+					for(StudentLearnPlan plan : _planOutlearnPlanList){
+						if(vo.getCourseId().equals(plan.getCourseId())){
+							//vo.setCourseTerm(vo.getCourseTerm()+"(外)");
+							rtOutList.add(vo);
+						}
+					}
+				}
+			}
+			list.removeAll(rtOutList);
+			rtIntList = list;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//过滤
+		if("in".equals(type)){ //返回计划内成绩
+			rtIntList = getTermList(rtIntList,tempList);
+		}else if("out".equals(type)){ //返回计划外成绩
+			rtIntList = rtOutList;
+		}else{//混打
+			rtList = getTermList(list,tempList);
+			rtList.addAll(rtOutList);//返回混合成绩
+			rtIntList = rtList;
+		}
+		
+		if("Y".equals(degreeUnitExam)){//在学期的条件下添加学位外语
+			for(StudentExamResultsVo stuplan : list){
+				if(Constants.BOOLEAN_YES.equals(stuplan.getIsDegreeUnitExam())){
+					if(rtIntList.contains(stuplan)){
+						break;
+					}else{
+						rtIntList.add(0, stuplan);
+					}			
+				}
+			}
+		}
+		return rtIntList;
+	}
+	
+	/**
+	 * 按学期过滤成绩
+	 * @param list
+	 * @param tempList
+	 * @return
+	 */
+	private List<StudentExamResultsVo> getTermList(List<StudentExamResultsVo> list,List<String> tempList){
+		List<StudentExamResultsVo> rtlist = new ArrayList<StudentExamResultsVo>(0);
+		try {
+			for(StudentExamResultsVo vo : list){
+				if(tempList.contains(vo.getCourseTerm())){//判断要导出的数组里是否有这个学期
+					rtlist.add(vo);
+				}else{
+					continue;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtlist;
+	}
+	
+	/**
+	 * 按班级打印数据
+	 * @param studentInfos
+	 * @param tempList
+	 * @param degreeUnitExam
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public List<StudentExamResultsVo> printResultsByClassesListMap(List<StudentInfo> studentInfos, List<String> tempList, String degreeUnitExam) throws  Exception  {
+		//List<LinkedHashMap<String,Object>> resultSet 	= 	new ArrayList<LinkedHashMap<String,Object>>(0);
+		List<StudentExamResultsVo>			examlist	= 	new ArrayList<StudentExamResultsVo>(0);
+
+		// 按学号的升序排列
+		Collections.sort(studentInfos, new Comparator<StudentInfo>() {  
+	          @Override
+			  public int compare(StudentInfo si1, StudentInfo si2) {
+	        	  int result =0;
+	        	if(si1.getStudyNo() != null && si2.getStudyNo() != null){
+	        		result = si1.getStudyNo() .compareTo(si2.getStudyNo());
+	        	}
+	            return result ;   
+	          }  
+	       });  
+		Map<String, Map<String, Object>> electiveExamCountMap = studentExamResultsService.getElectiveExamCountMapByStuList(studentInfos);
+		//Map<String,Integer>  mapDict = getDictIndext("ExamResult");
+		for(StudentInfo stu : studentInfos){
+			Integer examCount = Integer.parseInt(electiveExamCountMap.get(stu.getResourceid()).get("examcount").toString());
+			//LinkedHashMap<String,Object> map = new LinkedHashMap<String, Object>();
+			List<StudentExamResultsVo> examlist_temp 		= studentExamResultsService.studentExamResultsList(stu, "print",examCount);
+			List<StudentExamResultsVo> subList = new ArrayList<StudentExamResultsVo>();
+			for (StudentExamResultsVo vo : examlist_temp) {
+				if (!"4".equals(ExStringUtils.trimToEmpty(vo.getCheckStatusCode()))) {
+					//subList.add(vo);
+					vo.setIntegratedScore("");
+					vo.setExamResultsChs("");
+				}
+			}
+			//examlist_temp.removeAll(subList);
+			
+			//打印选择方式 （1单打计划外，2单打计划内，3混打）
+			examlist_temp = printOutOrInExam(examlist_temp,tempList,stu,degreeUnitExam);
+			examlist.addAll(examlist_temp);
+			/*map = getResult(examlist,stu,mapDict,degreeUnitExam);
+			if(map!=null && map.size()>0 ){
+				resultSet.add(map);
+			}	*/
+		}
+		return examlist;
+	}
+
+	@Override
+	public List<LinkedHashMap<String,Object>> getStuExamMapByExamVOList(List<StudentExamResultsVo> examlist,Map<String,Integer> mapDict,String degreeUnitExam,String hk,String schoolCode) throws  Exception  {
+		List<LinkedHashMap<String,Object>> resultSet 	= 	new ArrayList<LinkedHashMap<String,Object>>(0);
+		List<StudentExamResultsVo> stuExamList4one = new ArrayList<StudentExamResultsVo>();
+		String studyNo = examlist.get(0).getStudyNo();
+		examlist.add(new StudentExamResultsVo());
+		for (StudentExamResultsVo examResultsVo : examlist) {
+			if (!studyNo.equals(examResultsVo.getStudyNo())) {
+				LinkedHashMap<String,Object> map = getResult(stuExamList4one,null,mapDict,degreeUnitExam,hk,schoolCode);
+				if(map!=null && map.size()>0 ){
+					resultSet.add(map);
+				}
+				stuExamList4one = new ArrayList<StudentExamResultsVo>();
+			}
+			studyNo = examResultsVo.getStudyNo();
+			stuExamList4one.add(examResultsVo);
+		}
+		return resultSet;
+	}
+	/**
+	 * 为每个成绩做标识别
+	 * @return
+	 */
+	private String getExamResultAlias(String dictName){
+		return JstlCustomFunction.dictionaryCode2Name("ExamResultAlias",dictName);
+	}
+	
+	/**
+	 * 取出字典的顺序
+	 * @param dictionaryCode
+	 * @return
+	 */
+	@Override
+	public Map<String,Integer> getDictIndext(String dictionaryCode){
+		//从缓存中读取数据
+		List<Dictionary> children  		= 	CacheAppManager.getChildren(dictionaryCode);
+		Map<String,Integer> map    		=   new HashMap<String, Integer>(0);
+		Integer	  			indexMax	=	1000;
+		if(null != children ){
+			for(Dictionary childDict : children){
+				if(childDict.getIsUsed().equals(Constants.BOOLEAN_YES)){ //启用
+					Integer index_1 = childDict.getShowOrder();
+					if(index_1 > indexMax){
+						indexMax = index_1;
+					}
+					map.put(childDict.getDictValue(),childDict.getShowOrder());
+				}
+			}
+		}
+		map.put("dictMax", indexMax);
+		return map;	
+	}
+	
+	
+	//根据课程学籍信息获取成绩信息
+	// TODO:这个方法有待优化，循环太多，速度很慢
+	private LinkedHashMap<String,Object>  getResult(List<StudentExamResultsVo> list,StudentInfo stu,Map<String,Integer> mapDict,String degreeUnitExam,String hk,String schoolCode){
+		LinkedHashMap<String,Object> 		map		 	= 	new LinkedHashMap<String, Object>(0);
+		//List<StudentExamResultsVo>			listbk		= 	new ArrayList<StudentExamResultsVo>(0); //补考
+		//List<StudentExamResultsVo>			listother	= 	new ArrayList<StudentExamResultsVo>(0); //其他
+		map.put("1_学号", stu!=null?stu.getStudyNo():list.get(0).getStudyNo()); //学号
+		map.put("1_姓名", stu!=null?stu.getStudentName():list.get(0).getStudentName()); //姓名
+		map.put("classesid",stu!=null?stu.getClasses().getResourceid():list.get(0).getClassesid());
+		Map<String,StudentExamResultsVo> map_hk 		= 	new HashMap<String,StudentExamResultsVo>(0);
+		//String hk = null == CacheAppManager.getSysConfigurationByCode("ExamResultCorrosion") ? "" : CacheAppManager.getSysConfigurationByCode("ExamResultCorrosion").getParamValue();
+		//String schoolCode =  CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+		List<StudentExamResultsVo> rmlist = new ArrayList<StudentExamResultsVo>(0);
+		for(StudentExamResultsVo vo : list){
+			if("Y".equals(vo.getIsdelayexam())){ //缓考				
+				map_hk.put(vo.getCourseId(), vo);
+				rmlist.add(vo);
+			}
+		}
+		list.removeAll(rmlist);
+		rmlist.clear();
+		for(String key:map_hk.keySet()){
+			for(StudentExamResultsVo vo : list){
+				if(key.equals(vo.getCourseId()) && hk.equals(vo.getIsMakeupExam())){
+					StudentExamResultsVo v = map_hk.get(key);
+					v.setIntegratedScore(vo.getIntegratedScore());
+					v.setExamResultsChs("");
+					rmlist.add(vo);//替代后去除这门课程成绩
+					map_hk.put(v.getCourseId(), v);
+				}
+			}
+		}
+		
+		list.removeAll(rmlist);
+		rmlist.clear();
+		for(String key:map_hk.keySet()){
+			rmlist.add(map_hk.get(key));
+		}
+		list.addAll(rmlist);
+				
+		for(StudentExamResultsVo vo : list){
+			if (ExStringUtils.isNotBlank(vo.getExamResultsChs())) {
+				vo.setIntegratedScore(vo.getExamResultsChs());
+			}
+			if(mapDict.containsKey(vo.getIsMakeupExam())){ //排序
+				vo.setIndex(mapDict.get(vo.getIsMakeupExam())+"");
+			}else if(ExStringUtils.isNotEmpty(vo.getIsunScore())){
+				vo.setIndex(0+"");
+			} else {
+				vo.setIndex(mapDict.get("dictMax")+"");
+			}
+		}
+		
+		for(int i = 0 ; i < list.size() ; i ++){
+			for(int k = i+1; k < list.size(); k ++){
+				StudentExamResultsVo a = list.get(i);
+				StudentExamResultsVo b = list.get(k);
+				long no1 = Long.parseLong(a.getIndex());
+				long no2 = Long.parseLong(b.getIndex());
+				if(no1<no2){
+					list.set(i, b);
+					list.set(k, a);
+				}
+			}
+		}
+		
+		// 免修免考的成绩，如该门成绩申请了免修免考，那么就不显示其他成绩
+		List<String> noExamResultList = new ArrayList<String>();
+		
+		//只导出外语英语及格的成绩
+		boolean flag = false;
+		boolean flag_contains = false;//一般情况下,没有包含学位外语这个,多一个判断条件
+		if("Y".equals(degreeUnitExam)){
+			for(StudentExamResultsVo vo : list){
+				if(Constants.BOOLEAN_YES.equals(vo.getIsDegreeUnitExam()) && (vo.getIntegratedScoreL()==null || vo.getIntegratedScoreL()<60)){
+					flag = true;
+				}
+				if(Constants.BOOLEAN_YES.equals(vo.getIsDegreeUnitExam())){
+					flag_contains = true;
+				}		
+			}
+			if(flag || !flag_contains){
+				map.clear();
+				return map;
+			}
+		}
+
+		String isunScore = null;
+		StringBuilder mapKeyBuilder = new StringBuilder();
+		for(StudentExamResultsVo vo : list){
+			String str = "";
+			isunScore = ExStringUtils.trim(vo.getIsunScore());
+			String term = vo.getCourseTerm();
+			if(Constants.BOOLEAN_YES.equals(vo.getIsDegreeUnitExam())){
+				term = "学位英语";
+			}else if(ExStringUtils.isNotBlank(vo.getCourseTerm()) && Constants.BOOLEAN_YES.equals(vo.getIsStateExamResults()) && "11".contains(vo.getCourseTypeCode()) && "成绩已认定".equals(vo.getCheckStatus())){
+				term = "统考鉴定";
+			}else if(ExStringUtils.isBlank(vo.getCourseTerm())){
+				term = "6";
+			}
+			mapKeyBuilder.setLength(0);
+			mapKeyBuilder.append("2_").append(vo.getCourseCode().replaceAll("_","#")).append("_").append(vo.getCourseName())
+					.append("_").append(term).append("_").append(vo.getIsOutplancourse());
+			
+			if(ExStringUtils.isNotEmpty(vo.getIsunScore())){ //免考，免修，代修等
+				//0-通过1-免考2-免修3-代修
+				if("0".equals(isunScore)){
+					str =  "通过"+vo.getIntegratedScore();					
+				}else if("1".equals(isunScore)){
+					str =  "免考"+vo.getIntegratedScore();	
+					noExamResultList.add(mapKeyBuilder.toString());
+				}else if("2".equals(isunScore)){
+					str = "免修"+vo.getIntegratedScore();	
+					noExamResultList.add(mapKeyBuilder.toString());
+				}else if("3".equals(isunScore)){
+					str = "代修"+vo.getIntegratedScore();	
+				}else{
+					str = "其他"+vo.getIntegratedScore();	
+				}
+				
+				// 桂林医免修免考成绩显示合格
+				if("10601".equals(schoolCode) && ("1".equals(isunScore) || "2".equals(isunScore))){
+					str = "免考合格";
+				}
+			}else if("Y".equals(vo.getIsdelayexam())){
+				if("缓考".equals(vo.getIntegratedScore())){
+					str = "缓考";
+				}else{
+					str = "缓考"+vo.getIntegratedScore();
+				}
+			}else{
+				String name = getExamResultAlias(vo.getIsMakeupExam());
+				str =(ExStringUtils.isNotEmpty(name)?name:"")+vo.getIntegratedScore();
+			}
+			vo.setIntegratedScore(str);
+			
+			if(map.containsKey(mapKeyBuilder.toString()) && !noExamResultList.contains(mapKeyBuilder.toString())){
+				vo.setIntegratedScore(vo.getIntegratedScore() + "/" + map.get(mapKeyBuilder.toString()));
+			}
+			map.put(mapKeyBuilder.toString(),vo.getIntegratedScore());
+			//增加学位英语成绩
+			if("Y".equals(degreeUnitExam) && mapKeyBuilder.toString().contains("学位英语")){
+				map.put(mapKeyBuilder.toString().replace("学位英语", "学位英语成绩"),vo.getIntegratedScoreL());
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * 根据条件构造教学计划的select标签的option（只供select标签用）
+	 * 
+	 * @param planList
+	 * @param defaultValue
+	 * @return
+	 */
+	@Override
+	public String constructOptions(List<TeachingPlan> planList, String defaultValue) {
+		StringBuffer options = new StringBuffer("<option value=''></option>");
+		if(ExCollectionUtils.isNotEmpty(planList)){
+			for(TeachingPlan plan : planList){
+				options.append("<option value='"+plan.getResourceid()+"'"+"title='"+plan.getTrainingTarget()+"'");
+				if(ExStringUtils.isNotEmpty(defaultValue) && defaultValue.equals(plan.getResourceid())){
+					options.append(" selected ");
+				}
+				options.append(">");
+				options.append(plan.getPlanName()+"-"+plan.getVersionNum());
+				options.append("</option>");
+			}
+		}
+		return options.toString();
+	}
+}

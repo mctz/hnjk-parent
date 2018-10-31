@@ -1,0 +1,386 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>免考申请</title>
+<script type="text/javascript">
+	function changeReasonArea(obj){
+		var val = $(obj).val();
+		var id  = $(obj).attr("id");
+		var unScoreReason = '${unScoreReason}';
+		var otherReason   = '${otherReason}';
+		id = id.replace("noExamApply_unScore_","noexam_memo_");
+		if("1"==val){//免考
+			$("#"+id).html(unScoreReason);
+		}else if("2"==val){//免修
+			$("#"+id).html(otherReason);
+		}else{
+			$("#"+id).html("<option value=\"\"></option>");
+		}
+		id = id.split("noexam_memo_")[1];
+		$("#other_memo_"+id).hide();
+		$("#other_memo_tip"+id).hide();
+		$("#score_"+id).val('');
+		$("#other_memo_"+id).val('');
+		$("#score_"+id).hide();
+		$("#score_tip"+id).hide();
+	}
+	</script>
+</head>
+<body>
+
+	<div class="page">
+		<div class="pageHeader">
+			<form id="brSchool_noExamApp_search_form"
+				onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/teaching/noexamapply/noexamapp-brschool-form.html?resourceid=${studentInfo.resourceid}"
+				method="post">
+				<div class="searchBar">
+					<ul class="searchContent">
+						<li><label>姓名：</label> <input type="text" readonly="readonly"
+							value=" ${studentInfo.studentName }" /></li>
+						<li><label>学号：</label> <input type="text" readonly="readonly"
+							value=" ${studentInfo.studyNo }" /></li>
+						<li><label>年级：</label> <input type="text" readonly="readonly"
+							value=" ${studentInfo.grade.gradeName }" /></li>
+					</ul>
+					<ul class="searchContent">
+						<li><label>层次：</label> <input type="text" readonly="readonly"
+							value=" ${studentInfo.classic.classicName }" /></li>
+						<li><label>专业：</label> <input type="text" readonly="readonly"
+							value=" ${studentInfo.major.majorName }" /></li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="pageContent" layouth="80">
+			<gh:resAuth parentCode="RES_TEACHING_NOEXAM_APP_BYBRSCHOOL_LIST"
+				pageType="subList"></gh:resAuth>
+			<form id="brSchool_noExamApp_save_form"
+				onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/teaching/noexamapply/noexamapp-brschool-save.html?studentId=${studentInfo.resourceid}"
+				method="post">
+				<table class="list" style="width: 100%">
+					<thead>
+						<tr>
+							<%--<th width="4%">序号</th> --%>
+							<th width="10%">课程名称</th>
+							<th width="8%">建议学期</th>
+							<th width="4%">学分</th>
+							<th width="8%">课程性质</th>
+							<th width="8%">教学方式</th>
+							<th width="8%">考试类别</th>
+							<th width="8%">考试形式</th>
+							<th width="12%">审核状态</th>
+							<th width="8%">申请类型</th>
+							<th width="20%">申请理由</th>
+							<th width="7%">附件</th>
+						</tr>
+					</thead>
+					<tbody id="brSchool_noExamApp_formBody">
+						<c:forEach items="${list}" var="info" varStatus="vs">
+							<tr height="40">
+								<%--
+		            <td>${vs.index+1 } 
+		            	<input type="hidden"  name="courseId" value="${info['COURSEID'] }" /> 
+		            	<input type="hidden"  name="noExamId" value="${info['NOEXAMID'] }" /> 
+		            	<input type="hidden"  name="courseType" value="${info['COURSETYPE'] }" /> 
+		            </td>
+		             --%>
+								<td>${info['COURSENAME'] }<input type="hidden"
+									<c:if test="${info['isPassExam'] ne '1'  }">  name="courseId" </c:if>
+									value="${info['COURSEID'] }" /> <input type="hidden"
+									<c:if test="${info['isPassExam'] ne '1'  }"> name="noExamId" </c:if>
+									value="${info['NOEXAMID'] }" /> <input type="hidden"
+									<c:if test="${info['isPassExam'] ne '1'  }"> name="courseType" </c:if>
+									value="${info['COURSETYPE'] }" />
+								</td>
+								<td>${ghfn:dictCode2Val('CodeTermType',info['TERM'])}</td>
+								<td>${info['CREDITHOUR'] }</td>
+								<td>${ghfn:dictCode2Val('CodeCourseType',info['COURSETYPE'])}</td>
+								<td>${ghfn:dictCode2Val('teachType',info['TEACHTYPE'])}</td>
+								<td>${ghfn:dictCode2Val('CodeExamClassType',info['examClassType'])}</td>
+
+								<td>${ghfn:dictCode2Val('CodeCourseExamType',info['EXAMTYPE'])}</td>
+								<c:if test="${info['isPassExam'] eq '1' }">
+									<td colspan="4"><font color="blue">已通过考试。</font></td>
+								</c:if>
+								<c:if test="${info['isPassExam'] ne '1'  }">
+									<td>${ghfn:dictCode2Val('CodeCheckStatus',info['CHECKSTATUS'])}
+										<c:if test="${info['CHECKSTATUS'] eq '0' }">
+											<a href="#" onclick="delNoExamApp('${info['NOEXAMID'] }')">(撤销)</a>
+										</c:if>
+									</td>
+									<td><c:choose>
+											<c:when test="${not empty info['UNSCORE']}">
+												<input type="hidden" name="unScore" value=" "
+													readonly="readonly" />
+		            			${ghfn:dictCode2Val('CodeUnScoreStyle',info['UNSCORE'])}
+		            		</c:when>
+											<c:otherwise>
+												<gh:select id="noExamApply_unScore_${info['COURSEID'] }"
+													name="unScore" dictionaryCode="CodeUnScoreStyle"
+													value="${info['UNSCORE']}"
+													onchange="changeReasonArea(this)" filtrationStr="1,2" />
+											</c:otherwise>
+										</c:choose></td>
+
+									<td><c:choose>
+											<c:when test="${ not empty info['MEMO']}">${info['MEMO']} 【成绩】${info['SCORE']}
+		            			<input type="text" name="memo" value="${info['MEMO']}"
+													style="width: 50%; display: none;" />
+												<input type="text" id="score_${info['COURSEID'] }"
+													name="score" value="${ info['SCORE']}"
+													style="width: 10%; display: none;" title="请录入免考成绩" />
+												<input type="text" maxlength="254"
+													id="other_memo_${info['COURSEID'] }" name="other_memo"
+													value="${ info['MEMO']}" style="width: 45%; display: none;"
+													title="请录入申请理由" />
+											</c:when>
+											<c:otherwise>
+												<%-- <gh:select id="noexam_memo_${info['COURSEID'] }" name="memo" dictionaryCode="CodeNoExamReason" value="${info['MEMO']}" style="width:30%;" />--%>
+												<select id="noexam_memo_${info['COURSEID'] }" name="memo"
+													style="width: 100%">
+													<option value=""></option>
+												</select>
+												<br>
+												<span style="display: none;"
+													id="other_memo_tip${info['COURSEID'] }">原因:</span>
+												<input type="text" maxlength="254"
+													id="other_memo_${info['COURSEID'] }" name="other_memo"
+													value="${ info['MEMO']}" style="width: 45%; display: none;"
+													title="请录入申请理由" />
+												<span style="display: none;"
+													id="score_tip${info['COURSEID'] }">成绩:</span>
+												<input class="required" type="text"
+													id="score_${info['COURSEID'] }" name="score"
+													value="${ info['SCORE']}"
+													style="width: 10%; display: none;" title="请录入免考成绩" />
+											</c:otherwise>
+										</c:choose></td>
+									<td><c:choose>
+											<c:when
+												test="${schoolCode eq '12962' and info['CHECKSTATUS'] eq 0}">
+												<gh:upload hiddenInputName="attachId" uploadType="attach"
+													baseStorePath="users,${user.username}"
+													extendStorePath="attachs" formType="NOEXAMAPPLY"
+													formId="${info['NOEXAMID'] }"
+													attachList="${attMap[info['NOEXAMID']] }" />
+											</c:when>
+											<c:otherwise></c:otherwise>
+										</c:choose></td>
+								</c:if>
+							</tr>
+						</c:forEach>
+
+					</tbody>
+				</table>
+			</form>
+
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		
+		/*
+		入学注册时年滿40周岁和少数民族免考按60分来算。专科已在本院修读该课程，是按学生当年专科成绩来认定（按身份证号码）。其它理由是按70分
+		*/
+		$("select[id^=noexam_memo_]").change(function(o){
+			var id = $(this).attr("id").split("noexam_memo_")[1];
+			var studentId = '${studentInfo.resourceid}';
+			var isOver40 = '${isOver40}';
+			var isMinority = '${isMinority}';
+			var ageStrTip  = '${ageStrTip}';
+			var nationStrTip = '${nationStrTip}';
+			var noScoreType = $(this).val();
+			$("#score_"+id).val('');
+			$("#other_memo_"+id).hide('');
+			$("#other_memo_tip"+id).hide();
+			$("#other_memo_"+id).attr("class","");
+			if(""!=$(this).val()){
+				$("#score_"+id).show();
+				//$("#score_"+id).attr("readonly","readonly");
+				$("#score_tip"+id).show();
+			}else{
+				$("#score_"+id).hide();
+				$("#score_tip"+id).hide();
+			}
+			if("Over40"==$(this).val()){
+				if("1"!=isOver40){
+					$("#noexam_memo_"+id).val("");
+					$("#score_"+id).val(0);
+					alertMsg.warn("不满足入学注册时年满40周岁的条件:"+ageStrTip);
+					return false;
+				}
+			}else if("Minority"==$(this).val()){
+				if("1"!=isMinority){
+					$("#noexam_memo_"+id).val("");
+					$("#score_"+id).val(0);
+					alertMsg.warn("不满足少数民族学生的条件:"+nationStrTip);
+					return false;
+				}
+			}else if("Other"==$(this).val()||"HaveScore"==$(this).val()){
+				if("Other"==$(this).val()){
+					$("#other_memo_"+id).attr("class","required");
+					$("#other_memo_"+id).show();
+					$("#other_memo_tip"+id).show();
+					//$("#score_"+id).attr("readonly","");
+				}
+			}
+			//ajax获取高起专的成绩
+			$.ajax({
+				type:'POST',
+				url:"${baseUrl}/edu3/teaching/noexamapply/getNoHisScore.html",
+				data:{courseId:id,studentId:studentId,noScoreType:noScoreType},
+				dataType:"json",
+				cache: false,
+				success: function (json){
+					var msg = json.message;
+					var maxScore = json.maxScore;
+					var notEnoughScore = json.notEnoughScore;
+					if("1"==notEnoughScore){
+						alertMsg.warn("无法获得及格的专科修读成绩.");
+					}else if(""!=maxScore){
+						$("#score_"+id).val(maxScore);
+					}else {
+						alertMsg.warn(msg);
+					}
+				},						
+				error: function(json){
+					alertMsg.warn("获取成绩出错.");
+				}
+			});	
+		});
+		//关闭navTab事件
+		var tabid = "RES_TEACHING_NOEXAM_APP_BYBRSCHOOL_FORM";
+		$(".navTab-tab li[tabid='"+tabid+"']").find(navTab._op.close$).unbind("click").click(function(){
+			var showAlert=false;
+			$("#brSchool_noExamApp_formBody input[name='unScore']").each(function(index){
+				 if($(this).val()){
+					 if(!$(this).parent().parent().find("input[name='attachId']").val()||$(this).parent().parent().find("input[name='attachId']").val()=='undefined'){
+						 showAlert = true;						 
+					 }
+				 }
+			});
+			if(showAlert){
+				alertMsg.confirm("你还有申请未上传附件，确定要关闭当前页面吗？",{okName:"确定",okCall:function(){
+					navTab.closeCurrentTab();
+				}});
+			}else{
+				navTab.closeCurrentTab();
+			}
+			
+		});
+	});
+	//删除
+	function delNoExamApp(id){
+		var url = "${baseUrl}/edu3/teaching/noexamapply/delete.html";
+	    var $search_form = $("#brSchool_noExamApp_search_form");
+	    alertMsg.confirm("确定要撤销此课程的申请吗?", {
+             okCall: function(){
+           	  $.get(url,{resourceid:id},function(json){
+           		  var msg = json.message;
+           		  if (json.statusCode == 200){
+           			 alertMsg.info(msg);
+           			 navTab.reload($search_form.attr("action"));
+           		  }else{
+           			  alertMsg.warn(msg); 
+           		  }
+           	  });
+             }
+       });
+
+	}
+	//保存
+	function noExamApplyAdd(){
+		var unScores 	 = new Array();
+		var checked      = true;
+		var $save_form 	 = $("#brSchool_noExamApp_save_form");
+		var $search_form = $("#brSchool_noExamApp_search_form");
+		var checked_1    = true; //免考成绩为空
+		var checked_2    = true; //免考具体理由为空  为了 其他
+		var checked_3    = true; //免考理由
+		var checked_4    = true; //非法数字
+		$("#brSchool_noExamApp_formBody select[name='unScore']").each(function(index){
+			 if($(this).val()){
+				 unScores.push($(this).val());
+				 var memo       = $(this).parent().parent().find("select[name='memo'] option:selected").val();
+				 var other_memo = $(this).parent().parent().find("input[name='other_memo']").val();
+				 var score      = $(this).parent().parent().find("input[name='score']").val();
+				 /*
+				 if($(this).val()=="1"&&(memo=="Other"&&other_memo==""||memo=="HaveScore"&&score=="")){
+					 checked = false;
+				 }
+				 */
+				 if(isNaN(score)){
+					 checked_4 = false;
+				 }else if(0>score||100<score){
+					 checked_4 = false;
+				 }
+				 if(($(this).val()=="1"||$(this).val()=="2")&&""==memo ){
+					 checked_3 = false;
+				 }
+				 if(($(this).val()=="1"||$(this).val()=="2")&&score==""&&""!=memo){
+					 checked_1 = false;
+				 }
+				 if($(this).val()=="2"&&other_memo==""&&"Other"==memo){
+					 checked_2 = false;
+				 }
+				 
+			 }
+		});
+		
+		/*
+		if(checked==false){
+			alertMsg.warn("申请理由选择其它、专科已在本院修读该课程，请在旁边的输入框填入理由及成绩！");
+			return false;	
+		}
+		*/
+		if(checked_4==false){
+			alertMsg.warn("保存申请失败。存在非法成绩(0到100之间数字)。");
+			return false;
+		}
+		if(checked_3==false){
+			alertMsg.warn("保存申请失败。请选择免考或免修的申请理由。");
+			return false;	
+		}
+		if(checked_1==false){
+			alertMsg.warn("保存申请失败。免考成绩为空。<br>若申请理由为专科已修读，请检查是否存在该门课程的专科成绩；<br>若申请理由为其它，请填写免试成绩；<br>其余情况，请管理员检查成绩映射关系设置。");
+			return false;	
+		}
+		if(checked_2==false){
+			alertMsg.warn("保存申请失败。申请理由选择其它，请填写具体理由。");
+			return false;	
+		}
+		if(unScores.length<1){
+			alertMsg.warn("请选择一个或多个课程进行申请！");
+			return false;
+		}
+
+		alertMsg.confirm("您确定要保存这些记录吗？", {
+			okCall: function(){		
+				$.ajax({
+					type:'POST',
+					url:$save_form.attr("action"),
+					data:$save_form.serializeArray(),
+					dataType:"json",
+					cache: false,
+					success: function (json){
+						var msg = json.message;
+						if (json.statusCode == 200){
+							navTab.reload($search_form.attr("action"));
+							alertMsg.info(msg);
+						}else{
+							alertMsg.warn(msg);
+						}
+						
+					},						
+					error: DWZ.ajaxError
+				});	
+			}
+		});
+		
+	}
+</script>
+</body>
+</html>

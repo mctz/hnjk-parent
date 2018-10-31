@@ -1,0 +1,193 @@
+package com.hnjk.edu.learning.model;
+
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.hnjk.core.annotation.DeleteChild;
+import com.hnjk.core.support.base.model.BaseModel;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.basedata.model.Course;
+
+/**
+ * 题库试题表
+ * <code>CourseExam</code><p>
+ * 
+ * @author：广东学苑教育发展有限公司.
+ * @since： 2011-3-29 上午10:37:14
+ * @see 
+ * @version 1.0
+ */
+@Entity
+@Table(name="EDU_LEAR_EXAMS")  
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class CourseExam extends BaseModel{
+
+	/** 单选题*/
+	public static final String SINGLESELECTION = "1";
+	/** 多选题*/
+	public static final String MUTILPCHIOCE = "2";
+	/** 判断题*/
+	public static final String CHECKING = "3";
+	/** 填空题*/
+	public static final String COMPLETION = "4";
+	/** 论述题*/
+	public static final String ESSAYS = "5";
+	/** 材料题*/
+	public static final String COMPREHENSION = "6";
+	
+	/** 题型标记1*/
+	public static final String EXAMTYPEREGEX1 = "\\s*◎题型(：|:)";//如：◎题型：单选题
+	/** 题型标记2,用于材料题如英语阅读理解题各小题*/
+	public static final String EXAMTYPEREGEX2 = "\\s*T题型(：|:)";//如：T题型：单选题
+	/** 题目分割标记*/
+	public static final String EXAMREGEX = "】\\s*";
+	/** 题目问题与答案分割标记*/
+	public static final String QUESTIONANSWEREGEX = "\\s*【(答案(：|:))?";
+	
+	@Column(name="EXAMTYPE",nullable=false)
+	private String examType;//题型，取自字典CodeExamType
+	
+	@Column(name="DIFFICULT")
+	private String difficult;//难度:容易/较难/难   取自字典	CodeExamDifficult 
+
+	@Column(name="REQUIREMENT")
+	private String requirement;//考试要求:与教学要求度相同，取自字典 :掌握/理解/应用/熟练应用
+	
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "COURSEID")	
+	private Course course;//所属课程
+	
+	
+	@Column(name="KEYWORDS")	
+	private String keywords;//关键字，使用,隔开
+	
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name="QUESTION",nullable=false)
+	private String question;//问题
+	
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name="ANSWER")
+	private String answer;//答案
+	
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name="PARSER")
+	private String parser;//解析
+	
+	@Column(name="FILLINDATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fillinDate;//入库时间
+	
+	@Column(name="FILLINMAN")
+	private String fillinMan;//填写人
+	
+	@Column(name="FILLINMANID")
+	private String fillinManId;//填写人ID
+
+	/**3.1.4 新增入学考试的情况*/
+	@Column(name="ISENROLEXAM")
+	private String isEnrolExam = Constants.BOOLEAN_NO;//是否入学考试
+	
+	@Column(name="COURSENAME")
+	private String courseName;//入学考试科目，从字典取
+	
+	
+	/**3.1.6新增排序号*/
+	@Column(name="SHOWORDER")
+	private Integer showOrder = 0;//排序号
+	
+	/**3.1.7 新增父ID*/
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENTID")
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	private CourseExam parent;
+	
+	@Column(name="EXAMNODETYPE")
+	private String examNodeType;//入学考试知识点类型
+	
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.DELETE_ORPHAN,org.hibernate.annotations.CascadeType.ALL})
+	@OrderBy("showOrder asc")
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@DeleteChild(deleteable=true)
+	private Set<CourseExam> childs = new LinkedHashSet<CourseExam>(0);
+
+	/**3.1.10 新增考试形式*/
+	@Column(name="EXAMFORM")
+	private String examform;//考试形式，如随堂练习/入学考试/在线考试/期末考试 等
+	
+	/**3.1.11 新增审计信息*/
+	@Column(name="MODIFYMAN",length=50)
+	private String modifyMan;//修改人账号
+	
+	@Column(name="MODIFYDATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date modifyDate;//修改时间
+	
+	/**3.2.5 新增题目选项数，用于超多的选择题*/
+	
+	@Column(name="ANSWEROPTIONNUM")
+	private Integer answerOptionNum = 5;
+	
+	/**3.2.11 新增是否在线答题，用于主观题的在线做题*/
+	@Column(name="ISONLINEANSWER",length=1)
+	private String isOnlineAnswer;//是否在线做题
+	
+	public CourseExam() {
+		super();
+	}
+
+	public CourseExam(String isEnrolExam, Course course, String courseName,
+			String examType, String question, String answer, Date fillinDate,
+			String fillinMan, String fillinManId,String examNodeType,String examform) {
+		super();
+		this.isEnrolExam = isEnrolExam;
+		this.course = course;
+		this.courseName = courseName;
+		this.examType = examType;
+		this.question = question;
+		this.answer = answer;
+		this.fillinDate = fillinDate;
+		this.fillinMan = fillinMan;
+		this.fillinManId = fillinManId;
+		this.examNodeType = examNodeType;
+		this.examform  = examform;
+	}
+	
+	public static String covertToCorrectAnswer(String answer){
+		if("T".equalsIgnoreCase(answer) || "对".equalsIgnoreCase(answer) || "√".equalsIgnoreCase(answer)){
+			return "T";
+		} else if("F".equalsIgnoreCase(answer) || "错".equalsIgnoreCase(answer) || "×".equalsIgnoreCase(answer)){
+			return "F";
+		}
+		return answer;
+	}
+
+}

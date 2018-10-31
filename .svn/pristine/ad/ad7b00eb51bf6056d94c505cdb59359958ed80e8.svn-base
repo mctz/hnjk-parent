@@ -1,0 +1,605 @@
+package com.hnjk.edu.roll.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Where;
+
+import com.hnjk.core.annotation.Historizable;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.listener.OperationType;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.basedata.model.Classic;
+import com.hnjk.edu.basedata.model.Grade;
+import com.hnjk.edu.basedata.model.Major;
+import com.hnjk.edu.basedata.model.StudentBaseInfo;
+import com.hnjk.edu.teaching.model.TeachingGuidePlan;
+import com.hnjk.edu.teaching.model.TeachingPlan;
+import com.hnjk.edu.teaching.model.UniversalExam;
+import com.hnjk.platform.system.model.BaseLogHistoryModel;
+import com.hnjk.security.model.OrgUnit;
+import com.hnjk.security.model.User;
+
+/**
+ * 学生学籍表
+ * <code>StudentInfo</code>
+ * <p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-4-19 下午06:24:57
+ * @see 
+ * @version 1.0
+ */
+@Entity
+@Table(name = "EDU_ROLL_STUDENTINFO")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Historizable(logable=true,value={OperationType.UPDATE})
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class StudentInfo extends BaseLogHistoryModel implements Serializable {
+
+	private static final int DATE_SECONDS = 24*60*60;
+	private static final int HOUR_SECONDS = 60*60;
+
+	/**
+	 * 学生基本信息
+	 */
+	@ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDENTBASEINFOID")
+	private StudentBaseInfo studentBaseInfo;
+
+	/**
+	 * 所学专业
+	 */
+	@OneToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "MAJORID")
+	private Major major;
+
+	/**
+	 * 所在年级
+	 */
+	@OneToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "GRADEID")
+	private Grade grade;
+
+	/**
+	 * 所属校外学习中心
+	 */
+	@OneToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "BRANCHSCHOOLID")
+	private OrgUnit branchSchool;
+
+	/**
+	 * 所属层次
+	 */
+	@OneToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CLASSICID")
+	private Classic classic;
+
+	/**
+	 * 学生号
+	 */
+	@Column(name = "STUDYNO", unique = true)
+	private String studyNo;
+
+	/**
+	 * 考生号 用于上报新生
+	 */
+	@Column(name = "ENROLLEECODE")
+	private String enrolleeCode;
+
+	/**
+	 *  学生姓名，冗余字段
+	 */
+	@Column(name = "STUDENTNAME")
+	private String studentName;
+
+	/**
+	 * 进修性质 :字典 学历教育/非学历教育
+	 */
+	@Column(name = "ATTENDADVANCEDSTUDIES")
+	private String attendAdvancedStudies;
+
+	/**
+	 * 学习方式 :字典 脱产/半脱产/业余/全日制
+	 */
+	@Column(name = "LEARNINGSTYLE")
+	private String learningStyle;
+
+	/**
+	 *  就读方式 字典：走读/住读/借宿/其他
+	 */
+	@Column(name = "STUDYINSCHOOL")
+	private String studyInSchool;
+
+	/**
+	 * 学习类别 :CodeStudentKind
+	 */
+	@Column(name = "STUDENTKIND")
+	private String studentKind;
+
+	/**
+	 * 入学性质 ：字典 考试入学/免试入学,根据申请免试
+	 */
+	@Column(name = "ENTERSCHOOL")
+	private String enterSchool;
+
+	/**
+	 * 在学状态 字典：正式录取/进修
+	 */
+	@Column(name = "LEARINGSTATUS")
+	private String learingStatus;
+
+	/**
+	 * 学籍状态 字典：CodeStudentStatus
+	 * 在学 11
+	 * 休学 12
+	 * 退学 13
+	 * 清退 26
+	 * 勒令退学 14
+	 * 开除学籍 15
+	 * 毕业 16
+	 * 自动流失 17
+	 * 学习期限已过 18
+	 * 延期 21
+	 * 结业 24
+	 * 缓毕业  25
+	 */
+	@Column(name = "STUDENTSTATUS")
+	private String studentStatus;
+
+	/**
+	 * 备注
+	 */
+	@Column(name = "MEMO")
+	private String memo;
+
+	/**
+	 * 考试预约状态：0-不允许 1-允许
+	 */
+	@Column(name = "EXAMORDERSTATUS")
+	private Integer examOrderStatus = Constants.BOOLEAN_TRUE;
+
+	/**
+	 * 是否提前修读
+	 */
+	@Column(name = "ISAHEAD",length=1)
+	private String isAhead = Constants.BOOLEAN_NO;
+
+	/**
+	 * 是否预约毕业论文
+	 */
+	@Column(name = "ISORDERSUBJECT",length=1)
+	private String isOrderSubject = Constants.BOOLEAN_NO;
+
+	/**
+	 * 是否申请学位 Y-毕业+学位 N-毕业    ?W-延迟毕业
+	 */
+	@Column(name = "ISAPPLYGRADUATE",length=1)
+	private String isApplyGraduate = Constants.BOOLEAN_YES;
+
+	/**
+	 * 在校期间奖罚情况  用于毕业登记表
+	 */
+	@Column(name = "REWARDSPUNISHMENT",length=1)
+	private String reWardsPuniShment   ;
+
+	/*
+	 * 参见@link{EnrolleeInfo}
+	 * 录取时生成，注册时从报名信息表中拷贝过来，用于上报新生
+	 */
+	@Column(name="REGISTORNO")
+	private String registorNo;
+		
+	
+	/**
+	 *  3.0.4 新增学生账号状态
+	 *  学生账号状态 默认，开启
+	 */
+	@Column(name="ACCOUTSTATUS",length=1)
+	private Integer accountStatus = Constants.BOOLEAN_TRUE;
+
+	/**
+	 * 学生预约状态 默认，启用 用来控制是否能预约学习的权限，如未交费不让预约学习
+	 */
+	@Column(name="ORDERCOURSESTATUS")	
+	private Integer orderCourseStatus = Constants.BOOLEAN_TRUE;
+
+	/**
+	 * 所修教学计划
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "TEACHPLANID")
+	private TeachingPlan teachingPlan ;
+	
+	/**
+	 * 3.0.6 新增学生是否预约第一学期课程
+	 * 默认为未预约
+	 */
+	@Column(name="ISORDERFIRSTCOURSE",length=1)
+	private String isOrderFirstCourse = Constants.BOOLEAN_NO;
+	
+	/*3.0.9 新增系统用户对象关联 
+	 * 注意：	通过系统用户（User）对象找学籍时，返回的可能是多个学籍对象，需要通过学生所修的教学计划{@link TeachingPlan}来确定唯一的学籍对象，
+	 * 如学生进入某课程学习时，需要传入当前教学计划ID和课程的ID
+	 * */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)   
+	@JoinColumn(name = "SYSUSERID") 	
+    private User sysUser;
+	
+	 /**3.1.3新增教学模式*/
+	 @Column(name="TEACHINGTYPE")
+	 private String teachingType;
+	 
+	 
+	/**毕业、学位审核条件  CHANGED HISTORY :3.1.6 新增学生已修学分  3.2.6 新增学位条件*/
+	@Column(name="FINISHEDCREDITHOUR")
+	private Double finishedCreditHour;
+
+	/**
+	 * 已修必修课总学分
+	 */
+	@Column(name="FINISHEDNECESSCREDITHOUR")
+	private Double finishedNecessCreditHour;
+
+	/**
+	 * 已完成选修课门数
+	 */
+	@Column(name="FINISHEDOPTIONALCOURSENUM")
+	private Integer finishedOptionalCourseNum = 0;
+
+	/**
+	 * 已修必修课门数
+	 */
+	@Column(name="FINISHEDNECCESSCOURSENUM")
+	private Integer finishedNeccessCourseNum;
+
+	/**
+	 * 已修主干课门数
+	 */
+	@Column(name="FINISHEDMAINCOURSENUM")
+	private Integer finishedMainCourseNum;
+
+	/**
+	 * 已修主干课平均分
+	 */
+	@Column(name="FINISHEDMAINCOURSEAVERAGESCORE",scale=2)
+	private Double finishedMainCourseAverageScore;
+
+	/**
+	 * 已修基础课门数
+	 */
+	@Column(name="FINISHEDBASECOURSENUM")
+	private Integer finishedBaseCourseNum;
+
+	/**
+	 * 已修基础课平均分
+	 */
+	@Column(name="FINISHEDBASEAVERAGESCORE",scale=2)
+	private Double finishedBaseAverageScore;
+
+	/**
+	 * 学位英语是否通过
+	 */
+	@Column(name="ISPASSENGLISH",length=1)
+	private String isPassEnglish;
+
+	/**
+	 * 论文分数是否良好以上
+	 */
+	@Column(name="GRADUATEPAPERCORE")
+	private String graduatePaperScore;
+	
+	/**
+	 * 3.1.9 新增学生是否可以预约毕业论文字段
+	 * 默认为允许
+	 */
+	@Column(name="ISABLEORDERSUBJECT",length=1)
+	private Integer isAbleOrderSubject = Constants.BOOLEAN_TRUE;
+
+	/**
+	 * 年级教学计划
+	 */
+	@Transient
+	private TeachingGuidePlan teachingGuidePlan;
+	
+	/**3.1.11 新增专科资格信息(从招生信息表中copy过来)，入学资格审核(新版需求，已从招生移到学籍)*/
+	@Column(name="ENTERAUDITSTATUS",length=1)
+	private String enterAuditStatus = Constants.BOOLEAN_WAIT;
+
+	/**
+	 * 入学前毕业院校
+	 */
+	@Column(name = "GRADUATESCHOOL")
+	private String graduateSchool;
+
+	/**
+	 * 入学前毕业学校代码
+	 */
+	@Column(name = "GRADUATESCHOOLCODE")
+	private String graduateSchoolCode;
+
+	/**
+	 * 入学前毕业专业
+	 */
+	@Column(name = "GRADUATEMAJOR")
+	private String graduateMajor;
+
+	/**
+	 * 入学前毕业证书号
+	 */
+	@Column(name = "GRADUATEID")
+	private String graduateId;
+
+	/**
+	 * 入学前毕业日期
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "GRADUATEDATE")
+	private Date graduateDate;
+
+	/**
+	 * 英文成绩单，打印编号
+	 */
+	@Column(name = "TRANSCRIPTSNO")
+	private String transcriptsNo;
+
+	/**
+	 * 学籍修改开放开始时间
+	 */
+	@Column(name = "OPENSTARTDATE")
+	private String openStartDate;
+
+	/**
+	 * 学籍修改开放结束时间
+	 */
+	@Column(name = "OPENENDDATE")
+	private String openEndDate;
+
+	/**
+	 * 图片审核操作  0 未审核 1 审核通过 2审核不通过  3未提交
+	 */
+	@Column(name = "AUDITRESULTS ")
+	private String auditResults;
+
+	/**
+	 * 学籍表提交情况 CodeRollCardStatus 0:未保存，1:已保存，2:已提交
+	 */
+	@Column(name = "ROLLCARDSTATUS")
+	private String rollCardStatus="0";
+
+	//新增学位状态字段
+	//毕业、学位资格审核，统一到毕业、学位审核表
+	//@Column(name = "DEGREESTATUS")
+	//private String degreeStatus = Constants.BOOLEAN_WAIT; //W-待审核
+	/**3.3.4 新增班级*/
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
+	@JoinColumn(name = "CLASSESID") 	
+	private Classes classes;
+	
+	/**3.2.12 新增学籍延迟日期*/
+	@Column(name="DELAYDATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date delayDate;
+
+	/**
+	 * 入学日期字段
+	 * @date 2014-7-21 16:19:04
+	 */
+	@Column(name="INDATE",length=10)
+	@Temporal(TemporalType.DATE)
+	private Date inDate;
+
+	/**
+	 * 准考证号
+	 */
+	@Column(name="EXAMCERTIFICATENO")
+	private String examCertificateNo;
+
+	/**
+	 * 入团时间
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "ORGANIZATIONDATE")
+	private Date organizationDate;
+
+	/**
+	 * 入党时间
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "JOINPARTYDATE")
+	private Date joinPartyDate;
+	
+	/**
+	 * 新增字段 户口册相片
+	 * @date 2014-06-11 09:12:34
+	 */
+	@Column(name="BOOKLETPTHOTOPATH")
+	private String bookletPhotoPath;
+
+	/**
+	 * 其他相片
+	 */
+	@Column(name="OTHERPHOTOPATH")
+	private String otherPhotoPath;
+	
+	/**
+	 * 新增字段
+	 * @date 2014-07-21
+	 */
+	@Column(name = "TOTALPOINT")
+	private Long totalPoint;
+
+	/**
+	 * 统考成绩
+	 */
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="studentInfo")
+	@Cascade(value={org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+	@Where(clause="isDeleted=0")
+	@OrderBy("examDate")
+	private Set<UniversalExam> universalExamSet = new HashSet<UniversalExam>(0);
+	
+	/** 2015/11/10 是否跟读(Y/N) **/
+	@Column(name="ISSTUDYFOLLOW")
+	private String isStudyFollow;// 是否跟读(Y/N)
+
+	/**
+	 * 在线时长，主要用于计算
+	 */
+	@Column(name="LOGINLONG")
+	private Integer loginLong = 0;
+
+	/**
+	 * 在线时长，主要用于前端显示
+	 */
+	@Transient
+	private String loginLongStr;
+
+	/**
+	 * 注册时间
+	 */
+	@Column(name = "REGISTERDATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date registerDate = new Date();
+
+	/**
+	 * 首次登陆确认情况 :0未确认,1已确认
+	 */
+	@Column(name = "FIRSTCOMFIRMSTATUS")
+	private String firstComfirmStatus = "0";
+
+	/**
+	 * 自我鉴定
+	 */
+	@Lob
+	@Column(name = "selfAssessment")
+	private String selfAssessment;
+
+	/**
+	 * 班级id
+	 */
+	@Transient
+	private String classesid;
+
+
+	@Transient
+	private String unitName;
+
+	@Transient
+	private String majorName;
+
+	@Transient
+	private String className;
+
+	@Transient
+	private String eduYear;
+
+	/**
+	 * 身份证号
+	 */
+	@Transient
+	private String certNum;
+
+	@Override
+	public String getResourceid() {
+		return super.getResourceid();
+	}
+
+	@Override
+	public String toString() {		
+		return super.toString();
+	}
+
+	public String getClassesid() {
+		if (ExStringUtils.isBlank(classesid) && classes != null) {
+			classesid = classes.getResourceid();
+		}
+		return classesid;
+	}
+
+	public Date getInDate() {
+		try {
+			if(ExStringUtils.isBlank(inDate+"") || null == inDate){//当入学日期为空时获取该年级下的默认入学日期
+				inDate = this.grade.getIndate();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return inDate;
+	}
+
+	public String getLoginLongStr() {
+		StringBuffer loginLongSB = new StringBuffer();
+		if(this.loginLong==null){
+			this.loginLong=0;
+		}
+		int dateNum = Integer.valueOf(this.loginLong/DATE_SECONDS);
+		int hourNum = Integer.valueOf((this.loginLong%DATE_SECONDS)/HOUR_SECONDS);
+		int minuteNum = ((this.loginLong%DATE_SECONDS)%HOUR_SECONDS)/60;
+		int sencondNum =((this.loginLong%DATE_SECONDS)%HOUR_SECONDS)%60;
+		if(dateNum!=0){
+			loginLongSB.append(dateNum+"天"+hourNum+"小时"+minuteNum+"分钟"+sencondNum+"秒");
+		}else if(hourNum!=0){
+			loginLongSB.append(hourNum+"小时"+minuteNum+"分钟"+sencondNum+"秒");
+		}else if(minuteNum!=0){
+			loginLongSB.append(minuteNum+"分钟"+sencondNum+"秒");
+		}else if(sencondNum!=0){
+			loginLongSB.append(sencondNum+"秒");
+		}else {
+			loginLongSB.append("");
+		}
+		return loginLongSB.toString();
+	}
+
+	public String getUnitName() {
+		if (ExStringUtils.isBlank(unitName) && branchSchool!=null) {
+			unitName = branchSchool.getUnitName();
+		}
+		return unitName;
+	}
+
+	public String getEduYear() {
+		if (ExStringUtils.isBlank(eduYear) && teachingPlan!=null) {
+			eduYear = teachingPlan.getEduYear();
+		}
+		return eduYear;
+	}
+
+	public String getMajorName() {
+		if (ExStringUtils.isBlank(majorName) && major != null) {
+			majorName = major.getMajorName();
+		}
+		return majorName;
+	}
+
+	public String getClassName() {
+		if (ExStringUtils.isBlank(className) && classes != null) {
+			className = classes.getClassname();
+		}
+		return className;
+	}
+}

@@ -1,0 +1,285 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>学位审核确认</title>
+<script type="text/javascript">
+$(document).ready(function(){
+	degreeAuditHistoryQueryBegin();
+});
+
+//打开页面或者点击查询（即加载页面执行）
+function degreeAuditHistoryQueryBegin() {
+	var defaultValue = "${condition['branchSchool']}";
+	var schoolId = "";
+	var gradeId = "${condition['grade']}";
+	var classicId = "${condition['classic']}";
+	var teachingType = "${condition['name~teachingType']}";
+	var majorId = "${condition['major']}";
+	var classesId = "${condition['name~classes']}";
+	var selectIdsJson = "{unitId:'branchSchool',gradeId:'grade',classicId:'classic',teachingType:'id~teachingType',majorId:'major',classesId:'id~classes'}";
+	cascadeQuery("begin", defaultValue, schoolId, gradeId, classicId,teachingType, majorId, classesId, selectIdsJson);
+}
+
+// 选择教学点
+function degreeAuditHistoryQueryUnit() {
+	var defaultValue = $("#branchSchool").val();
+	var selectIdsJson = "{gradeId:'grade',classicId:'classic',teachingType:'id~teachingType',majorId:'major',classesId:'id~classes'}";
+	cascadeQuery("unit", defaultValue, "", "", "", "", "", "",selectIdsJson);
+}
+
+// 选择年级
+function degreeAuditHistoryQueryGrade() {
+	var defaultValue = $("#branchSchool").val();
+	var gradeId = $("#grade").val();
+	var selectIdsJson = "{classicId:'classic',teachingType:'id~teachingType',majorId:'major',classesId:'id~classes'}";
+	cascadeQuery("grade", defaultValue, "", gradeId, "", "", "", "",selectIdsJson);
+}
+
+// 选择层次
+function degreeAuditHistoryQueryClassic() {
+	var defaultValue = $("#branchSchool").val();
+	var gradeId = $("#grade").val();
+	var classicId = $("#classic").val();
+	var selectIdsJson = "{teachingType:'id~teachingType',majorId:'major',classesId:'id~classes'}";
+	cascadeQuery("classic", defaultValue, "", gradeId, classicId, "", "", "", selectIdsJson);
+}
+
+/*
+function confirmDegreeAudit(){//确定获得学位
+	var stus="";
+	$("input[name='degreeAuditConfirmid']").each(function(){
+		if($(this).attr("checked")){
+			stus += ""+$(this).val()+",";
+		}
+	});
+	if(""==stus){
+		alertMsg.warn("请选择一条或多条记录！");return false;
+	}
+	var degreeDate = $('#degreeDate_ga').val();
+	var branchSchool = $("#dAuditHistory #branchSchool").val();
+	var major		       = $("#dAuditHistory #major").val();
+	var classic			   = $("#dAuditHistory #classic").val();
+	var grade			   = $("#dAuditHistory #grade").val();
+	var name			   = $("#dAuditHistory #name").val();
+	var studyNo	       = $("#dAuditHistory #studyNo").val();
+	var pNum              = $("#pNum").val();
+	var auditStatus	   = $("#dAuditHistory #auditStatus").val();
+	var confirmStatus = $("#dAuditHistory #confirmStatus").val();
+	
+	var postUrl="${baseUrl}/edu3/roll/graduateaudit/confirmDegreeAudit.html?stus="+stus+"&degreeDate="+degreeDate;
+	$.ajax({
+		type:"post",
+		url:postUrl,
+		dataType:"json",
+		success:function(data){
+			alertMsg.warn(data['message']);
+			var url = "${baseUrl}/edu3/schoolroll/graduation/student/confirmDegreePage.html?branchSchool="+branchSchool+"&major="+major+"&classic="+classic+"&name="+name+"&studyNo="+studyNo+"&grade="+grade+"&degreeDate="+degreeDate+"&pNum="+pNum+"&auditStatus="+auditStatus+"&confirmStatus="+confirmStatus+"&isRefresh=1";
+			navTab.openTab('RES_SCHOOL_DEGREE_AUDITCONFIRM', url, '学位审核确认');
+		}
+	});
+	
+}
+*/
+function exportDegreeAudit(){//导出审核结果(按查询条件导出)
+	var branchSchool = $("#dAuditHistory #branchSchool").val();
+	var major		       = $("#dAuditHistory #major").val();
+	var classic			   = $("#dAuditHistory #classic").val();
+	var grade			   = $("#dAuditHistory #grade").val();
+	var name			   = $("#dAuditHistory #name").val();
+	var studyNo	       = $("#dAuditHistory #studyNo").val();
+	var auditStatus	   = $("#dAuditHistory #auditStatus").val();
+	var confirmStatus = $("#dAuditHistory #confirmStatus").val();
+	alertMsg.confirm("您确定按查询条件导出学位审核结果吗？", {
+		okCall:function(){
+			$('#frame_exportDegreeAuditList').remove();
+			var iframe = document.createElement("iframe");
+			iframe.id = "frame_exportDegreeAuditList";
+			iframe.src = "${baseUrl }/edu3/schoolroll/degree/student/exportExcel.html?exportType=condition&branchSchool="+branchSchool+"&major="+major+"&classic="+classic+"&name="+name+"&studyNo="+studyNo+"&grade="+grade+"&auditStatus="+auditStatus+"&confirmStatus="+confirmStatus+"&isSelectAll=1";
+			iframe.style.display = "none";
+			//创建完成之后，添加到body中
+			document.body.appendChild(iframe);
+		}
+	});
+}
+/*
+function exportDegreeAudit2(){//导出审核结果(按勾选导出)
+	var stus="";
+	$("input[name='degreeAuditConfirmid']").each(function(){
+		if($(this).attr("checked")){
+			stus += ""+$(this).val()+",";
+		}
+	});
+	if(""==stus){
+		alertMsg.warn("请选择一条或多条记录！");return false;
+	}else{
+		$('#frame_exportDegreeAuditList2').remove();
+		var iframe = document.createElement("iframe");
+		iframe.id = "frame_exportDegreeAuditList2";
+		iframe.src = "${baseUrl }/edu3/schoolroll/degree/student/exportExcel.html?exportType=click&stus="+stus;
+		iframe.style.display = "none";
+		//创建完成之后，添加到body中
+		document.body.appendChild(iframe);
+	}
+}
+*/
+//查看学位审核数据
+function viewStuDegreeAuditData(stuId){//查看
+	$.pdialog.open('${baseUrl}/edu3/schoolroll/degree/student/view.html?studentId='+stuId, 'RES_SCHOOL_DEGREEAUDITDATA_VIEW', '查看学位审核数据', {width: 800, height: 600});
+}
+
+function memoEduit(id){
+	if(id!=""){
+		var url = "${baseUrl}/edu3/schoolroll/graduation/student/editDegreeAuditHistory.html";
+		$.pdialog.open(url+'?editDegreeAuditHistoryId='+id, 'RES_SCHOOL_SCHOOLROLL_DEGREE_VIEW', '编辑学位审核记录', {width: 800, height: 400});
+	}		
+}
+
+</script>
+</head>
+<body>
+
+	<div class="page">
+		<div class="pageHeader" style="height: 50px;">
+			<form onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/schoolroll/graduation/student/confirmDegreePage.html"
+				method="post">
+				<div class="searchBar" id="dAuditHistory">
+					<ul class="searchContent">
+						<li class="custom-li"><label>教学站：</label> <span sel-id="branchSchool"
+							sel-name="branchSchool"
+							sel-onchange="degreeAuditHistoryQueryUnit()"
+							sel-classs="flexselect"></span></li>
+						<li><label>年级：</label> <span sel-id="grade" sel-name="grade"
+							sel-onchange="degreeAuditHistoryQueryGrade()"
+							sel-style="width: 120px"></span></li>
+						<li><label>层次：</label> <span sel-id="classic"
+							sel-name="classic"
+							sel-onchange="degreeAuditHistoryQueryClassic()"
+							sel-style="width: 120px"></span></li>
+						<li><label>审核状态：</label><select id="auditStatus"
+							name="auditStatus" style="width: 100px">
+								<option value="">请选择</option>
+								<option
+									<c:if test="${condition['auditStatus']==1}">selected="selected"</c:if>
+									value="1">通过</option>
+								<option
+									<c:if test="${condition['auditStatus']==0}">selected="selected"</c:if>
+									value="0">不通过</option>
+						</select></li>
+
+					</ul>
+					<ul class="searchContent">
+						<li class="custom-li"><label>专业：</label> <span sel-id="major" sel-name="major"
+							sel-classs="flexselect"></span></li>
+						<li><label>姓名：</label><input type="text" id="name"
+							name="name" value="${condition['name']}" style="width: 115px" />
+						</li>
+						<li><label>学号：</label><input type="text" id="studyNo"
+							name="studyNo" value="${condition['studyNo']}"
+							style="width: 115px" /></li>
+						
+						<li><label>确认状态：</label><select id="confirmStatus"
+							name="confirmStatus" style="width: 100px">
+								<option value="">请选择</option>
+								<option
+									<c:if test="${condition['confirmStatus']==1}">selected="selected"</c:if>
+									value="1">已确认</option>
+								<option
+									<c:if test="${condition['confirmStatus']==0}">selected="selected"</c:if>
+									value="0">未确认</option>
+						</select></li>
+						<div class="buttonActive" style="float: right">
+							<div class="buttonContent">
+								<button type="submit">查 询</button>
+							</div>
+						</div>
+					</ul>
+
+				</div>
+			</form>
+		</div>
+		<div class="pageContent">
+
+			<gh:resAuth parentCode="RES_SCHOOL_DEGREE_AUDITCONFIRM"
+				pageType="list"></gh:resAuth>
+			<table class="table" layouth="137">
+				<thead>
+					<tr>
+						<!-- <th width="5%"><input type="checkbox" name="checkall" id="check_all_degree" onclick="checkboxAll('#check_all_degree','degreeAuditConfirmid','#confirmDegreeAuditBody')"/></th> -->
+						<th width="10%">学号</th>
+						<th width="5%">姓名</th>
+						<th width="5%">审核状态</th>
+						<th width="5%">确认获得学位</th>
+						<th width="15%">原因</th>
+						<th width="8%">毕业证书编号</th>
+						<th width="8%">学位名称</th>
+						<th width="8%">平均分</th>
+						<c:choose>
+							<%-- 广东医要显示平均学分绩点字段 --%>
+							<c:when test="${schoolCode=='10571' }">
+								<th width="8%">平均学分绩点</th>
+							</c:when>
+							<%-- 广东医不显示毕业论文成绩字段 --%>
+							<c:otherwise>
+								<th width="8%">毕业论文成绩</th>
+							</c:otherwise>
+						</c:choose>
+						<th width="8%">学位英语</th>
+						<th width="15%">实际情况备注</th>
+					</tr>
+				</thead>
+				<tbody id="confirmDegreeAuditBody">
+					<c:forEach items="${adlist}" var="degreeAuditConfirm"
+						varStatus="vs">
+						<tr>
+							<!--		            <td><c:if test="${degreeAuditConfirm.degreeAuditStatus=='1'&&fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[2]=='0'}"><input type="checkbox" name="degreeAuditConfirmid" -->
+							<!---->
+							<!--value="${degreeAuditConfirm.studentInfo.resourceid }" autocomplete="off" /></c:if></td>-->
+							<td>${degreeAuditConfirm.studentInfo.studyNo}</td>
+							<td>${degreeAuditConfirm.studentInfo.studentName}</td>
+							<td><c:if
+									test="${degreeAuditConfirm.degreeAuditStatus=='1'}">
+									<font color="blue">审核通过</font>
+								</c:if> <c:if test="${degreeAuditConfirm.degreeAuditStatus=='0'}">
+									<font color="red">审核不通过</font>
+								</c:if></td>
+							<td><c:if
+									test="${fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[2]=='#1'}">
+									<font color="blue">已确认</font>
+								</c:if> <c:if
+									test="${fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[2]=='#0'}">
+									<font color="red">未确认</font>
+								</c:if></td>
+							<td>${fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[0]}</td>
+							<td>${degreeAuditConfirm.graduateData.diplomaNum }</td>
+							<td>${degreeAuditConfirm.graduateData.degreeName }</td>
+							<td>${degreeAuditConfirm.graduateData.avg }</td>
+							<c:choose>
+								<%-- 广东医要显示平均学分绩点字段 --%>
+								<c:when test="${schoolCode=='10571' }">
+									<td>${degreeAuditConfirm.graduateData.avgCreditHour }</td>
+								</c:when>
+								<%-- 广东医不显示毕业论文成绩字段 --%>
+								<c:otherwise>
+									<td>${degreeAuditConfirm.graduateData.thesisScore }</td>
+								</c:otherwise>
+							</c:choose>
+							<td>${degreeAuditConfirm.graduateData.degreeEnglish }</td>
+							<td
+								title="${fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[1]}"><a
+								href="#" style="color: blue"
+								onclick="memoEduit('${degreeAuditConfirm.resourceid}')">[编辑备注]</a>${fn:split(degreeAuditConfirm.degreeAuditMemo,'|')[1]}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<gh:page page="${degreeAuditList}"
+				goPageUrl="${baseUrl }/edu3/schoolroll/graduation/student/confirmDegreePage.html"
+				pageType="sys" condition="${condition}" />
+		</div>
+	</div>
+	<input type="hidden" id="pNum" value="${condition['pNum']}" />
+</body>
+
+</html>

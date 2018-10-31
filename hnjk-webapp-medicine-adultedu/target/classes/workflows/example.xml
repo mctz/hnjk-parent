@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<meta name="url">/demo/documentation/edit.do</meta>
+	<meta name="name">测试文档</meta>
+    <initial-actions>
+        <action id="100" name="启动工作流">
+            <pre-functions>
+                <function type="class">
+                    <arg name="class.name">com.opensymphony.workflow.util.Caller</arg>
+                </function>
+            </pre-functions>
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="1" owner="${caller}"/>
+            </results>
+        </action>
+    </initial-actions>
+
+    <steps>
+    	<step id="1" name="申请">
+            <actions>
+                <action id="1" name="提交学习中心领导审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="USER_4028979525345bf80125345c24d70001"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="2" name="学习中心领导审核">
+            <actions>
+                <action id="2" name="提交招生办审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="3" owner="ROLE_402893d424ec83f60124ec8422590001"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="3" name="招生办核审">
+            <actions>
+                <action id="3" name="提交主管书记审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="4" owner="USER_4028979525345bf80125345c24d70001"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        
+        <step id="4" name="主管书记审核">
+            <actions>
+                <action id="4" name="提交归档">
+                	<restrict-to>
+                		<conditions>
+                			<condition type="class">
+                                <arg name="class.name">com.opensymphony.workflow.util.StatusCondition</arg>
+                                <arg name="status">Underway</arg>
+                            </condition>
+                		</conditions>
+                	</restrict-to>
+                    <results>
+                        <unconditional-result old-status="Finished" status="Finished" step="4"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+         
+	</steps>
+</workflow>

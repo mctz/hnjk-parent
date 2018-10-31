@@ -1,0 +1,267 @@
+package com.hnjk.edu.basedata.model;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Where;
+
+import com.hnjk.core.annotation.Historizable;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.listener.OperationType;
+import com.hnjk.platform.system.model.BaseLogHistoryModel;
+
+/**
+ * <code>StudentBaseInfo</code>基础数据-学生基础信息.<p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-3-12 下午02:22:08
+ * @see 
+ * @version 1.0
+ */
+@Entity
+@Table(name="EDU_BASE_STUDENT")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Historizable(logable=true,value={OperationType.UPDATE})
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class StudentBaseInfo  extends BaseLogHistoryModel {
+
+	/**
+	 * 姓名
+	 */
+	@Column(name="NAME",nullable=false)
+    private String name;
+
+	/**
+	 * 曾用名
+	 */
+	@Column(name="NAMEUSED")
+	private String nameUsed;
+
+	/**
+	 * 姓名拼音
+	 */
+	@Column(name="NAMEPY")
+	private String namePY;
+
+	/**
+	 * 性别 ：CodeSex
+	 * 0	未知
+	 * 1	男
+	 * 2	女
+	 */
+     @Column(name="GENDER",nullable=false)
+     private String gender;
+
+	/**
+	 * 相片路径
+	 */
+	@Column(name="PHOTOPATH")
+	private String photoPath;
+
+	/**
+	 * 证件类型，取基础数据
+	 */
+	@Column(name="CERTTYPE",nullable=false)
+	private String certType;
+
+	/**
+	 * 证件号码 2014.04.23去掉唯一性unique=true
+	 */
+	@Column(name="CERTNUM",nullable=false)
+	private String certNum;
+
+	/**
+	 * 联系地址
+	 */
+	@Column(name="CONTACTADDRESS")
+	private String contactAddress;
+
+	/**
+	 * 联系邮编
+	 */
+	@Column(name="CONTACTZIPCODE")
+	private String contactZipcode;
+
+	/**
+	 * 联系电话
+	 */
+	@Column(name="CONTACTPHONE")
+	private String contactPhone;
+     
+     @Column(name="MOBILE",nullable=false)
+     private String mobile;//移动电话
+     
+     @Column(name="EMAIL")
+     private String email;//邮件
+     
+     @Column(name="HOMEPAGE")
+     private String homePage;//个人主页
+     
+     @Column(name="BANKBOOK")
+     private String bankBook;//银行账户
+     
+     @Column(name="HEIGHT")
+     private Long height;//身高
+     
+     @Column(name="BLOODTYPE")
+     private String bloodType;//血型：基础数据
+     
+     @Temporal(TemporalType.TIMESTAMP)
+     @Column(name="BORNDAY",nullable=false)
+     private Date bornDay;//出生日期
+     
+     @Column(name="BORNADDRESS")
+     private String bornAddress;//出生地
+     
+     @Column(name="COUNTRY")
+     private String country;//国籍：基础数据
+
+	/**
+	 * 籍贯
+	 */
+	@Column(name="HOMEPLACE")
+     private String homePlace;
+     
+     @Column(name="GAQCODE")
+     private String gaqCode;//港澳侨代码:基础数据
+
+	/**
+	 * 民族：CodeNation
+	 * 01	汉族
+	 * 97	其他
+	 * 99	其它
+	 */
+	@Column(name="NATION")
+     private String nation;
+     
+     @Column(name="HEALTH")
+     private String health;//身体健康状态：基础数据
+     
+     @Column(name="MARRIAGE")
+     private String marriage;//婚姻状况：基础数据，2014.04.24将婚姻状况不可为空的限制去掉，即去掉nullable=false
+     
+     @Column(name="POLITICS",nullable=false)
+     private String politics;//政治面貌：基础数据
+     
+     @Column(name="FAITH")
+     private String faith;//宗教信仰
+     
+     @Column(name="RESIDENCEKIND")
+     private String residenceKind;//户口性质:基础数据
+     
+     @Column(name="RESIDENCE")
+     private String residence;//户口所在地
+     
+     @Column(name="CURRENADDRESS")
+     private String currenAddress;//现住址
+     
+     @Column(name="HOMEADDRESS")
+     private String homeAddress;//住址
+     
+     @Column(name="HOMEZIPCODE")
+     private String homezipCode;//住址邮编
+     
+     @Column(name="HOMEPHONE")
+     private String homePhone;//家庭电话
+     
+     @Column(name="OFFICENAME")
+     private String officeName;//公司名称
+     
+     @Column(name="OFFICEPHONE")
+     private String officePhone;//公司电话
+     
+//     @Column(name="OFFICEADDRESS")
+//     private String officeAddress;//公司地址
+//     
+     @Column(name="OFFICEZIPCODE")
+     private String officeZipcode;//公司邮编
+     
+     @Column(name="TITLE")
+     private String title;//职务职称
+         
+     @Column(name="SPECIALIZATION")
+     private String specialization;//特长
+     
+     @Column(name="MEMO")
+     private String memo;//备注
+     
+     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+	 @org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL,org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	 @OrderBy("startYear ASC")
+	 @Where(clause="isDeleted=0")
+     @JsonIgnore
+     private Set<StudentResume> studentResume = new HashSet<StudentResume>(0);//学生简历:1:n
+     
+     
+     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studentBaseInfo")
+	 @org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL,org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	 @OrderBy("ralationType ASC")
+	 @Where(clause="isDeleted=0")
+     @JsonIgnore
+     private Set<PersonalRalation> studentRalation = new HashSet<PersonalRalation>(0);//学生简历:1:n
+    
+     /*3.0.3 新增*/
+     @Column(name="CERTPHOTOPATH")
+     private String certPhotoPath;//身份证书扫描件图片路径
+     
+     @Column(name="EDUPHOTOPATH")
+     private String eduPhotoPath;//学历证书扫描件图片路径---中医药征用字段，存放身份证反面信息
+     
+     /*3.0.6 modify 从学生报名信息表中移过来*/
+     @Column(name = "INDUSTRYTYPE")
+  	 private String industryType;// 行业类别
+     
+     @Column(name = "WORKSTATUS")
+ 	 private String workStatus;// 职业状态
+     
+     @Transient
+     private String region;//所属地区XX省/XX直辖市
+     
+     @Transient
+     private String certPhotoName;//身份证图片存在服务器中的文件名
+     
+     @Column(name="RECRUITPHOTOPATH")
+     private String recruitPhotoPath;//copy注册时的录取相片的存储地址
+     
+     @Column(name="CERTPHOTOPATHREVERSE")
+     private String certPhotoPathReverse;//身份证书扫描件图片路径--反面
+
+
+	public String getCertPhotoName() {
+		return ExStringUtils.isNotBlank(certPhotoName)?certPhotoName.substring(10, certPhotoName.length()):"";
+	}
+
+	public String getRegion() {
+		if(",,".equals(this.homePlace)){
+			return "";
+		}else{
+			return ExStringUtils.isNotBlank(this.homePlace)?this.homePlace.split(",")[0]:"";
+		}
+	}
+
+	@Override
+	public String toString() {	
+		return getName();
+	}
+
+}

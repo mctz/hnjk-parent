@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  
+ <parent>
+    <artifactId>hnjk</artifactId>
+    <groupId>com.hnjk</groupId>
+    <version>3.1.1</version>
+  </parent>
+	<properties>
+		<maven.compiler.source>6</maven.compiler.source>
+		<maven.compiler.target>6</maven.compiler.target>
+	</properties>
+  <groupId>com.hnjk</groupId>
+  <artifactId>hnjk-core-v3</artifactId>
+  <version>3.1.1</version>
+  <name>hnjk-core-v3</name>
+  <packaging>jar</packaging>
+  <url>http://v3.hnjk.net:8080</url>
+  
+  
+  <dependencies>
+   	 <!-- spring -->
+  	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+	</dependency>
+  	<dependency>  	
+		<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core-tiger</artifactId>
+		</dependency>
+		
+		<!-- hibernate -->	
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<optional>true</optional>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>			
+		</dependency>
+		-->
+		<!-- search -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
+			<optional>true</optional>
+		</dependency>		
+		<!-- cache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode</groupId>
+			<artifactId>hibernate-memcached</artifactId>		
+		</dependency>
+		<!-- memcached client-->			
+		<dependency>
+		  <groupId>spy</groupId>
+		  <artifactId>spymemcached</artifactId>			 
+		</dependency>
+		<!-- sprng mvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- j2ee jsp/servlet -->		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<optional>true</optional>
+		</dependency>	
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<optional>true</optional>
+		</dependency>	
+		<!-- json -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+		</dependency>		
+	     <!--logging&apache commons -->
+	     <dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<optional>true</optional>			
+		</dependency>	
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>			
+		</dependency>
+		<dependency>
+			 <groupId>org.apache.tools.zip</groupId>
+			 <artifactId>ant</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- jxl -->
+		<dependency>
+			  <groupId>jxl</groupId>
+			  <artifactId>jxl</artifactId>			 
+		</dependency>
+		<!-- xml -->	
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<optional>true</optional>		
+		</dependency>		
+		<dependency>
+			  <groupId>net.sf</groupId>
+			  <artifactId>pinyin4j</artifactId>			 
+		</dependency>
+		<!-- jasperreport -->
+		<dependency>
+			 <groupId>net.sf.jasperreports</groupId>
+			 <artifactId>jasperreports</artifactId>			 
+		</dependency>
+		<dependency>
+		  <groupId>net.sf.jasperreports</groupId>
+		  <artifactId>jasperreports-fonts</artifactId>			  
+		</dependency>
+		<dependency>
+		  <groupId>groovy</groupId>
+		  <artifactId>groovy-all</artifactId>			 
+		</dependency>
+	
+		<!-- itext -->
+			<dependency>
+			  <groupId>com.lowagie.itext</groupId>
+			  <artifactId>itext</artifactId>			 
+			</dependency>
+			<dependency>
+			  <groupId>com.lowagie.itext</groupId>
+			  <artifactId>itextasian</artifactId>		
+			</dependency>		
+			<dependency>
+			  <groupId>com.lowagie.itext</groupId>
+			  <artifactId>rtf</artifactId>			
+			</dependency>
+		
+		<!--unit test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.opensymphony.quartz</groupId>
+			<artifactId>quartz-all</artifactId>
+			<scope>test</scope>	
+		</dependency>
+				
+		<!-- oracle jdbc driver -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+		</dependency>
+		<!-- poi-ooxml Excel2010版本 -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		</dependency> 
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml-schemas</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.xmlbeans</groupId>
+		  <artifactId>xmlbeans</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>stax</groupId>
+		  <artifactId>stax-api</artifactId>
+		</dependency>
+		<!-- MAS短信服务使用的JAR包 -->
+		<!-- MAS短信核心包 --> 
+		<dependency>
+		  <groupId>xy.mas</groupId>
+		  <artifactId>ImApi</artifactId>
+		  <version>2.4</version>
+		</dependency>
+		<!-- MAS依赖的MySQL驱动包 -->
+		<dependency>
+		  <groupId>xy.mysql</groupId>
+		  <artifactId>mysql.jasson</artifactId>
+		  <version>5.0.8</version> 
+		  <classifier>bin</classifier> 
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+		<dependency>
+		    <groupId>commons-net</groupId>
+		    <artifactId>commons-net</artifactId>
+		    <version>3.3</version>
+		</dependency>
+	  <dependency>
+		  <groupId>org.projectlombok</groupId>
+		  <artifactId>lombok</artifactId>
+		  <scope>provided</scope>
+	  </dependency>
+      <dependency>
+          <groupId>com.github.jsqlparser</groupId>
+          <artifactId>jsqlparser</artifactId>
+          <version>0.9.1</version>
+      </dependency>
+  </dependencies>
+</project>

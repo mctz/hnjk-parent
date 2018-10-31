@@ -1,0 +1,351 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>毕业生数据</title>
+<style type="text/css">
+	td,th{text-align: center;}
+</style>
+<script type="text/javascript">
+	//查看学籍异动详情  保留功能
+	function viewStuChangeInfoInGraduationLab(stuId){//查看
+		$.pdialog.open('${baseUrl}/edu3/framework/register/stuchangeinfo/view.html?studentId='+stuId, 'RES_SCHOOL_SCHOOLROLL_CHANGE_VIEW', '查看学籍异动', {width: 800, height: 600});
+	}
+</script>
+</head>
+<body>
+	<div class="page">
+		<div class="pageHeader" style="height: 75px;">
+			<input type="hidden" id="changePStatus" value="" />
+			<form onsubmit="return navTabSearch(this);"
+				action="${baseUrl }/edu3/schoolroll/graduation/student/DegreeAuditList.html"
+				method="post">
+				<input type="hidden" id="degreeaudit-list-schoolCode"
+					value="${schoolCode }" />
+				<div id="graduateDegreeAudit" class="searchBar">
+					<ul class="searchContent">
+						<c:if test="${showCenter eq 'show'}">
+							<li class="custom-li"><label>教学站：</label> <span sel-id="eiinfo_brSchoolName"
+								sel-name="branchSchool" sel-onchange="degreeauditQueryUnit()"
+								sel-classs="flexselect" ></span></li>
+						</c:if>
+						<li><label>年级：</label> <span sel-id="grade" sel-name="grade"
+							sel-onchange="degreeauditQueryGrade()" sel-style="width: 120px"></span>
+						</li>
+						<li><label>学位外语：</label>
+						<gh:select name="degreeEnglish" id="degreeEnglish"
+								value="${condition['degreeEnglish']}" dictionaryCode="yesOrNo"
+								style="width:120px" /></li>
+					</ul>
+					<ul class="searchContent">
+						<li class="custom-li"><label>专业：</label> <span sel-id="major" sel-name="major"
+							sel-classs="flexselect"></span></li>
+						<li><label>姓名：</label> <input type="text" name="name"
+							id="name" value="${condition['name']}" style="width: 120px" />
+							</li>
+						<li><label>学号：</label><input type="text" name="studyNo"
+							id="studyNo" value="${condition['studyNo']}" style="width: 120px" />
+						</li>
+						
+						<%-- <li><label>是否有相片</label>
+					<gh:select id="havePhoto" name="havePhoto" dictionaryCode="yesOrNo"  value="${condition['havePhoto']}" choose="Y" style="width: 120px"/> 
+				</li> --%>
+						<div class="buttonActive" style="float: right">
+							<div class="buttonContent">
+								<button type="submit">查 询</button>
+							</div>
+						</div>
+					</ul>
+					<ul>
+						<li style="width: 100%"><font color="red">学位审核条件</font>
+							<c:choose>
+								<%-- 广东医学位审核条件 --%>
+								<c:when test="${schoolCode=='10571' }">
+									<input type="checkbox" id="isGraduationStu" value="on"
+										checked="checked" />1.正常毕业
+								    <input type="checkbox" id="degreeScore" value="on" style="margin-left: 30px"
+										checked="checked" />2.学位外语考试通过
+								    <input type="checkbox" id="graduationAvg" value="on" style="margin-left: 30px"
+										checked="checked" />3.平均学分绩点${choose_1_value}以上（含${choose_1_value},补考合格的课程按${choose_2_value}绩点计算）
+		            			</c:when>
+								<%-- 桂林医学位审核条件 --%>
+								<c:when test="${schoolCode == '10601'}">
+									<input type="checkbox" id="graduationAvg" value="on" style="margin-left: 30px"
+										   checked="checked" />1.全部课程总评成绩的平均分在${choose_1_value}分以上（含${choose_1_value}分、补考合格的课程按${choose_2_value}分计算）
+									<input type="checkbox" id="degreeScore" value="on" style="margin-left: 30px"
+										   checked="checked" />2.学位外语统考通过
+									<input type="checkbox" id="hasDegreeMate" value="on" style="margin-left: 30px"
+										   checked="checked" />3.学位审核材料交齐
+								</c:when>
+								<%-- 其他学校学位审核条件 --%>
+								<c:otherwise>
+									<input type="checkbox" id="isGraduationStu" value="on"
+										checked="checked" />1.应届本科毕业生
+								    <input type="checkbox" id="graduationAvg" value="on" style="margin-left: 30px"
+												checked="checked" />2.全部课程总评成绩的平均分在${choose_1_value}分以上（含${choose_1_value}分、补考合格的课程按${choose_2_value}分计算）
+								    <input type="checkbox" id="thesisScore" value="on" style="margin-left: 30px"
+												checked="checked" />3.毕业论文成绩${choose_3_value}分以上（含${choose_3_value}分）
+								    <input type="checkbox" id="degreeScore" value="on" style="margin-left: 30px"
+												checked="checked" />4.学位外语统考通过  
+		            	</c:otherwise>
+							</c:choose> <%--主干课<input type="checkbox" 	id="mainC" value="on" checked="checked" /> &nbsp; &nbsp; 
+						毕业论文<input type="checkbox" 	id="graduateC" value="on"  checked="checked"/> &nbsp; &nbsp; 
+						学位专业基础课<input type="checkbox" id="dmbaseC" value="on"  checked="checked"/> &nbsp; &nbsp; 
+						学位主干课1<input type="checkbox" 	id="dmain1C" value="on"  checked="checked"/> &nbsp; &nbsp; 
+						学位主干课2<input type="checkbox" id="dmain2C" value="on"  checked="checked"/> &nbsp; &nbsp; 
+						外国语课<input type="checkbox" 	id="flC" value="on"  checked="checked"/> &nbsp; &nbsp;  --%>
+						</li>
+
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="pageContent">
+			<gh:resAuth parentCode="RES_SCHOOL_DEGREE_AUDIT" pageType="list"></gh:resAuth>
+			<table class="table" layouth="155">
+				<thead>
+					<tr>
+						<th width="3%"><input type="checkbox" name="checkall"
+							id="check_all_gda"
+							<c:if test="${condition['checkAllFlag_gdA']=='1'}">checked="checked"</c:if>
+							onclick="trueCheckAll()" /></th>
+						<th width="8%">学号</th>
+						<th width="5%">姓名</th>
+						<th width="5%">年级</th>
+						<th width="8%">专业</th>
+						<th width="8%">毕业证书编号</th>
+						<th width="8%">平均分</th>
+						<c:choose>
+							<%-- 广东医要显示平均学分绩点字段 --%>
+							<c:when test="${schoolCode=='10571' }">
+								<th width="8%">平均学分绩点</th>
+							</c:when>
+							<%-- 广东医不显示毕业论文成绩字段 --%>
+							<c:otherwise>
+								<th width="8%">毕业论文成绩</th>
+							</c:otherwise>
+						</c:choose>
+						<th width="8%">学位英语</th>
+						<th width="20%">奖惩记录</th>
+						<th width="5%">毕业日期</th>
+						<th width="5%">学位状态</th>
+					</tr>
+				</thead>
+				<tbody id="degreeAuditBody">
+					<c:forEach items="${graduationDegree.result}" var="g"
+						varStatus="vs">
+						<tr>
+							<td><c:if test="${g.hasBaseInfo==true }">
+									<input type="checkbox" name="graduateDegreeResourceid"
+										value="${g.resourceid }" autocomplete="off"
+										<c:if test="${condition['checkAllFlag_gdA']=='1'}">checked="checked"</c:if> />
+								</c:if></td>
+							<td>${g.studentInfo.studyNo }</td>
+							<td><c:if test="${g.hasStuChange==true}">
+									<a href="#" onclick="viewStuChangeInfoInGraduationLab('${g.studentInfo.resourceid}')"
+										style="color: red;"	title="点击查看">${g.studentInfo.studentName }</a>
+								</c:if> <c:if test="${g.hasStuChange==false}">${g.studentInfo.studentName }</c:if>
+							</td>
+							<td>${g.studentInfo.grade }</td>
+							<td style="text-align: left;">${g.studentInfo.major }</td>
+							<td>${g.diplomaNum }</td>
+							<td>${g.avg }</td>
+							<c:choose>
+								<%-- 广东医要显示平均学分绩点字段 --%>
+								<c:when test="${schoolCode=='10571' }">
+									<td>${g.avgCreditHour }</td>
+								</c:when>
+								<%-- 广东医不显示毕业论文成绩字段 --%>
+								<c:otherwise>
+									<td>${g.thesisScore }</td>
+								</c:otherwise>
+							</c:choose>
+							<td>${g.degreeEnglish }</td>
+							<td>${g.studentRecord }</td>
+							<td><fmt:formatDate pattern="yyyy-MM-dd"
+									value="${g.graduateDate }" /></td>
+							<td <c:if test="${g.degreeStatus=='Y'}">style='color: blue;'</c:if>
+								<c:if test="${g.degreeStatus=='N'}">style='color: red;'</c:if>
+								><c:choose>
+									<c:when test="${g.degreeStatus=='Y'}">
+										已获得
+									</c:when>
+									<c:when test="${g.degreeStatus=='N'}">未获得</c:when>
+									<c:when test="${g.degreeStatus=='W'}">待审核</c:when>
+									<c:otherwise>-</c:otherwise>
+								</c:choose></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div  class="pageContent" style="position: absolute;bottom: 0px;width: 100%">
+			<gh:page page="${graduationDegree}"
+				goPageUrl="${baseUrl }/edu3/schoolroll/graduation/student/DegreeAuditList.html"
+				pageType="sys" condition="${condition}" /></div>
+	</div>
+	<script type="text/javascript">
+$(document).ready(function(){
+	degreeauditQueryBegin();
+});
+
+//打开页面或者点击查询（即加载页面执行）
+function degreeauditQueryBegin() {
+	var defaultValue = "${condition['branchSchool']}";
+	var schoolId = "${linkageQuerySchoolId}";
+	var gradeId = "${condition['grade']}";
+	var majorId = "${condition['major']}";
+	var selectIdsJson = "{unitId:'eiinfo_brSchoolName',gradeId:'grade',majorId:'major'}";
+	cascadeQuery("begin", defaultValue, schoolId, gradeId, "","", majorId, "", selectIdsJson);
+}
+
+// 选择教学点
+function degreeauditQueryUnit() {
+	var defaultValue = $("#eiinfo_brSchoolName").val();
+	var selectIdsJson = "{gradeId:'grade',majorId:'major'}";
+	cascadeQuery("unit", defaultValue, "", "", "", "", "", "",selectIdsJson);
+}
+
+// 选择年级
+function degreeauditQueryGrade() {
+	var defaultValue = $("#eiinfo_brSchoolName").val();
+	var gradeId = $("#grade").val();
+	var selectIdsJson = "{majorId:'major'}";
+	cascadeQuery("grade", defaultValue, "", gradeId, "", "", "", "",selectIdsJson);
+}
+
+function trueCheckAll(){
+	/*if($("#check_all_gda").attr("checked")==true){
+		$("input[name='checkAllFlag_gdA']").val("1");
+	}else{
+		$("input[name='checkAllFlag_gdA']").val("0");
+	}*/
+	checkboxAll('#check_all_gda','graduateDegreeResourceid','#degreeAuditBody');
+}
+function getTotal(){
+	//是否使用全选
+	var isSelectAll = 1;//$("input[name='checkAllFlag_gdA']").val();
+	var stus="";
+	var t = 0;
+	$("input[name='graduateDegreeResourceid']").each(function(){
+		if($(this).attr("checked")){
+			stus += ""+$(this).val()+",";
+			t += 1;
+			isSelectAll = 0;
+		}
+	});
+	/*if(""==stus){
+		alertMsg.warn("请选择一条或多条记录！");return false;
+	}*/
+	var branchSchool=$('#graduateDegreeAudit #eiinfo_brSchoolName').val()==undefined?"":$('#graduateDegreeAudit #eiinfo_brSchoolName').val();
+	var major		      =$('#graduateDegreeAudit #major').val()==undefined?"":$('#graduateDegreeAudit #major').val();
+	var classic		      =$('#graduateDegreeAudit #classic').val()==undefined?"":$('#graduateDegreeAudit #classic').val();
+	var publishStatus =$('#graduateDegreeAudit #publishStatus').val()==undefined?"":$('#graduateDegreeAudit #publishStatus').val();
+	var name		       =$('#graduateDegreeAudit #name').val()==undefined?"":$('#graduateDegreeAudit #name').val();
+	var matriculateNoticeNo	=$('#graduateDegreeAudit #studyNo').val()==undefined?"":$('#graduateDegreeAudit #studyNo').val();
+	var grade 		       =$('#graduateDegreeAudit #grade').val()==undefined?"":$('#graduateDegreeAudit #grade').val();
+	var degreeEnglish 		       =$('#graduateDegreeAudit #degreeEnglish').val()==undefined?"":$('#graduateDegreeAudit #degreeEnglish').val();
+	var selectCon =  "?branchSchool="+branchSchool+
+    "&major="+major+
+    "&classic="+classic+
+    "&degreeEnglish="+degreeEnglish+
+    "&name="+name+
+    "&matriculateNoticeNo="+matriculateNoticeNo+
+    "&grade="+grade+
+    "&isSelectAll="+isSelectAll+
+    "&stus="+stus;
+	var url= "${baseUrl }/edu3/schoolroll/graduation/student/getDegreeAuditNum.html"+selectCon;
+	$.ajax({
+			type:"post",
+			url:url,
+			dataType:"json",
+			success:function(data){
+				//doDegreeAudit(t,selectCon);//data['total']
+				doDegreeAudit(data['total'],selectCon,isSelectAll);
+	}});
+}
+//学位审核
+function doDegreeAudit(val,selectCon,isSelectAll){
+	//var isSelectAll = $("input[name='checkAllFlag_gdA']").val();
+	//审核条件
+	var mainC = $("#mainC").attr("checked");
+	var graduateC = $("#graduateC").attr("checked");
+	var dmbaseC = $("#dmbaseC").attr("checked");
+	var dmain1C = $("#dmain1C").attr("checked");
+	var dmain2C = $("#dmain2C").attr("checked");
+	var flC = $("#flC").attr("checked");
+	
+	var	isGraduationStu = 	$("#isGraduationStu").attr("checked");
+	var	graduationAvg	= 	$("#graduationAvg").attr("checked");
+	var	thesisScore		= 	$("#thesisScore").attr("checked");
+	var	degreeScore     = 	$("#degreeScore").attr("checked");
+    var hasDegreeMate	= 	$("#hasDegreeMate").attr("checked");
+	var schoolCode = $("#degreeaudit-list-schoolCode").val();
+	var  _isSelectAll = true;
+	if(schoolCode && schoolCode=="10571"){
+		if(isGraduationStu == false || graduationAvg == false || degreeScore == false){
+			_isSelectAll = false;
+		}
+	}else {
+		if(isGraduationStu == false || graduationAvg == false || thesisScore == false || degreeScore == false){
+			_isSelectAll = false;
+		}
+	}
+	
+	if(!_isSelectAll){
+		alertMsg.confirm("学位条件并未全部勾选,确定要进行学位审核操作吗？",{
+			okCall: function(){
+				var degreeCon = "?mainC="+mainC+
+			    "&graduateC="+graduateC+
+			    "&flC="+flC+
+			    "&dmbaseC="+dmbaseC+
+			    "&dmain1C="+dmain1C+
+			    "&dmain2C="+dmain2C;
+				var tips = "审核条数为"+val+"条。";
+				if(val<1000&&val>100){
+					tips="审核条数为"+val+"条，学位审核时间将<font color='blue'>比较长</font>，请耐心等待。";
+				}
+				if(val>1000&&"1"==isSelectAll){
+					tips="审核条数为"+val+"条，大于1000条记录，学位审核时间将<font color='red'>很长</font>，您确定要进行学位审核么？";
+				}
+				var pNum       =$('#pNum').val()==undefined?"":$('#pNum').val();
+				var postUrl="${baseUrl}/edu3/roll/graduateaudit/viaDegree.html"+degreeCon+selectCon+"&doAudit=Y"+"&isGraduationStu="+isGraduationStu+"&graduationAvg="+graduationAvg+"&thesisScore="+thesisScore+"&degreeScore="+degreeScore+"&hasDegreeMate="+hasDegreeMate+"&schoolCode="+schoolCode;
+				alertMsg.confirm(tips,{
+					okCall: function(){
+						navTab.openTab('_blank', postUrl, '学位审核结果');
+						//$.pdialog.open(postUrl, 'RES_SCHOOL_GRADUATION_DEGREEAUDIT', '学位审核结果', {max:true,maxable:true});
+					}
+				});
+			},
+			cancelCall:function(){
+				return false;
+			}
+		});
+	} else{
+		var degreeCon = "?mainC="+mainC+
+	    "&graduateC="+graduateC+
+	    "&flC="+flC+
+	    "&dmbaseC="+dmbaseC+
+	    "&dmain1C="+dmain1C+
+	    "&dmain2C="+dmain2C;
+		var tips = "审核条数为"+val+"条。";
+		if(val<1000&&val>100){
+			tips="审核条数为"+val+"条，学位审核时间将<font color='blue'>比较长</font>，请耐心等待。";
+		}
+		if(val>1000&&"1"==isSelectAll){
+			tips="审核条数为"+val+"条，大于1000条记录，学位审核时间将<font color='red'>很长</font>，您确定要进行学位审核么？";
+		}
+		var pNum       =$('#pNum').val()==undefined?"":$('#pNum').val();
+		var postUrl="${baseUrl}/edu3/roll/graduateaudit/viaDegree.html"+degreeCon+selectCon+"&doAudit=Y"+"&isGraduationStu="+isGraduationStu+"&graduationAvg="+graduationAvg+"&thesisScore="+thesisScore+"&degreeScore="+degreeScore+"&schoolCode="+schoolCode;
+		alertMsg.confirm(tips,{
+			okCall: function(){
+				navTab.openTab('_blank', postUrl, '学位审核结果');
+				//$.pdialog.open(postUrl, 'RES_SCHOOL_GRADUATION_DEGREEAUDIT', '学位审核结果', {max:true,maxable:true});
+			}
+		});
+	}
+	
+}
+</script>
+</body>
+</html>

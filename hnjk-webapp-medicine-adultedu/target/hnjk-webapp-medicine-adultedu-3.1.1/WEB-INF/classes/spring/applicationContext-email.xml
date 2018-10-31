@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<description>邮件配置</description>
+
+	<!-- 邮件发送器 
+	在这里配置邮件服务器信息:如主机、用户名密码等
+	by hzg
+	-->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.gdcn.com" />
+		<property name="username" value="hzg" />
+		<property name="password" value="809821" />
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>				
+				<!-- <prop key="mail.smtp.starttls.enable">true</prop>-->
+			</props>
+		</property>
+	</bean>
+		
+</beans>

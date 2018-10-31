@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+	<properties>
+		<maven.compiler.source>6</maven.compiler.source>
+		<maven.compiler.target>6</maven.compiler.target>
+	</properties>
+
+    <parent>
+    <artifactId>hnjk</artifactId>
+    <groupId>com.hnjk</groupId>
+    <version>3.1.1</version>
+  </parent>
+  
+  <groupId>com.hnjk</groupId>
+  <artifactId>hnjk-security-v3</artifactId>
+  <version>3.1.1</version>
+  <packaging>jar</packaging>
+  <name>hnjk-security-v3</name>
+  <description>hnjk用户与授权模块</description>
+  <url>http://v3.hnjk.net:8080</url>
+  
+  <dependencies>
+    <!-- hnjk core libs -->
+   <dependency>
+		<groupId>com.hnjk</groupId>
+		<artifactId>hnjk-core-v3</artifactId>	
+	</dependency>
+  	<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<optional>true</optional>
+		</dependency>	
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- method 保护 -->		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>							
+		</dependency>
+	<!-- hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!--  
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<optional>true</optional>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<optional>true</optional>
+		</dependency>
+					
+		<!-- security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core-tiger</artifactId>
+		</dependency>
+		<!--  验证码-->        
+       	<dependency>
+			  <groupId>com.octo</groupId>
+			  <artifactId>jcaptcha</artifactId>
+			  <version>1.0-all</version>
+			  <classifier>all</classifier>
+		</dependency>
+			
+		<!-- web -->
+  		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- logging -->
+			<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>		
+		<!-- apache commons -->
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>							
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>							
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>						
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>					
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>				
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>				
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>					
+			</dependency>
+		<!--unit test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>			
+			<optional>true</optional>
+		</dependency>
+	  <dependency>
+		  <groupId>org.projectlombok</groupId>
+		  <artifactId>lombok</artifactId>
+		  <scope>provided</scope>
+	  </dependency>
+  </dependencies>
+</project>
+

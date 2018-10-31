@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+录取信息导入检查条件和映射字段说明：
+<ExameeInfoField>
+	name:字段名称(必须)
+	titleName:字段含义
+	isNull:是否允许为空(Y/N)
+	codeTableName:字典值编码(检查字典值是否存在)
+	referenceName:关联数据名称(检查外键关联)
+	modelType:对应model类型
+	mappingFiled:对应model的字段
+	displayName:字段值对应显示名称(如层次编码对应的名称)
+</ExameeInfoField>
+ -->
+<ExameeInfoConfig>
+	<ExameeInfoField name="KSH" titleName="考生号" isNull="N" modelType="EnrolleeInfo" mappingFiled="enrolleeCode" />
+	<ExameeInfoField name="ZKZH" titleName="准考证号" isNull="N" modelType="EnrolleeInfo" mappingFiled="examCertificateNo" />
+	<ExameeInfoField name="XM" titleName="姓名" isNull="N" modelType="StudentBaseInfo" mappingFiled="name" />
+	<ExameeInfoField name="WYYZDM" titleName="外语语种" isNull="N" codeTableName="CodeForeignLanguage" />
+	<ExameeInfoField name="CSRQ" titleName="出生日期" isNull="N" modelType="StudentBaseInfo" mappingFiled="bornDay" />
+	<ExameeInfoField name="XBDM" titleName="性别" isNull="N" codeTableName="CodeSex"  modelType="StudentBaseInfo" mappingFiled="gender" />
+	<ExameeInfoField name="SFZH" titleName="身份证号" isNull="N" modelType="StudentBaseInfo" mappingFiled="certNum" />
+	<ExameeInfoField name="KSTZBZ" titleName="考生特征标志" isNull="Y" codeTableName="CodeCharacteristic" />
+	<ExameeInfoField name="ZSLBDM" titleName="招生类别" isNull="N" codeTableName="CodeRecruitType" />
+	<ExameeInfoField name="MZDM" titleName="民族" isNull="N" codeTableName="CodeNation" modelType="StudentBaseInfo" mappingFiled="nation" />
+	<ExameeInfoField name="ZZMMDM" titleName="政治面貌" isNull="N" codeTableName="CodePolitics"  modelType="StudentBaseInfo" mappingFiled="politics" />
+	<ExameeInfoField name="BKZYSXDM" titleName="报考专业属性" isNull="N" codeTableName="CodeMajorAttribute" />
+	<ExameeInfoField name="YZBM" titleName="邮政编码" isNull="N" modelType="StudentBaseInfo" mappingFiled="contactZipcode" />
+	<ExameeInfoField name="LXDH" titleName="联系电话" isNull="N" modelType="StudentBaseInfo" mappingFiled="contactPhone" />
+	<ExameeInfoField name="WHCDDM" titleName="文化程度" isNull="N" codeTableName="CodeEducationalLevel" modelType="EnrolleeInfo" mappingFiled="educationalLevel" />
+	<ExameeInfoField name="ZYLBDM" titleName="专业类别" isNull="N" codeTableName="CodeMajorCatogery" />
+	<ExameeInfoField name="GZRQ" titleName="工作年月" isNull="Y" />
+	<ExameeInfoField name="BYRQ" titleName="毕业日期" isNull="N" modelType="EnrolleeInfo" mappingFiled="graduateDate" />
+	<ExameeInfoField name="BYXX" titleName="毕业学校" isNull="N"  modelType="EnrolleeInfo" mappingFiled="graduateSchool" />
+	<ExameeInfoField name="TXDZ" titleName="录取通知书邮寄地址" isNull="N" modelType="StudentBaseInfo" mappingFiled="contactAddress" />
+	<ExameeInfoField name="LQZY" titleName="录取专业" isNull="N" referenceName="RecruitMajor" modelType="EnrolleeInfo" mappingFiled="recruitMajorCode" displayName="LQZYMC"/>
+	<ExameeInfoField name="CCDM" titleName="层次" isNull="N" referenceName="Classic" displayName="CCMC"/>		
+	<ExameeInfoField name="BXDW" titleName="办学单位" isNull="Y"  mappingFiled="branchSchool" modelType="EnrolleeInfo" displayName="BXDW"/>
+	<ExameeInfoField name="ZF" titleName="入学总分" isNull="N"  mappingFiled="totalPoint" modelType="EnrolleeInfo" />
+	<ExameeInfoWishFileld>
+		<ExameeInfoField name="ZYDH1" titleName="志愿信息1" isNull="N" referenceName="RecruitMajor" displayName="ZYMC1"/>
+		<ExameeInfoField name="ZYDH2" titleName="志愿信息2" isNull="Y" referenceName="RecruitMajor" displayName="ZYMC2"/>
+		<ExameeInfoField name="ZYDH3" titleName="志愿信息3" isNull="Y" referenceName="RecruitMajor" displayName="ZYMC3"/>
+		<ExameeInfoField name="ZYDH4" titleName="志愿信息4" isNull="Y" referenceName="RecruitMajor" displayName="ZYMC4"/>
+		<ExameeInfoField name="ZYDH5" titleName="志愿信息5" isNull="Y" referenceName="RecruitMajor" displayName="ZYMC5"/>
+		<ExameeInfoField name="ZYDH6" titleName="志愿信息6" isNull="Y" referenceName="RecruitMajor" displayName="ZYMC6"/>
+	</ExameeInfoWishFileld>	
+	<ExameeInfoScoreFileld>
+		<ExameeInfoField name="CJX01" titleName="实际总分_3" isNull="N"  mappingFiled="originalPoint" modelType="EnrolleeInfo"/>
+		<ExameeInfoField name="CJX02" titleName="照顾总分_3" isNull="Y" />
+		<ExameeInfoField name="CJX03" titleName="实际总分_4" isNull="Y" />
+		<ExameeInfoField name="CJX04" titleName="照顾总分_4" isNull="Y" />
+		<ExameeInfoField name="CJX05" titleName="艺术实际总分_3" isNull="Y" />
+		<ExameeInfoField name="CJX06" titleName="艺术照顾总分_3" isNull="Y" />
+		<ExameeInfoField name="CJX07" titleName="艺术实际总分_4" isNull="Y" />
+		<ExameeInfoField name="CJX08" titleName="艺术照顾总分_4" isNull="Y" />
+		<ExameeInfoField name="CJX10" titleName="政治" isNull="Y" />
+		<ExameeInfoField name="CJX11" titleName="专升本英语" isNull="Y" />
+		<ExameeInfoField name="CJX13" titleName="高等数学(二)" isNull="Y" />
+		<ExameeInfoField name="CJX14" titleName="大学语文" isNull="Y" />
+		<ExameeInfoField name="CJX15" titleName="民法" isNull="Y" />
+		<ExameeInfoField name="CJX16" titleName="教育理论" isNull="Y" />
+		<ExameeInfoField name="CJX17" titleName="艺术慨论" isNull="Y" />
+		<ExameeInfoField name="CJX18" titleName="生态学" isNull="Y" />
+		<ExameeInfoField name="CJX19" titleName="医学综合" isNull="Y" />
+		<ExameeInfoField name="CJX31" titleName="语文" isNull="Y" />
+		<ExameeInfoField name="CJX32" titleName="数学" isNull="Y" />
+		<ExameeInfoField name="CJX34" titleName="理化" isNull="Y" />
+		<ExameeInfoField name="CJX35" titleName="史地" isNull="Y" />
+		<ExameeInfoField name="CJX36" titleName="外语" isNull="Y" />
+		<ExameeInfoField name="CJX37" titleName="日语" isNull="Y" />
+		<ExameeInfoField name="CJX38" titleName="俄语" isNull="Y" />
+		<ExameeInfoField name="CJX50" titleName="医学综合" isNull="Y" />
+		<ExameeInfoField name="CJX51" titleName="监狱（劳教）基础" isNull="Y" />
+		<ExameeInfoField name="CJX52" titleName="中医综合" isNull="Y" />
+		<ExameeInfoField name="CJX53" titleName="公安专业基础" isNull="Y" />
+		<ExameeInfoField name="CJX91" titleName="照顾分" isNull="Y" />
+		<ExameeInfoField name="CJX92" titleName="专项测试分" isNull="Y" />
+		<ExameeInfoField name="CJX93" titleName="外语口试分" isNull="Y" />	
+	</ExameeInfoScoreFileld>
+</ExameeInfoConfig>

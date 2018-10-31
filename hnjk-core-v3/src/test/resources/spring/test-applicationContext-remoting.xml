@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<description>远程调用配置</description>
+	 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+	 	
+	<bean id="httpInvokerRemoteServiceFactory" class="com.hnjk.core.support.remoting.HttpinvokerRemoteServiceFactory">
+		<property name="packagesToScan">
+			<list>
+				<value>com.hnjk.core</value>
+			</list>
+		</property>
+	</bean>
+</beans>

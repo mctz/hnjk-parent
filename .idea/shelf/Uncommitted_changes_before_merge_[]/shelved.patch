@@ -1,0 +1,117 @@
+Index: hnjk-core-v3/src/main/resources/rebel.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-core-v3/src/main/resources/rebel.xml	(date 1533713554990)
++++ hnjk-core-v3/src/main/resources/rebel.xml	(date 1533713554990)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<!--
++  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
++  Refer to https://manuals.zeroturnaround.com/jrebel/standalone/config.html for more information.
++-->
++<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
++
++	<classpath>
++		<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-core-v3/target/classes">
++		</dir>
++	</classpath>
++
++</application>
+Index: hnjk-webapp-commons/src/main/resources/rebel.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-commons/src/main/resources/rebel.xml	(date 1533713554897)
++++ hnjk-webapp-commons/src/main/resources/rebel.xml	(date 1533713554897)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<!--
++  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
++  Refer to https://manuals.zeroturnaround.com/jrebel/standalone/config.html for more information.
++-->
++<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
++
++	<classpath>
++		<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-webapp-commons/target/classes">
++		</dir>
++	</classpath>
++
++</application>
+Index: hnjk-workflow-v3/src/main/resources/rebel.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-workflow-v3/src/main/resources/rebel.xml	(date 1533713554986)
++++ hnjk-workflow-v3/src/main/resources/rebel.xml	(date 1533713554986)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<!--
++  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
++  Refer to https://manuals.zeroturnaround.com/jrebel/standalone/config.html for more information.
++-->
++<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
++
++	<classpath>
++		<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-workflow-v3/target/classes">
++		</dir>
++	</classpath>
++
++</application>
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/rebel.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/rebel.xml	(date 1533713555009)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/rebel.xml	(date 1533713555009)
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<!--
++  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
++  Refer to https://manuals.zeroturnaround.com/jrebel/standalone/config.html for more information.
++-->
++<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
++
++	<classpath>
++		<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-webapp-medicine-adultedu/target/classes">
++		</dir>
++	</classpath>
++
++	<web>
++		<link target="/">
++			<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-webapp-medicine-adultedu/src/main/webapp">
++			</dir>
++		</link>
++	</web>
++
++</application>
+Index: hnjk-security-v3/src/main/resources/rebel.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-security-v3/src/main/resources/rebel.xml	(date 1533713555002)
++++ hnjk-security-v3/src/main/resources/rebel.xml	(date 1533713555002)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<!--
++  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
++  Refer to https://manuals.zeroturnaround.com/jrebel/standalone/config.html for more information.
++-->
++<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
++
++	<classpath>
++		<dir name="E:/Workspaces/intellijIdea_workspace/hnjk-parent/hnjk-security-v3/target/classes">
++		</dir>
++	</classpath>
++
++</application>

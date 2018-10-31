@@ -1,0 +1,605 @@
+package com.hnjk.edu.finance.controller;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.exception.WebException;
+import com.hnjk.core.foundation.utils.ExBeanUtils;
+import com.hnjk.core.foundation.utils.ExDateUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.foundation.utils.HttpHeaderUtils;
+import com.hnjk.core.foundation.utils.JsonUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.controller.BaseSupportController;
+import com.hnjk.edu.basedata.model.Grade;
+import com.hnjk.edu.basedata.model.YearInfo;
+import com.hnjk.edu.basedata.service.IGradeService;
+import com.hnjk.edu.basedata.service.IMajorService;
+import com.hnjk.edu.basedata.service.IYearInfoService;
+import com.hnjk.edu.finance.model.FeeMajor;
+import com.hnjk.edu.finance.model.PaymentFeePrivilege;
+import com.hnjk.edu.finance.model.YearPaymentStandard;
+import com.hnjk.edu.finance.model.YearPaymentStandardDetails;
+import com.hnjk.edu.finance.service.IFeeMajorService;
+import com.hnjk.edu.finance.service.IPaymentFeePrivilegeService;
+import com.hnjk.edu.finance.service.IStudentPaymentService;
+import com.hnjk.edu.finance.service.IYearPaymentStandardService;
+import com.hnjk.edu.finance.vo.PaymentFeePrivilegeVo;
+import com.hnjk.edu.recruit.model.RecruitMajor;
+import com.hnjk.edu.recruit.service.IRecruitMajorService;
+import com.hnjk.edu.util.Condition2SQLHelper;
+import com.hnjk.platform.system.UserOperationLogsHelper;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.UserOperationLogs;
+import com.hnjk.platform.taglib.JstlCustomFunction;
+import com.hnjk.security.model.OrgUnit;
+import com.hnjk.security.service.IOrgUnitService;
+/**
+ * 缴费标准管理.
+ * <code>PaymentFeeController</code><p>
+ * 
+ * @author： 广东学苑教育发展有限公司
+ * @since： 2012-11-8 下午03:27:04
+ * @see 
+ * @version 1.0
+ */
+@Controller
+public class PaymentFeeController extends BaseSupportController  {
+	
+	private static final long serialVersionUID = 5363391213439130681L;
+	
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	
+	@Autowired
+	@Qualifier("majorService")
+	private IMajorService majorService;
+	
+	@Autowired
+	@Qualifier("feeMajorService")
+	private IFeeMajorService feeMajorService;
+	
+	@Autowired
+	@Qualifier("orgUnitService")
+	private IOrgUnitService orgUnitService;	
+	
+	@Autowired
+	@Qualifier("paymentFeePrivilegeService")
+	private IPaymentFeePrivilegeService paymentFeePrivilegeService;
+	
+	@Autowired
+	@Qualifier("recruitMajorService")
+	private IRecruitMajorService recruitMajorService;
+	
+	@Autowired
+	@Qualifier("yearPaymentStandardService")
+	private IYearPaymentStandardService yearPaymentStandardService;
+	
+	@Autowired
+	@Qualifier("yearInfoService")
+	private IYearInfoService yearInfoService;
+	
+	@Autowired
+	@Qualifier("studentPaymentService")
+	private IStudentPaymentService studentPaymentService;
+	
+	@Autowired
+	@Qualifier("gradeService")
+	private IGradeService gradeService;
+	
+	
+	/**
+	 * 查询专业缴费类别列表
+	 * @param majorCode
+	 * @param majorName
+	 * @param objPage
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/feemajor/list.html")
+	public String listFeeMajor(String majorCode,String majorName,Page objPage,ModelMap model) throws WebException{
+		objPage.setOrderBy("major.majorCode");	
+		objPage.setOrder(Page.ASC);
+		
+		Map<String,Object> condition = new HashMap<String,Object>();//查询条件
+		if(ExStringUtils.isNotEmpty(majorName)) {
+			condition.put("majorName", majorName);
+		}
+		if(ExStringUtils.isNotEmpty(majorCode)) {
+			condition.put("majorCode", majorCode);
+		}
+		
+		Page page = feeMajorService.findFeeMajorByCondition(condition, objPage);
+		
+		model.addAttribute("feeMajorList", page);
+		model.addAttribute("condition", condition);
+		model.addAttribute("schoolCode", CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue());
+		return "/edu3/finance/feemajor/feemajor-list";
+	}
+	
+	
+	/**
+	 * 
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/feemajor/setlist.html")
+	public void setlistFeeMajor(String majorCode,String majorName,Page objPage,ModelMap model,HttpServletRequest request,HttpServletResponse response) throws WebException{
+		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String,Object> param 	    = new HashMap<String, Object>();
+
+		param.put("isDeleted",0);
+		try {
+
+			String sql = "insert into edu_fee_major (resourceid,basemajorid,teachingType)  select m.resourceid,m.resourceid,'2' from edu_base_major m " +
+					"where m.isdeleted=0 and m.resourceid not in (select t.basemajorid from edu_fee_major t where t.isdeleted=0)";
+			
+			baseSupportJdbcDao.getBaseJdbcTemplate().getJdbcTemplate().update(sql, param);
+			map.put("statusCode", 200);
+			map.put("message", "成功。");
+		} catch (Exception e) {
+			logger.error("生成缴费类别出错：{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "生成失败:<br/>"+e.getLocalizedMessage());
+		}
+		
+	
+	renderJson(response, JsonUtils.mapToJson(map));
+	}
+	
+	/**
+	 * 编辑专业缴费类别
+	 * @param resourceid
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/feemajor/input.html")
+	public String editFeeMajor(String resourceid,ModelMap model) throws WebException{
+		if(ExStringUtils.isNotBlank(resourceid)){ 
+			FeeMajor feeMajor = feeMajorService.get(resourceid);	
+			model.addAttribute("feeMajor", feeMajor);
+		}
+		model.addAttribute("schoolCode", CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue());
+		return "/edu3/finance/feemajor/feemajor-form";
+	}
+	/**
+	 * 保存专业缴费类别
+	 * @param resourceid
+	 * @param paymentType
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/feemajor/save.html")
+//	public void saveFeeMajor(String resourceid, String paymentType,HttpServletRequest request,HttpServletResponse response) throws WebException{
+	public void saveFeeMajor(FeeMajor feeMajor,HttpServletRequest request,HttpServletResponse response) throws WebException{
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			do{
+				FeeMajor persistFeeMajor = null;
+				boolean isUpdate = true;
+				if(ExStringUtils.isBlank(feeMajor.getTeachingType())){
+					feeMajor.setTeachingType("2");
+				}
+				if(ExStringUtils.isNotBlank(feeMajor.getResourceid())){
+					persistFeeMajor = feeMajorService.get(feeMajor.getResourceid());
+					if(persistFeeMajor.getMajor().getResourceid().equals(feeMajor.getMajorId()) 
+							&& persistFeeMajor.getTeachingType().equals(feeMajor.getTeachingType())){
+						isUpdate = false;
+					}
+				} else {
+					persistFeeMajor = new FeeMajor();
+				}
+				
+				// 检查专业、学习形式的唯一性
+				if(isUpdate){
+					FeeMajor fm = feeMajorService.findUniqueByCondition(feeMajor.getMajorId(), feeMajor.getTeachingType());
+					if(fm != null){
+						map.put("statusCode", 300);
+						map.put("message", fm.getMajor().getMajorName()+" 该专业已存在记录");
+						continue;
+					}
+				}
+				
+				if(ExStringUtils.isNotBlank(feeMajor.getMajorId())){
+					feeMajor.setMajor(majorService.load(feeMajor.getMajorId()));
+				}
+				
+				ExBeanUtils.copyProperties(persistFeeMajor, feeMajor);
+				
+				feeMajorService.saveOrUpdate(persistFeeMajor);
+				
+				UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.UPDATE,"保存专业缴费类别：参数："+JsonUtils.mapToJson(Condition2SQLHelper.getConditionFromResquestByIterator(request)));
+				map.put("statusCode", 200);
+				map.put("message", "保存成功！");
+				map.put("navTabId", "RES_FINANCE_FEEMAJOR_INPUT");
+				map.put("reloadUrl", request.getContextPath() +"/edu3/finance/feemajor/input.html?resourceid="+persistFeeMajor.getResourceid());
+			} while(false);
+			
+		}catch (Exception e) {
+			logger.error("保存缴费类别出错：{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "保存失败:<br/>"+e.getLocalizedMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	/**
+	 * 学习中心优惠设置列表
+	 * @param unitName
+	 * @param unitCode
+	 * @param objPage
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/brschool/privilege/list.html")
+	public String listBrSchollPrivilege(String unitName, String unitCode, Page objPage, ModelMap model) throws WebException{
+		Map<String,Object> condition = new HashMap<String,Object>();//查询条件
+		if(ExStringUtils.isNotEmpty(unitName)) {
+			condition.put("unitName", ExStringUtils.trimToEmpty(unitName));
+		}
+		if(ExStringUtils.isNotEmpty(unitCode)) {
+			condition.put("unitCode", ExStringUtils.trimToEmpty(unitCode));
+		}
+		condition.put("privilegeType", "brSchool");
+		
+		Page brSchoolPrivilegeList = paymentFeePrivilegeService.findPaymentFeePrivilegeVoByCondition(condition, objPage);
+		model.addAttribute("condition", condition);
+		model.addAttribute("brSchoolPrivilegeList", brSchoolPrivilegeList);			
+		return "/edu3/finance/paymentfeeprivilege/brschool-privilege-list";		
+	}
+	/**
+	 * 招生专业学习中心设置
+	 * @param brSchool
+	 * @param recruitPlanId
+	 * @param objPage
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/recruitmajor/privilege/list.html")
+	public String listRecruitMajorPrivilege(String brSchool, String recruitPlanId, Page objPage, ModelMap model) throws WebException{
+		Map<String,Object> condition = new HashMap<String,Object>();//查询条件
+		if(ExStringUtils.isNotEmpty(brSchool)) {
+			condition.put("brSchool", ExStringUtils.trimToEmpty(brSchool));//学习中心
+		}
+		if(ExStringUtils.isNotEmpty(recruitPlanId)) {
+			condition.put("recruitPlanId", ExStringUtils.trimToEmpty(recruitPlanId));//招生批次
+		}
+		condition.put("privilegeType", "recruitMajor");
+		
+		Page brSchoolPrivilegeList = paymentFeePrivilegeService.findPaymentFeePrivilegeVoByCondition(condition, objPage);
+		model.addAttribute("condition", condition);
+		model.addAttribute("brSchoolPrivilegeList", brSchoolPrivilegeList);			
+		return "/edu3/finance/paymentfeeprivilege/recruitmajor-privilege-list";		
+	}
+	/**
+	 * 设置学费优惠
+	 * @param resourceid
+	 * @param unitId
+	 * @param recruitMajorId
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/paymentfeeprivilege/input.html")
+	public String editPrivilege(String resourceid, String unitId, String recruitMajorId, ModelMap model) throws WebException{
+		PaymentFeePrivilege privilege = null;
+		if(ExStringUtils.isNotBlank(resourceid)){
+			privilege = paymentFeePrivilegeService.get(resourceid);	//根据优惠资源id获取优惠设置
+		} else {	
+			//根据学习中心和招生专业获取优惠设置
+			privilege = paymentFeePrivilegeService.getPaymentFeePrivilege(unitId, recruitMajorId);
+			if(privilege == null){//还未设置学费优惠,新增学费优惠				
+				OrgUnit brSchool = orgUnitService.get(unitId);
+				privilege = new PaymentFeePrivilege();
+				privilege.setBrSchool(brSchool);
+				if(ExStringUtils.isNotBlank(recruitMajorId)){//招生专业优惠设置
+					RecruitMajor recruitMajor = recruitMajorService.get(recruitMajorId);
+					privilege.setRecruitMajor(recruitMajor);
+				}
+			}			
+		}
+		model.addAttribute("paymentFeePrivilege", privilege);
+		return "/edu3/finance/paymentfeeprivilege/paymentfeeprivilege-form";
+	}
+	/**
+	 * 保存学费优惠设置
+	 * @param vo
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/paymentfeeprivilege/save.html")
+	public void savePrivilege(PaymentFeePrivilegeVo vo,HttpServletRequest request,HttpServletResponse response) throws WebException{
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			PaymentFeePrivilege privilege = null;
+			if(ExStringUtils.isNotBlank(vo.getPaymentFeePrivilegeId())){
+				privilege = paymentFeePrivilegeService.get(vo.getPaymentFeePrivilegeId());
+			} else {
+				privilege = new PaymentFeePrivilege();
+				OrgUnit brSchool = orgUnitService.get(vo.getUnitId());
+				privilege.setBrSchool(brSchool);
+				if(ExStringUtils.isNotBlank(vo.getRecruitMajorId())){
+					RecruitMajor recruitMajor = recruitMajorService.get(vo.getRecruitMajorId());
+					privilege.setRecruitMajor(recruitMajor);
+				}
+			}
+			privilege.setBeforePrivilegeFee(vo.getBeforePrivilegeFee());
+			privilege.setAfterPrivilegeFee(vo.getAfterPrivilegeFee());
+			privilege.setTotalPrivilegeFee(vo.getTotalPrivilegeFee());
+			privilege.setMemo(vo.getMemo());
+			paymentFeePrivilegeService.saveOrUpdate(privilege);
+			
+			map.put("statusCode", 200);
+			map.put("message", "保存成功！");
+			map.put("navTabId", "RES_FINANCE_PAYMENTFEEPRIVILEGE");
+			map.put("reloadUrl", request.getContextPath() +"/edu3/finance/paymentfeeprivilege/input.html?resourceid="+privilege.getResourceid()+"&unitId="+vo.getUnitId()+"&recruitMajorId="+ExStringUtils.trimToEmpty(vo.getRecruitMajorId()));
+		}catch (Exception e) {
+			logger.error("保存优惠设置出错：{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "保存失败:<br/>"+e.getLocalizedMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	/**
+	 * 年缴费标准列表
+	 * @param yearInfoId
+	 * @param paymentType
+	 * @param standerdName
+	 * @param objPage
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/yearpaymentstandard/list.html")
+	public String listYearPaymentStandard(String gradeId,String yearInfoId,String paymentType,String standerdName,Page objPage,ModelMap model) throws WebException{
+		objPage.setOrderBy("grade.gradeName desc,resourceid");	
+		objPage.setOrder(Page.ASC);
+		Map<String, Object> condition = new HashMap<String, Object>();
+		
+		if(ExStringUtils.isNotBlank(gradeId)) {
+			condition.put("gradeId", gradeId);
+		}
+		if(ExStringUtils.isNotBlank(yearInfoId)) {
+			condition.put("yearInfoId", yearInfoId);
+		}
+		if(ExStringUtils.isNotBlank(paymentType)) {
+			condition.put("paymentType", paymentType);
+		}
+		if(ExStringUtils.isNotBlank(standerdName)) {
+			condition.put("standerdName", ExStringUtils.trimToEmpty(standerdName));
+		}
+		
+		Page yearPaymentStandardList = yearPaymentStandardService.findYearPaymentStandardByCondition(condition, objPage);
+		model.addAttribute("condition", condition);
+		model.addAttribute("yearPaymentStandardList", yearPaymentStandardList);
+		return "/edu3/finance/yearpaymentstandard/yearpaymentstandard-list";
+	}
+	/**
+	 * 新增编辑年缴费标准
+	 * @param resourceid
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/yearpaymentstandard/input.html")
+	public String editYearPaymentStandard(String resourceid,ModelMap model) throws WebException{
+		if(ExStringUtils.isNotBlank(resourceid)){
+			YearPaymentStandard yearPaymentStandard = yearPaymentStandardService.get(resourceid);
+			model.addAttribute("yearPaymentStandard", yearPaymentStandard);
+		} else {
+			model.addAttribute("yearPaymentStandard", new YearPaymentStandard());
+		}
+		return "/edu3/finance/yearpaymentstandard/yearpaymentstandard-form";
+	}
+	/**
+	 * 保存年缴费标准
+	 * @param yearPaymentStandard
+	 * @param request
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/yearpaymentstandard/save.html")
+	public void saveYearPaymentStandard(YearPaymentStandard yearPaymentStandard, String gradeId, HttpServletRequest request,HttpServletResponse response) throws WebException{
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {	
+			if(ExStringUtils.isNotBlank(gradeId)){
+				Grade grade = gradeService.get(gradeId);
+				yearPaymentStandard.setGrade(grade);
+				yearPaymentStandard.setYearInfo(grade.getYearInfo());
+			}				
+			if(ExStringUtils.isNotBlank(yearPaymentStandard.getResourceid())){//编辑
+				YearPaymentStandard yearStandard = yearPaymentStandardService.get(yearPaymentStandard.getResourceid());
+				if(!yearStandard.getGrade().getResourceid().equals(gradeId) || !yearStandard.getPaymentType().equals(yearPaymentStandard.getPaymentType())){//年度变动时
+					YearPaymentStandard ys = yearPaymentStandardService.getYearPaymentStandard(gradeId, yearPaymentStandard.getPaymentType());
+					if(ys != null){
+						throw new ServiceException(yearPaymentStandard.getGrade().getGradeName()+" "+JstlCustomFunction.dictionaryCode2Value("CodePaymentType", yearPaymentStandard.getPaymentType())+"的年缴费标准已经存在.");
+					}
+				}				
+				ExBeanUtils.copyProperties(yearStandard, yearPaymentStandard);
+				convertYearPaymentStandardChilds(request, yearStandard);
+				yearPaymentStandardService.update(yearStandard);
+			} else {
+				YearPaymentStandard ys = yearPaymentStandardService.getYearPaymentStandard(gradeId, yearPaymentStandard.getPaymentType());
+				if(ys != null){
+					throw new ServiceException(yearPaymentStandard.getGrade().getGradeName()+" "+JstlCustomFunction.dictionaryCode2Value("CodePaymentType", yearPaymentStandard.getPaymentType())+"的年缴费标准已经存在.");
+				}
+				convertYearPaymentStandardChilds(request, yearPaymentStandard);
+				yearPaymentStandardService.save(yearPaymentStandard);
+			}
+			UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.UPDATE,"保存/新增年缴费标准：参数："+JsonUtils.mapToJson(Condition2SQLHelper.getConditionFromResquestByIterator(request)));
+			map.put("statusCode", 200);
+			map.put("message", "保存成功！");
+			map.put("navTabId", "RES_FINANCE_YEARPAYMENTSTANDARD_INPUT");
+			map.put("reloadUrl", request.getContextPath() +"/edu3/finance/yearpaymentstandard/input.html?resourceid="+yearPaymentStandard.getResourceid());
+		} catch (ServiceException e) {
+			map.put("statusCode", 300);
+			map.put("message", e.getMessage());
+		} catch (Exception e) {
+			logger.error("保存年缴费标准出错：{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "保存失败！");
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	/**
+	 * 设置缴费标准明细
+	 * @param request
+	 * @param yearPaymentStandard
+	 */
+	private void convertYearPaymentStandardChilds(HttpServletRequest request, YearPaymentStandard yearPaymentStandard){
+		String[] feeid = request.getParameterValues("feeid");
+		String[] feeTerm = request.getParameterValues("feeTerm");
+		String[] creditFee = request.getParameterValues("creditFee");
+		String[] payBeginDate = request.getParameterValues("payBeginDate");
+		String[] creditEndDate = request.getParameterValues("creditEndDate");
+		String[] showOrder = request.getParameterValues("showOrder");
+		
+		if(feeid != null && feeid.length>0){
+			Map<String, YearPaymentStandardDetails> feeMap = new HashMap<String, YearPaymentStandardDetails>();
+			for (YearPaymentStandardDetails feeDetail : yearPaymentStandard.getYearPaymentStandardDetails()) {
+				feeMap.put(feeDetail.getResourceid(), feeDetail);
+			}
+			for (int i = 0; i < feeid.length; i++) {
+				YearPaymentStandardDetails feeDetail = null;
+				if(ExStringUtils.isNotBlank(feeid[i])){
+					feeDetail = feeMap.get(feeid[i]);
+				} else {
+					feeDetail = new YearPaymentStandardDetails();
+				}
+				feeDetail.setYearPaymentStandard(yearPaymentStandard);
+				feeDetail.setFeeTerm(Integer.valueOf(ExStringUtils.defaultIfEmpty(ExStringUtils.trimToEmpty(feeTerm[i]), "1")));
+				feeDetail.setCreditFee(Double.valueOf(ExStringUtils.defaultIfEmpty(ExStringUtils.trimToEmpty(creditFee[i]), "0.0")));
+				feeDetail.setPayBeginDate(ExDateUtils.convertToDate(ExStringUtils.trimToEmpty(payBeginDate[i])));
+				feeDetail.setCreditEndDate(ExDateUtils.convertToDate(ExStringUtils.trimToEmpty(creditEndDate[i])));
+				feeDetail.setShowOrder(Integer.valueOf(ExStringUtils.defaultIfEmpty(ExStringUtils.trimToEmpty(showOrder[i]), "0")));
+				
+				yearPaymentStandard.getYearPaymentStandardDetails().add(feeDetail);
+			}			
+		}
+	}
+	/**
+	 * 删除年缴费标准明细
+	 * @param resourceid
+	 * @param feeids
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/framework/yearpaymentstandard/details/delete.html")
+	public void deleteYearPaymentStandardDetails(String resourceid, String feeids, HttpServletResponse response,HttpServletRequest request) throws WebException{
+		if(ExStringUtils.isNotBlank(resourceid) && ExStringUtils.isNotBlank(feeids)){
+			List<String> ids = Arrays.asList(feeids.split("\\,"));
+			Set<YearPaymentStandardDetails> delSet = new HashSet<YearPaymentStandardDetails>();
+			YearPaymentStandard yearPaymentStandard = yearPaymentStandardService.get(resourceid);
+			for (YearPaymentStandardDetails d : yearPaymentStandard.getYearPaymentStandardDetails()) {
+				if(ids.contains(d.getResourceid())){
+					delSet.add(d);
+				}
+			}
+			yearPaymentStandard.getYearPaymentStandardDetails().removeAll(delSet);
+			yearPaymentStandardService.update(yearPaymentStandard);
+			UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.DELETE,"删除删除年缴费标准明细：参数："+JsonUtils.mapToJson(Condition2SQLHelper.getConditionFromResquestByIterator(request)));
+		}
+	}
+	
+	/**
+	 * 删除年缴费标准
+	 * @param resourceid
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/yearpaymentstandard/remove.html")
+	public void removeYearPaymentStandard(String resourceid, HttpServletResponse response,HttpServletRequest request) throws WebException{
+		Map<String ,Object> map = new HashMap<String, Object>();
+		try {
+			if(ExStringUtils.isNotBlank(resourceid)){			
+				yearPaymentStandardService.batchDelete(resourceid.split("\\,"));
+				UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.DELETE,"删除删除年缴费标准：参数："+JsonUtils.mapToJson(Condition2SQLHelper.getConditionFromResquestByIterator(request)));
+				map.put("statusCode", 200);
+				map.put("message", "删除成功！");	
+			}	
+		} catch (Exception e) {
+			logger.error("删除年缴费标准出错:{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "删除失败:<br/>"+e.getLocalizedMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));		
+	}
+	
+	/**
+	 * 扫描缴费标准
+	 * @param resourceid
+	 * @param response
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/yearpaymentstandard/scan.html")
+	public void sacnPaymentStandard(String resourceid,HttpServletResponse response) throws WebException{
+		//由于存在人数较多的情况下，会非常慢，因此修改为只能选择单个进行扫描
+		Map<String ,Object> map = new HashMap<String, Object>();
+		
+		map.put("statusCode", 200);
+		map.put("message", "扫描成功:<br/>");
+		try {
+			int flag ;
+			while(true){
+				flag = yearPaymentStandardService.scanPaymentStandar(resourceid);
+				if(flag==0){
+					break;
+				}
+			}
+		} catch (Exception e) {
+			logger.error("扫描标准出错:{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "扫描失败:<br/>"+e.getLocalizedMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));		
+	}
+	
+	/**
+	 * 删除列表对象
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/finance/feemajor/delete.html")
+	public void deleteFeeMajor(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws WebException{
+		String resourceid = request.getParameter("resourceid");
+		Map<String ,Object> map = new HashMap<String, Object>();
+		try {
+			if(ExStringUtils.isNotBlank(resourceid)){
+				feeMajorService.batchCascadeDelete(resourceid.split("\\,"));
+				UserOperationLogsHelper.saveUserOperationLogs(HttpHeaderUtils.getIpAddr(request),  "6", UserOperationLogs.DELETE,"删除专业缴费类别：参数："+JsonUtils.mapToJson(getConditionFromResquestByIterator(request)));
+				map.put("statusCode", 200);
+				map.put("message", "删除成功！");				
+				map.put("forward", request.getContextPath()+"/edu3/finance/feemajor/list.html");
+			}
+		} catch (Exception e) {
+			logger.error("删除专业缴费类别出错:{}",e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "删除出错！");
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+	
+}

@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+#popMsgWin {
+	border: #2f77c5 1px solid;
+}
+
+#loft_win_min {
+	border: #2f77c5 1px solid;
+}
+
+.loft_win_head {
+	color: #ffffff;
+	font-size: 13px;
+	background-color: #2f77c5;
+	height: 25px;
+	padding: 0 5px 0 5px;
+	line-height: 25px;
+	text-align: right
+}
+
+.contentdiv {
+	background-color: #ffffff;
+	border-left-style: none;
+	border-right-style: none;
+}

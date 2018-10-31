@@ -1,0 +1,385 @@
+package com.hnjk.edu.teaching.controller;
+
+import com.hnjk.core.exception.WebException;
+import com.hnjk.core.foundation.utils.*;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.support.base.controller.BaseSupportController;
+import com.hnjk.edu.roll.model.Classes;
+import com.hnjk.edu.roll.service.IClassesService;
+import com.hnjk.edu.teaching.model.TeachingPlanCourse;
+import com.hnjk.edu.teaching.model.TeachingPlanCourseExamination;
+import com.hnjk.edu.teaching.service.ITeachingPlanCourseExaminationService;
+import com.hnjk.edu.teaching.service.ITeachingPlanCourseService;
+import com.hnjk.edu.util.Condition2SQLHelper;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.Attachs;
+import com.hnjk.platform.system.service.IAttachsService;
+import com.hnjk.security.SpringSecurityHelper;
+import com.hnjk.security.model.User;
+import com.hnjk.security.service.IOrgUnitService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.hnjk.core.foundation.utils.ExDateUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 年级教学计划课程排考管理.
+ * <code>TeachingPlanCourseExamination</code><p>
+ * @author： msl
+ */
+@Controller
+public class TeachingPlanCourseExaminationController extends BaseSupportController {
+
+	@Autowired
+	@Qualifier("orgUnitService")
+	private IOrgUnitService orgUnitService;
+
+	@Autowired
+	@Qualifier("classesService")
+	private IClassesService classesService;
+
+	@Autowired
+	@Qualifier("teachingPlanCourseService")
+	private ITeachingPlanCourseService teachingPlanCourseService;
+
+	@Autowired
+	@Qualifier("attachsService")
+	private IAttachsService attachsService;
+
+	@Autowired
+	@Qualifier("teachingPlanCourseExaminationService")
+	private ITeachingPlanCourseExaminationService teachingPlanCourseExaminationService;
+
+	/**
+	 * 排考界面
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @param objPage
+	 * @return
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationList.html")
+	public String getExaminationPage(HttpServletRequest request,HttpServletResponse response, ModelMap model, Page objPage){
+
+		String classesid	=	ExStringUtils.toString(request.getParameter("classesid"));
+		String plancourseid	=	ExStringUtils.toString(request.getParameter("plancourseid"));
+		String flag 		=	ExStringUtils.toString(request.getParameter("flag"));
+		String stunumber	=	ExStringUtils.toString(request.getParameter("stunumber"));
+		String resIds		=	ExStringUtils.toString(request.getParameter("resIds"));
+		Classes classes = classesService.get(classesid);
+		TeachingPlanCourse planCourse = teachingPlanCourseService.get(plancourseid);
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+
+		//判断当前用户是否为校外学习中心
+		User user = SpringSecurityHelper.getCurrentUser();
+		if(user.getOrgUnit().getUnitType().indexOf(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())>=0){//如果为校外学习中心人员
+			model.addAttribute("brSchoolId",user.getOrgUnit().getResourceid());
+			condition.put("branchSchool",user.getOrgUnit().getResourceid());
+		}
+		if(planCourse!=null && classes!=null){
+			model.addAttribute("classes",classes);
+			model.addAttribute("planCourse",planCourse);
+		}
+		if (ExStringUtils.isNotBlank(resIds)) {
+			condition.put("resIds",resIds.split(","));
+		}
+		if("export".equals(flag)){
+			objPage.setPageSize(1000000);
+		}
+		Page examinationPage = teachingPlanCourseExaminationService.findPageByCondition(condition,objPage);
+		model.addAttribute("stunumber",stunumber);
+		model.addAttribute("condition",condition);
+		model.addAttribute("examinationPage",examinationPage);
+		if("export".equals(flag)){
+			String fileName = "";
+			try {
+				fileName = new String("排考详情".getBytes("GBK"), "iso8859-1");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			response.setCharacterEncoding("GB2312");
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Content-Disposition", "attachment; filename="+fileName+".xls");
+
+			return  "/edu3/teaching/teachingplancoursearrange/examination_export";
+		}
+
+		return  "/edu3/teaching/teachingplancoursearrange/examination_list";
+	}
+
+	/**
+	 * 新增、编辑排考
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationEdit.html")
+	public String editExamination(HttpServletRequest request, ModelMap model){
+		String resourceid	=	ExStringUtils.trim(request.getParameter("resourceid"));
+		String brSchoolid	=	ExStringUtils.trim(request.getParameter("branchSchool"));
+		String classes_id	=	ExStringUtils.toString(request.getParameter("classes_id"));
+		String plancourse_id	=	ExStringUtils.toString(request.getParameter("plancourse_id"));
+		String stunumber	=	ExStringUtils.toString(request.getParameter("stunumber"));
+		TeachingPlanCourseExamination examination = null;
+		//判断当前用户是否为校外学习中心
+		User user = SpringSecurityHelper.getCurrentUser();
+		int isBrschool = 0;
+		if(user.getOrgUnit().getUnitType().indexOf(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())>=0){//如果为校外学习中心人员
+			isBrschool = 1;
+			brSchoolid = user.getOrgUnit().getResourceid();
+		}
+		String classesOption = "";
+		String courseOption = "";
+		if(ExStringUtils.isNotBlank(resourceid)){//---------------编辑
+			examination = teachingPlanCourseExaminationService.get(resourceid);
+			if(!ExStringUtils.isContainsStr(examination.getOperatorName(), SpringSecurityHelper.getCurrentUser().getCnName())){
+				String opeName = examination.getOperatorName()==null?"":examination.getOperatorName();
+				if(ExStringUtils.isNotEmpty(opeName)){
+					opeName += ",";
+				}
+				opeName += SpringSecurityHelper.getCurrentUser().getCnName();
+				examination.setOperatorName(opeName);
+			}
+			if (examination.getClasses() != null && ExStringUtils.isBlank(classes_id)) {
+				Map<String,Object> condition = new HashMap<String, Object>();
+				condition.put("brSchoolid",examination.getClasses().getBrSchool().getResourceid());
+				condition.put("gradeid",examination.getClasses().getGrade().getResourceid());
+				classesOption = classesService.constructOptions(condition,examination.getClasses().getResourceid(),true,null);
+			}else {
+				classesOption = "<option selected='selected' value='"+examination.getClasses().getResourceid()+"'>" + examination.getClasses().getClassname()+"</option>";
+			}
+			if (examination.getTeachingPlanCourse()!=null) {
+				courseOption = "<option selected='selected' value='" + examination.getTeachingPlanCourse().getResourceid() + "'>"
+						+ examination.getCourse().getCourseCode() + "-" + examination.getCourse().getCourseName() + "</option>";
+				model.addAttribute("courseOption",courseOption);
+			}
+			brSchoolid = examination.getClasses().getBrSchool().getResourceid();
+		} else {//-----------新增
+			examination = new TeachingPlanCourseExamination();
+			examination.setOperatorName(SpringSecurityHelper.getCurrentUser().getCnName());
+		}
+		Map<String,Object> condition = new HashMap<String, Object>();
+		condition.put("brSchoolid",brSchoolid);
+		Classes classes = classesService.get(classes_id);
+		TeachingPlanCourse planCourse = teachingPlanCourseService.get(plancourse_id);
+		//教学点选项
+		String unitOption = orgUnitService.constructOptions(null, brSchoolid, isBrschool);
+		if(planCourse!=null && classes!=null){
+			if (examination.getClasses()==null) {
+				examination.setClasses(classes);
+			}
+			classesOption = "<option selected='selected' value='"+classes.getResourceid()+"'>" + classes.getClassname()+"</option>";
+			courseOption = "<option selected='selected' value='"+planCourse.getResourceid()+"'>" +
+				planCourse.getCourse().getCourseCode()+"-"+planCourse.getCourse().getCourseName()+"</option>";
+
+			model.addAttribute("classes",classes);
+			model.addAttribute("planCourse",planCourse);
+		}
+		model.addAttribute("classesOption",classesOption);
+		model.addAttribute("courseOption",courseOption);
+		model.addAttribute("stunumber",stunumber);
+		model.addAttribute("brSchoolid",brSchoolid);
+		model.addAttribute("unitOption",unitOption);
+		model.addAttribute("condition",condition);
+		model.addAttribute("examination", examination);
+		return "edu3/teaching/teachingplancoursearrange/examination_form";
+	}
+
+	/**
+	 * 更新Form表单
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationUpdate.html")
+	public void updateExaminationForm(HttpServletRequest request , HttpServletResponse response){
+		String brSchoolid 		= 		request.getParameter("brSchoolid");//教学点
+		String gradeid 		= 		request.getParameter("gradeid");//年级
+		String classesid 	= 		request.getParameter("classesid");//班级
+		String teachingPlanCourseid	=		request.getParameter("teachingPlanCourseid");//教学计划课程
+		Map<String, Object> map = 		new HashMap<String, Object>();
+		int statusCode = 200;
+		try {
+			Map<String, Object> condition = new HashMap<String, Object>();
+			if(ExStringUtils.isNotBlank(brSchoolid) && !"undefined".equals(brSchoolid)){
+				condition.put("brSchoolid", brSchoolid);
+			}
+			if (ExStringUtils.isNotBlank(gradeid)) {
+				condition.put("gradeid", gradeid);
+			}
+
+			String courseOption = "";
+			//班级
+			String classesOption = classesService.constructOptions(condition,classesid,true,null);
+			if (ExStringUtils.isNotBlank(classesid)) {
+				condition.put("classesid", classesid);
+				//教学计划课程
+				courseOption =  teachingPlanCourseService.constructOptions(condition,teachingPlanCourseid);
+			}
+
+			map.put("classesOption",classesOption);
+			map.put("courseOption",courseOption);
+		} catch (Exception e) {
+			logger.error("操作出错：{}",e.fillInStackTrace());
+			statusCode = 300;
+			map.put("message", "刷新失败！");
+		}
+		map.put("statusCode", statusCode);
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+
+	/**
+	 * 保存排考
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationSave.html")
+	public void saveExamination(TeachingPlanCourseExamination examination,HttpServletRequest request,HttpServletResponse response){
+		Map<String, Object> map = new HashMap<String, Object>(10);
+		try {
+			String startTimePeriod = request.getParameter("startTimePeriod_s");
+			String endTimePeriod = request.getParameter("endTimePeriod_s");
+			String plancourse_id	=	ExStringUtils.trim(request.getParameter("plancourse_id"));
+			String classes_id	=	ExStringUtils.trim(request.getParameter("classes_id"));
+			String classesid	=	ExStringUtils.trim(request.getParameter("classesid"));
+			String stunumber	=	ExStringUtils.trim(request.getParameter("stunumber"));
+			Classes classes = null;
+			if(ExStringUtils.isNotBlank(classesid)){
+				classes = classesService.get(classesid);
+				if (classes == null) {
+					throw new NullPointerException("获取班级信息失败！");
+				}
+			}
+			TeachingPlanCourse planCourse = teachingPlanCourseService.get(examination.getPlancourseid());
+			if(ExStringUtils.isNotBlank(examination.getResourceid())){
+				TeachingPlanCourseExamination preExamination = teachingPlanCourseExaminationService.get(examination.getResourceid());
+				ExBeanUtils.copyProperties(preExamination, examination);
+				examination = preExamination;
+			}
+
+			examination.setClasses(classes);
+			//设置教学计划课程
+			if(ExStringUtils.isNotBlank(examination.getPlancourseid())){
+				examination.setTeachingPlanCourse(planCourse);
+				examination.setCourse(planCourse.getCourse());
+			}else {
+				throw new NullPointerException("请先设置课程！");
+			}
+			examination.setStartTimePeriod(ExDateUtils.parseDate(startTimePeriod, "HH:mm"));
+			examination.setEndTimePeriod(ExDateUtils.parseDate(endTimePeriod, "HH:mm"));
+			if (examination.getStartExamDate().after(examination.getEndExamDate())) {
+				throw new Exception("开始日期必须小于结束日期！");
+			}
+			teachingPlanCourseExaminationService.saveOrUpdate(examination);
+			map.put("statusCode", 200);
+			map.put("message", "保存考试安排成功");
+			map.put("navTabId", "RES_TEACHING_PLANCOURSE_EXAMINATION");
+			map.put("reloadUrl", request.getContextPath() +"/edu3/teaching/teachingplancourse/examinationList.html?classesid="+classes_id+"&plancourseid="+plancourse_id+"&stunumber="+stunumber);
+		} catch (Exception e) {
+			logger.error("保存考试安排失败:{}", e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "保存考试安排失败:"+e.getMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+
+	/**
+	 * 删除排考
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationRemove.html")
+	public void removeExamination(String resourceid, HttpServletRequest request, HttpServletResponse response){
+		String classesid	=	request.getParameter("classesid");
+		String plancourseid	=	request.getParameter("plancourseid");
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			if(ExStringUtils.isNotBlank(resourceid)){
+				teachingPlanCourseExaminationService.batchDelete(resourceid.split("\\,"));
+				map.put("statusCode", 200);
+				map.put("message", "删除考试安排成功");
+				map.put("callbackType", "forward");
+				map.put("forwardUrl", request.getContextPath()+"/edu3/teaching/teachingplancourse/examinationList.html?classesid="+ExStringUtils.trimToEmpty(classesid)+"&plancourseid="+ExStringUtils.trimToEmpty(plancourseid));
+			}
+		} catch (Exception e) {
+			logger.error("删除考试安排失败:{}", e.fillInStackTrace());
+			map.put("statusCode", 300);
+			map.put("message", "删除考试安排失败:"+e.getMessage());
+		}
+		renderJson(response, JsonUtils.mapToJson(map));
+	}
+
+	/**
+	 * 导入排课结果选择窗口
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws WebException
+	 */
+	@RequestMapping("/edu3/teaching/teachingplancourse/examinationUpload.html")
+	public String uploadRecruitExameeInfo(HttpServletRequest request, ModelMap model) throws WebException {
+		//Condition2SQLHelper.addMapFromResquestByIterator(request,model);
+		String classesid = request.getParameter("classesid");
+		String plancourseid = request.getParameter("plancourseid");
+		model.addAttribute("title", "导入排考结果");
+		model.addAttribute("formId", "planCourseExamination_import");
+		model.addAttribute("url", "/edu3/teaching/teachingplancourse/submitExaminitionImport.html?classesid="+classesid+"&plancourseid="+plancourseid);
+		return "edu3/roll/inputDialogForm";
+	}
+
+	@RequestMapping("/edu3/teaching/teachingplancourse/submitExaminitionImport.html")
+	public void exportExaminationList(HttpServletRequest request, HttpServletResponse response, String exportAct){
+		StringBuffer message = new StringBuffer("");
+		boolean success = true;
+		String result = "";
+		Map<String, Object > returnMap = new HashMap<String, Object>();
+		Map<String,Object> condition = Condition2SQLHelper.getConditionFromResquestByIterator(request);
+		try {
+			do {
+				User user = SpringSecurityHelper.getCurrentUser();
+				if(!user.getOrgUnit().getUnitType().equals(CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype").getParamValue())){//如果为校外学习中心人员
+					//throw new WebException("只有教学站有权利导入！");
+				}else {
+					condition.put("brSchoolid",user.getOrgUnit().getResourceid());
+				}
+				String attchID = ExStringUtils.trimToEmpty(request.getParameter("attachId"));
+				condition.put("userName",user.getCnName());
+
+				if (null != attchID && attchID.split(",").length > 1) {
+					success = false;
+					message.append("一次只能导入一个成绩文件,谢谢！");
+				} else if (null != attchID && attchID.split(",").length == 1) {
+					Attachs attachs = attachsService.get(attchID.split(",")[0]);
+					String filePath = attachs.getSerPath() + File.separator + attachs.getSerName();
+					int code = ExFileUtils.isExcelFile(filePath);
+					if (code == ExFileUtils.EXIST) {
+						Map<String, Object> singleMap = teachingPlanCourseExaminationService.importExaminationResult(condition,filePath);
+						if (singleMap != null && singleMap.size() > 0) {
+							int totalCount = (Integer) singleMap.get("totalCount");
+							int successCount = (Integer) singleMap.get("successCount");
+							message.append((String) singleMap.get("message"));
+							result = "导入共" + totalCount + "条,成功" + successCount + "条,失败" + (totalCount - successCount) + "条";
+						}
+					} else if (code == ExFileUtils.TYPEERROR) {
+						message.append("文件格式错误！请选择excel文件上传！");
+					} else if (code == ExFileUtils.NOTEXIST) {
+						message.append("文件不存在！请重新选择文件上传！");
+					}
+					attachsService.delete(attachs);
+				}
+			} while (false);
+		} catch (Exception e) {
+			logger.error("处理导入成绩出错", e);
+			success = false;
+			result = "导入失败";
+		} finally {
+			returnMap.put("success",success);
+			returnMap.put("msg",message);
+			returnMap.put("result",result);
+			renderJson(response,JsonUtils.mapToJson(returnMap));
+		}
+	}
+
+}

@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.errOutDiv {
+	background-color: #FFCC88;
+	height: 100%;
+	padding: 10;
+	color: red;
+}
+
+.errOutSpan {
+	color: red;
+}

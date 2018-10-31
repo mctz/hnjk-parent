@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="graduateCertification" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="384"/>
+	<parameter name="stus" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String(" 1=1 ")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="school" class="java.lang.String"/>
+	<parameter name="confirmationDate" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select rownum,bstu.name,stu.studyno,bstu.certnum,g.gradename,regexp_replace(m.majorname,'\[.+\]','') majorname,c.classicname,d.dictname,p.eduyear
+from EDU_ROLL_STUDENTINFO stu left join EDU_BASE_STUDENT bstu on stu.STUDENTBASEINFOID=bstu.resourceid
+left join EDU_BASE_GRADE g on stu.gradeid=g.resourceid
+left join EDU_BASE_MAJOR m on stu.majorid=m.resourceid
+left join EDU_BASE_CLASSIC c on stu.classicid=c.resourceid
+left join (select * from HNJK_SYS_DICT where parentid=(select resourceid from HNJK_SYS_DICT where dictcode='CodeTeachingType')) d on stu.teachingtype=d.dictvalue
+left join EDU_TEACH_PLAN p on stu.teachplanid=p.resourceid
+left join hnjk_sys_unit u on stu.BRANCHSCHOOLID=u.resourceid
+where stu.isdeleted=0
+and stu.resourceid in $P!{stus}
+order by u.unitcode,c.classiccode,m.majorcode,stu.studyno]]>
+	</queryString>
+	<field name="ROWNUM" class="java.math.BigDecimal"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="studyno" class="java.lang.String"/>
+	<field name="certnum" class="java.lang.String"/>
+	<field name="gradename" class="java.lang.String"/>
+	<field name="majorname" class="java.lang.String"/>
+	<field name="classicname" class="java.lang.String"/>
+	<field name="dictname" class="java.lang.String"/>
+	<field name="eduyear" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="114" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="688" splitType="Stretch">
+			<textField>
+				<reportElement x="159" y="148" width="76" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="314" y="148" width="105" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studyno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="182" width="152" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{certnum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="182" width="48" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{gradename}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="271" y="216" width="30" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dictname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="148" width="59" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[经核实，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="148" width="79" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[同学(学号：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="68" y="216" width="52" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[(层次：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="419" y="148" width="70" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[身份证号：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="219" y="182" width="57" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[)是我校]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="461" y="182" width="28" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="宋体" size="14" isBold="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[专业]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="216" width="90" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[，学习形式：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="301" y="216" width="60" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[，学制：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="253" width="59" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[特此证明]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="216" width="61" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{classicname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="76" width="553" height="26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="宋体" size="17" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[在 校 生 证 明]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="312" y="317" width="183" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="宋体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{school}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="324" y="182" width="137" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{majorname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="361" y="216" width="19" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="宋体" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{eduyear}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="312" y="353" width="183" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="宋体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{confirmationDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="216" width="109" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[年)的在校学生。]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

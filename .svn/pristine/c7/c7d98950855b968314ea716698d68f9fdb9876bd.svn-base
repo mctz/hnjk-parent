@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report4" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.2100000000000022"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="29"/>
+	<parameter name="gradeName" class="java.lang.String"/>
+	<parameter name="majorName" class="java.lang.String"/>
+	<parameter name="classesName" class="java.lang.String"/>
+	<parameter name="courseName" class="java.lang.String"/>
+	<parameter name="logoPath" class="java.lang.String"/>
+	<parameter name="unitName" class="java.lang.String"/>
+	<parameter name="classicName" class="java.lang.String"/>
+	<parameter name="schoolName" class="java.lang.String"/>
+	<field name="sortNum1" class="java.lang.String"/>
+	<field name="studyNo1" class="java.lang.String"/>
+	<field name="studentName1" class="java.lang.String"/>
+	<field name="sortNum2" class="java.lang.String"/>
+	<field name="studyNo2" class="java.lang.String"/>
+	<field name="studentName2" class="java.lang.String"/>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image>
+				<reportElement x="10" y="-37" width="225" height="200"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logoPath}]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement x="107" y="0" width="331" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{schoolName}+"成人高等教育考生签到表"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="80">
+			<staticText>
+				<reportElement x="20" y="41" width="415" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[考试时间：______年____月____日_____时_____分至_____时_____分]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="60" width="62" height="18"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[考试地点：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="60" width="60" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[考试课程：]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="307" y="60" width="227" height="18"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{courseName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="61" y="1" width="110" height="18"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{gradeName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="239" y="2" width="295" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{unitName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="2" width="48" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[教学点：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="20" width="39" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[层次：]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="61" y="22" width="110" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{classicName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="1" width="39" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[年级：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="191" y="22" width="74" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[专业、班级：]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="22" width="267" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{classesName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="82" y="60" width="165" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[___________________________]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34">
+			<staticText>
+				<reportElement x="0" y="11" width="30" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="11" width="120" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[学号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="11" width="62" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[签名]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="11" width="30" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="11" width="63" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[签名]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="307" y="11" width="120" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[学号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="11" width="65" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[姓名]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="11" width="65" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[姓名]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="0" width="120" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studyNo1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="0" width="65" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studentName1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="277" y="0" width="30" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sortNum2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="307" y="0" width="120" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studyNo2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="427" y="0" width="65" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studentName2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="30" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sortNum1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="215" y="0" width="62" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="492" y="0" width="63" height="23"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="21" y="10" width="513" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[本表一式两份，一份存教务科，一份与试卷装订]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+</jasperReport>

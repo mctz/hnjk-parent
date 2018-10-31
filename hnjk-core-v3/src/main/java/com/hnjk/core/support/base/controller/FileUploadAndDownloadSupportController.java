@@ -1,0 +1,328 @@
+package com.hnjk.core.support.base.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.hnjk.core.foundation.utils.FileUtils;
+import com.hnjk.core.support.context.SystemContextHolder;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.hnjk.core.exception.WebException;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.foundation.utils.GUIDUtils;
+import com.hnjk.core.support.base.model.AttachInfo;
+import com.hnjk.core.support.context.Constants;
+
+/**
+ * 支持文件上传和文件下载的基类. <code>FileUploadSupportController</code>
+ * <p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-4-2 上午10:01:01
+ * @see
+ * @version 1.0
+ */
+public class FileUploadAndDownloadSupportController extends BaseSupportController {
+
+	private static final long serialVersionUID = 6746321338945773936L;
+	
+	private String acepttype = "doc|docx|ppt|pptx|pdf|xls|xlsx|txt|zip|rar|jpg|png|gif|rtf";// 运行接收的文件类型
+
+	private long filesize = 10485760;// 文件大小
+
+	private long maxfile = 10;//一次允许上传的文件个数
+
+	private String distfilepath = Constants.EDU3_DATAS_LOCALROOTPATH + "upload";//文件存储目标路径
+	
+	private Map<String, String> replaceNameMap ;//替换存储文件，key 表单域名 - value 存储文件名 ，如果该属性为空，系统自动创建文件名
+	
+	private Map<String, String> cutImageSizeMap ;//裁剪图片尺寸大小，  key - 表单域名 - vlaue 尺寸 w*h 格式，如 120*120
+
+	private final String EXCEL_MODEL_PATH = SystemContextHolder.getAppRootPath() + Constants.TEMPLATES_PATH;
+//	private String cacheWebRootPath;//缓存到webroot目录的路径，不为空时则拷贝一份文件到指定路径下
+	
+	/**
+	 * 获取允许接受的文件类型
+	 */
+	public String getAcepttype() {		
+		return acepttype;
+	}
+
+	/**
+	 * 获取允许接受的文件大小
+	 */
+	public long getFilesize() {		
+		return filesize;
+	}
+
+	/**
+	 * 获取一次上传的最大文件个数
+	 * @return
+	 */
+	public long getMaxfile() {	
+		return maxfile;
+	}
+
+	/**
+	 * 文件存储路径
+	 * @return
+	 */
+	public String getDistfilepath() {	
+		return distfilepath;
+	}
+
+	public void setDistfilepath(String distfilepath) {
+		File file = new File(distfilepath);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		this.distfilepath = file.getAbsolutePath();
+	}
+	
+	public void setAcepttype(String acepttype) {
+		this.acepttype = acepttype;
+	}
+
+	public void setFilesize(long filesize) {
+		this.filesize = filesize;
+	}
+
+	public void setMaxfile(long maxfile) {
+		this.maxfile = maxfile;
+	}
+		
+
+	public Map<String, String> getReplaceNameMap() {
+		return replaceNameMap;
+	}
+
+	public void setReplaceNameMap(Map<String, String> replaceNameMap) {
+		this.replaceNameMap = replaceNameMap;
+	}
+		
+
+	public Map<String, String> getCutImageSizeMap() {
+		return cutImageSizeMap;
+	}
+
+	public void setCutImageSizeMap(Map<String, String> cutImageSizeMap) {
+		this.cutImageSizeMap = cutImageSizeMap;
+	}
+
+	/**
+	 * 上传
+	 * @param request
+	 * @param response
+	 * @param filterFile 过滤不用上传的文件域
+	 * @return
+	 * @throws ServletRequestBindingException
+	 * @throws IOException
+	 */
+	public List<AttachInfo> doUploadFile(HttpServletRequest request, HttpServletResponse response,String filterFile)
+			throws ServletRequestBindingException, IOException, WebException {
+		List<AttachInfo> attachs = new ArrayList<AttachInfo>();
+		Set<MultipartFile> mfs = getFileSet(request,filterFile);
+		for (MultipartFile mf : mfs) {//遍历文件，并存储
+			attachs.add(uploadFileAndCallback(mf));
+		}
+		return attachs;
+	}
+
+	/**
+	 * 本地文件下载
+	 * @param response
+	 * @param fileName	文件名称,没有什么特别要求
+	 * @param filePath	文件路径，可直接传入文件名（默认路径为/WEB-INF/templates/excel/）
+	 * @param isCleearSourceFile 是否删除源文件
+	 * @throws IOException 
+	 */
+	public void downloadFile(HttpServletResponse response, String fileName, String filePath, boolean isCleearSourceFile)
+			throws IOException {
+		//模版文件路径、文件下载路径
+		if (!filePath.startsWith(SystemContextHolder.getAppRootPath()) && !ExStringUtils.startsWithIgnoreCase(filePath,Constants.EDU3_DATAS_LOCALROOTPATH) && !ExStringUtils.startsWithIgnoreCase(filePath,"/opt")) {
+			filePath =  EXCEL_MODEL_PATH+ filePath;
+		}
+		//判断是否存在这个路径
+		String parentPath = ExStringUtils.removeEndString(filePath,File.separator);
+		File file = new File(parentPath);
+		if (!file.exists() || !file.isDirectory()) {
+			file.mkdir();
+		}
+		downloadFile(response, fileName, filePath, isCleearSourceFile, false);
+	}
+	
+	/**
+	 * 本地文件下载
+	 * @param response
+	 * @param fileName
+	 * @param filePath
+	 * @param isCleearSourceFile
+	 * @param isZip 是否需要压缩
+	 * @throws IOException
+	 */
+	public void downloadFile(HttpServletResponse response, String fileName, 
+						String filePath, boolean isCleearSourceFile,boolean isZip)
+	throws IOException {
+		
+		renderFile(response, "bin", fileName, filePath, isCleearSourceFile, isZip,false);
+		
+		/*	 调整到baseSupportController中. by hzg	
+		 
+		//如果启用压缩	
+		if(isZip){
+			String zipFile = filePath.substring(0,filePath.lastIndexOf(".")).concat(".zip");
+			//替换压缩包里的文件名
+			String extName = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();//源文件扩展名	
+			String replaceName = fileName.substring(0,fileName.lastIndexOf(".")).concat(".").concat(extName);
+			// opt/datas/dd/test.csv
+			try {
+				ZipUtils.zip(filePath, zipFile,replaceName);
+				filePath = zipFile;
+			} catch (Exception e) {
+				
+			}
+		}
+		// 读到流中		
+		@Cleanup InputStream inStream       = new FileInputStream(filePath);// 文件的存放路径
+		try {		
+			String encodedfileName = new String(fileName.getBytes("GBK"), "ISO8859-1");	
+			// 设置输出的格式
+			response.reset();
+			response.setContentType("bin");
+			response.addHeader("Content-Disposition", "attachment; filename=\"" + encodedfileName + "\"");
+			// 循环取出流中的数据
+			byte[] b 			   = new byte[100];
+			int len;
+		
+			while ((len = inStream.read(b)) > 0)
+				response.getOutputStream().write(b, 0, len);
+						
+		} finally{
+			inStream.close();
+			if (isCleearSourceFile) {
+				FileUtils.delFile(filePath);
+			}
+		}
+		*/
+	}
+
+	/**
+	 * 获取上传的文件集合
+	 * @param request
+	 * @param filterFile 过滤不用上传的文件域
+	 * @return 文件集合
+	 * @throws WebException 
+	 */
+	protected Set<MultipartFile> getFileSet(HttpServletRequest request,String filterFile) throws WebException {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		Set<MultipartFile> fileset = new LinkedHashSet<MultipartFile>();		
+	
+		Map map = multipartRequest.getFileMap();		
+		if (null == map || map.size() > this.getMaxfile()) {
+			throw new WebException("超过允许上传的文件个数.");
+		}
+		
+		MultipartFile file = null;
+		for (Iterator it = multipartRequest.getFileNames(); it.hasNext();) {//遍历文件
+			String key = (String) it.next();
+			
+			if(!ExStringUtils.isEmpty(filterFile) && key.equals(filterFile)){//如果过滤字段不为空，且匹配关键字，则忽略
+				continue;
+			}else{
+				file = multipartRequest.getFile(key);				
+				if (file.getOriginalFilename().length() > 0) {
+					fileset.add(file);
+				}
+			}
+			
+			
+		}
+		return fileset;
+	}
+
+	/*
+	 * 上传文件，并存储在服务器上
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private AttachInfo uploadFileAndCallback(MultipartFile file) throws WebException, IOException {
+		AttachInfo attach = new AttachInfo();
+		if (validateFile(file)) {//校验文件
+			String filename = file.getOriginalFilename(); //原名称			
+			String extName = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();//扩展名		
+		
+			GUIDUtils.init();
+			String serverFileName = GUIDUtils.buildMd5GUID(false) + "." + extName;//生成存储在服务器上的文件名
+			
+			
+			//判断用户是否设置存储别名
+			if(null != replaceNameMap && replaceNameMap.size()>0){
+				for(Map.Entry<String, String> entry: replaceNameMap.entrySet()){
+					if(file.getName().equals(entry.getKey())){//如果表单域与设置的别名key相同，则替换
+						serverFileName = entry.getValue() + "." + extName;
+						break;
+					}
+				}
+			}
+			
+			
+			// 图片存储的相对路径			
+			File serverpath = new File(distfilepath);
+			if (!serverpath.exists()) {
+				serverpath.mkdirs();
+			}
+
+			String fileSaveFullPath = distfilepath + File.separator + serverFileName;
+			FileCopyUtils.copy(file.getBytes(), new File(fileSaveFullPath));
+		
+			attach.setAttName(filename);
+			attach.setAttSize(file.getSize());			
+			attach.setAttType(extName);
+			attach.setSaveType("local");
+			attach.setSerName(serverFileName);
+			attach.setSerPath(distfilepath);
+			//上传人时间
+			attach.setUploadTime(new Date());
+		
+			return attach;
+		} else {
+			throw new WebException("上传文件不符合规格");
+		}
+
+	}
+
+	/*
+	 * 验证上传文件是否合法
+	 * @param file 文件
+	 * @return
+	 */
+	private boolean validateFile(MultipartFile file) {
+		//if (file.getSize() < 0 || file.getSize() > this.getFilesize()) {//文件大小
+			//return false;
+		//}
+
+		String filename = file.getOriginalFilename(); //原名称
+		String extName = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();//扩展名
+
+		if (this.getAcepttype().indexOf(extName) == -1) {//校验是否为允许上传类型
+			return false;
+		}
+		return true;
+	}
+
+	
+}

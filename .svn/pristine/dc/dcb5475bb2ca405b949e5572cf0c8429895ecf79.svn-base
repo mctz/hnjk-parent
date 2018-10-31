@@ -1,0 +1,505 @@
+package com.hnjk.edu.teaching.service.impl;
+
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.hnjk.core.foundation.utils.ExBeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.cache.EhCacheManager;
+import com.hnjk.core.foundation.utils.ExCollectionUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.edu.basedata.model.Classic;
+import com.hnjk.edu.basedata.model.Grade;
+import com.hnjk.edu.basedata.model.Major;
+import com.hnjk.edu.basedata.service.IGradeService;
+import com.hnjk.edu.recruit.model.RecruitMajor;
+import com.hnjk.edu.recruit.service.IRecruitMajorService;
+import com.hnjk.edu.teaching.model.LinkageQuery;
+import com.hnjk.edu.teaching.service.ILinkageQueryService;
+import com.hnjk.edu.teaching.vo.LinkageQueryInfo;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.Dictionary;
+import com.hnjk.platform.system.model.SysConfiguration;
+import com.hnjk.security.cache.CacheSecManager;
+import com.hnjk.security.model.OrgUnit;
+
+/**
+ * 联动查询接口实现
+ * 
+ * @author zik, 广东学苑教育发展有限公司
+ *
+ */
+@Service("linkageQueryService")
+@Transactional
+public class LinkageQueryServiceImpl extends BaseServiceImpl<LinkageQuery> implements ILinkageQueryService {
+
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	
+	@Autowired
+	@Qualifier("recruitMajorService")
+	private IRecruitMajorService recruitMajorService;
+	
+	@Autowired
+	@Qualifier("gradeService")
+	private IGradeService gradeService;
+
+	private Map<String, String> queryInfoCacheMap = new HashMap<String, String>();
+
+	private String unitOptionString = "";
+
+	private Map<String,String> singleUnitOptionCacheMap = new HashMap<String, String>();
+	/**
+	 * 根据条件查询联动查询列表的HQL
+	 * 
+	 * @param condition
+	 * @param params
+	 * @return
+	 */
+	private StringBuffer findLinkageQueryByConditonHQL(Map<String, Object> condition, Map<String, Object> params) {
+		StringBuffer hql = new StringBuffer(" from "+LinkageQuery.class.getSimpleName()+" where isDeleted=:isDeleted ");
+		params.put("isDeleted", 0);
+		if(condition.containsKey("brSchoolId")){
+			hql.append(" and unit.resourceid=:brSchoolId ");
+			params.put("brSchoolId", condition.get("brSchoolId"));
+		}
+		if(condition.containsKey("gradeId")){
+			hql.append(" and grade.resourceid=:gradeId ");
+			params.put("gradeId", condition.get("gradeId"));
+		}
+		if(condition.containsKey("classicId")){
+			hql.append(" and classic.resourceid=:classicId ");
+			params.put("classicId", condition.get("classicId"));
+		}
+		if(condition.containsKey("teachingType")){
+			hql.append(" and teachingType=:teachingType ");
+			params.put("teachingType", condition.get("teachingType"));
+		}
+		if(condition.containsKey("majorId")){
+			hql.append(" and major.resourceid=:majorId ");
+			params.put("majorId", condition.get("majorId"));
+		}
+		if(condition.containsKey("classesId")){
+			hql.append(" and classes.resourceid=:classesId ");
+			params.put("classesId", condition.get("classesId"));
+		}
+		hql.append(" order by unit.resourceid,grade.gradeName,classic.resourceid,teachingType,major.resourceid");
+		return hql;
+	}
+	
+	/**
+	 * 根据条件查询联动查询-Page
+	 * 
+	 * @param page
+	 * @param condition
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public Page findLinkageQueryByCondition(Page page, Map<String, Object> condition) throws ServiceException {
+		Map<String, Object> params = new HashMap<String, Object>();
+		StringBuffer hql = findLinkageQueryByConditonHQL(condition, params);
+		Page linkageQueryPage = exGeneralHibernateDao.findByHql(page, hql.toString(), params);
+		return linkageQueryPage;
+	}
+
+
+	/**
+	 * 根据条件查询联动查询-List
+	 * 
+	 * @param condition
+	 * @return
+	 * @throws ServiceException
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LinkageQuery> findByCondition(Map<String, Object> condition) throws ServiceException {
+		Map<String, Object> params = new HashMap<String, Object>();
+		StringBuffer hql = findLinkageQueryByConditonHQL(condition, params);
+		return (List<LinkageQuery>)exGeneralHibernateDao.findByHql(hql.toString(), params);
+	}
+
+	/**
+	 * 根据条件判断该实体是否已存在
+	 * 
+	 * @param condition
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public LinkageQuery isExisted(Map<String, Object> condition) throws ServiceException {
+		LinkageQuery linkageQuery = null;
+		try {
+			List<LinkageQuery> linkageQueryList = findByCondition(condition);
+			if(ExCollectionUtils.isNotEmpty(linkageQueryList)){
+				linkageQuery = linkageQueryList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error("根据条件判断该实体是否已存在出错", e);
+		}
+		return linkageQuery;
+	}
+
+	/**
+	 * 同步某个年级的招生专业到联动查询表
+	 * 
+	 * @param gradeId
+	 * @throws ServiceException
+	 */
+	@Override
+	public void sysncRecruitMajorToLQ(String gradeId) throws ServiceException {
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("grade", gradeId);
+		// 根据年级获取招生专业信息
+		List<RecruitMajor> recruitMajorList = recruitMajorService.findMajorByCondition(condition);
+		if(ExCollectionUtils.isNotEmpty(recruitMajorList)) {
+			Grade  grade = gradeService.get(gradeId);
+			if(grade != null){
+				List<LinkageQuery> linkageQueryList = new ArrayList<LinkageQuery>();
+				Map<String, Object> params = new HashMap<String, Object>();
+				for(RecruitMajor recruitMajor:recruitMajorList){
+					params.clear();
+					OrgUnit unit = recruitMajor.getBrSchool();
+					if(unit==null || unit.getResourceid()==null){
+						continue;
+					}
+					params.put("brSchoolId", unit.getResourceid());
+					Classic classic = recruitMajor.getClassic();
+					if(classic == null || classic.getResourceid() == null){
+						continue;
+					}
+					params.put("classicId", classic.getResourceid());
+					String teachingType = recruitMajor.getTeachingType();
+					if(teachingType == null){
+						continue;
+					}
+					params.put("teachingType", teachingType);
+					Major major = recruitMajor.getMajor();
+					if(major == null || major.getResourceid() == null){
+						continue;
+					}
+					params.put("majorId", major.getResourceid());
+					params.put("gradeId", grade.getResourceid());
+					// 检查该条记录是否已经存在
+					LinkageQuery _linkageQuery = isExisted(params);
+					if( _linkageQuery== null){
+						LinkageQuery linkageQuery = new LinkageQuery();
+						linkageQuery.setUnit(unit);
+						linkageQuery.setGrade(grade);
+						linkageQuery.setClassic(classic);
+						linkageQuery.setTeachingType(teachingType);
+						linkageQuery.setMajor(major);
+						linkageQueryList.add(linkageQuery);
+					} 
+				}
+				// 批量保存
+				batchSaveOrUpdate(linkageQueryList);
+			}
+		}
+	}
+
+	/**
+	 * 根据条件查询联动查询的信息
+	 * 
+	 * @param condition
+	 * @param operate
+	 * @return
+	 * @throws ServiceException
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LinkageQueryInfo> findLinkageQueryInfoByCondition(Map<String, Object> condition, String operate) throws ServiceException {
+		
+		String clumns = "";
+		String orderBy = "";
+		String groupBy = "";
+		List<LinkageQueryInfo> linkageQueryInfoList = new ArrayList<LinkageQueryInfo>();
+		try {
+
+			StringBuffer where = new StringBuffer(" where lq.isdeleted=0 ");
+			if(LinkageQuery.OPERATE_GRADE.equals(operate)){
+				clumns = " g.resourceid gradeId,g.gradename gradeName";
+				groupBy = " g.resourceid,g.gradename,y.firstyear ";
+				orderBy = " y.firstyear desc";
+			}else if(LinkageQuery.OPERATE_CLASSIC.equals(operate)){
+				clumns = " cc.resourceid classicId,cc.classicname classicName";
+				groupBy = " cc.resourceid,cc.classicname,cc.showorder ";
+				orderBy = " cc.showorder ";
+			}else if(LinkageQuery.OPERATE_TEACHINGTYPE.equals(operate)){
+				clumns = " lq.teachingType ";
+				groupBy = " lq.teachingType ";
+				orderBy = " lq.teachingType ";
+			}else if(LinkageQuery.OPERATE_MAJOR.equals(operate)){
+				clumns = " m.resourceid majorId,m.majorcode||'-'||m.majorname  majorName";
+				groupBy = " m.resourceid,m.majorcode,m.majorname ";
+				orderBy = " m.majorcode ";
+			}
+			
+			StringBuffer conditionSql = new StringBuffer(1000);
+			conditionSql.append("select ").append(clumns).append(" from edu_teach_linkagequery lq ");
+			// 教学点
+			if(condition.containsKey("brSchoolid")){
+				conditionSql.append(" inner join hnjk_sys_unit u on lq.brschoolid=u.resourceid and u.isdeleted=0 ");
+				where.append(" and lq.brschoolid=:brSchoolid ");
+			}
+			// 年级
+			if(condition.containsKey("gradeid") || LinkageQuery.OPERATE_GRADE.equals(operate)){
+				conditionSql.append(" inner join edu_base_grade g on lq.gradeid=g.resourceid and g.isdeleted=0 ");
+				conditionSql.append(" inner join edu_base_year y on g.yearid=y.resourceid and y.isdeleted=0 ");
+				if(condition.containsKey("gradeid")){
+					where.append(" and lq.gradeid=:gradeid ");
+				}
+			}
+			// 层次
+			if(condition.containsKey("classicid") || LinkageQuery.OPERATE_CLASSIC.equals(operate)){
+				conditionSql.append(" inner join edu_base_classic cc on lq.classicid=cc.resourceid and cc.isdeleted=0 ");
+				if(condition.containsKey("classicid")){
+					where.append(" and lq.classicid=:classicid ");
+				}
+			}
+			// 学习形式
+			if(condition.containsKey("teachingType")){
+				where.append(" and lq.teachingType=:teachingType ");
+			}
+			// 专业
+			if(condition.containsKey("majorid") || LinkageQuery.OPERATE_MAJOR.equals(operate)){
+				conditionSql.append(" inner join edu_base_major m on lq.majorid=m.resourceid and m.isdeleted=0 ");
+				if(condition.containsKey("majorid")){
+					where.append(" and lq.majorid=:majorid ");
+				}
+			}
+			conditionSql.append(where);
+			conditionSql.append(" group by ").append(groupBy);
+			conditionSql.append(" order by ").append(orderBy);
+			linkageQueryInfoList = baseSupportJdbcDao.getBaseJdbcTemplate().findList(conditionSql.toString(), LinkageQueryInfo.class, condition);
+		} catch (Exception e) {
+			logger.error("根据条件查询联动查询的信息出错", e);
+		}
+		return linkageQueryInfoList;
+	}
+	
+	/**
+	 * 构造年级select标签的options
+	 * 
+	 * @param condition
+	 * @param defaultValue
+	 * @param operate
+	 * @param selInfo
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public String constructOptions(Map<String,Object> condition, String defaultValue, String operate, Map<String, Object> selInfo) throws ServiceException {
+		StringBuffer options = new StringBuffer(1000);
+		options.append("<select ");
+		// 构造select标签属性
+		String selAttribute = constructSelectAttribute(selInfo);
+
+		if (queryInfoCacheMap.containsKey(condition.toString()) && ExStringUtils.isContainsStr(queryInfoCacheMap.get(condition.toString()),"</option>")) {
+			return options.append(selAttribute).append(" >").append(queryInfoCacheMap.get(condition.toString())
+					.replace(" selected ","").replace("'"+defaultValue+"'","'"+defaultValue+"' selected ")).append("</select>").toString();
+		}
+
+		StringBuffer buffer = new StringBuffer(1000);
+		List<LinkageQueryInfo> linkageQueryInfoList = findLinkageQueryInfoByCondition(condition,operate);
+		if(ExCollectionUtils.isNotEmpty(linkageQueryInfoList)){
+			
+			Map<String, String> teachingTypeMap = new HashMap<String, String>();
+			if("teachingType".equals(operate)){
+				List<Dictionary> teachingTypeList =  CacheAppManager.getChildren("CodeTeachingType");
+				if(ExCollectionUtils.isNotEmpty(teachingTypeList)) {
+					for(Dictionary dictionary:teachingTypeList){
+						teachingTypeMap.put(dictionary.getDictValue(), dictionary.getDictName());
+					}
+				}
+			}
+			buffer.append("<option value=''></option>");
+			for(LinkageQueryInfo linkageQueryInfo:linkageQueryInfoList){
+				String id = "";
+				String name = "";
+				if("grade".equals(operate)){
+					id = linkageQueryInfo.getGradeId();
+					name = linkageQueryInfo.getGradeName();
+				}else if("classic".equals(operate)){
+					id = linkageQueryInfo.getClassicId();
+					name = linkageQueryInfo.getClassicName();
+				}else if("teachingType".equals(operate)){
+					id = linkageQueryInfo.getTeachingType();
+					name = teachingTypeMap.get(id);
+				} else if("major".equals(operate)){
+					id = linkageQueryInfo.getMajorId();
+					name = linkageQueryInfo.getMajorName();
+				}
+
+				buffer.append("<option value='").append(id).append("'");
+				if(ExStringUtils.isNotEmpty(defaultValue) && defaultValue.equals(id)){
+					buffer.append(" selected ");
+				}
+				buffer.append(">").append(name).append("</option>");
+			}
+		}
+
+		options.append(selAttribute).append(" >").append(buffer).append("</select>");
+		queryInfoCacheMap.put(condition.toString(),buffer.toString());
+		return options.toString();
+	}
+	
+	/**
+	 * 构造教学点select标签的options
+	 * 
+	 * @param defaultValue
+	 * @param schoolId
+	 * @param unitInfo
+	 * @return
+	 * @throws ServiceException
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public String constructUnitOptions(String defaultValue, String schoolId, Map<String, Object> unitInfo) throws ServiceException {
+		StringBuffer options = new StringBuffer(2000);
+		StringBuilder selAttributeSB = new StringBuilder(2000);
+		selAttributeSB.append("<select ");
+		try {
+			// 构造select标签属性
+			String selAttribute = constructSelectAttribute(unitInfo);
+			selAttributeSB.append(selAttribute);
+			if (ExStringUtils.isBlank(schoolId) && ExStringUtils.isNotBlank(unitOptionString)) {
+				if(ExStringUtils.isBlank(defaultValue)) {
+					defaultValue = "请选择";
+				}
+				return selAttributeSB.append(" >").append(unitOptionString.replace(" selected ","").replace("'"+defaultValue+"'","'"+defaultValue+"' selected ")).append("</select>").toString();
+			} else if (ExStringUtils.isNotBlank(schoolId) && singleUnitOptionCacheMap.containsKey(schoolId)) {
+				return singleUnitOptionCacheMap.get(schoolId).replace("selectId",unitInfo.get("selId").toString());
+			}
+			List<OrgUnit> orgUnitList = (List<OrgUnit>)EhCacheManager.getCache(CacheSecManager.CACHE_SEC_ORGS).get(CacheSecManager.CACHE_SEC_ORGS);
+			if(ExCollectionUtils.isNotEmpty(orgUnitList)){
+				Collections.sort(orgUnitList, new Comparator<OrgUnit>() {
+					@Override
+					public int compare(OrgUnit unit1, OrgUnit unit2) {
+						int compared = 0;
+						if(unit1!=null && unit2!=null && unit1.getUnitCode()!=null && unit2.getUnitCode()!=null){
+							compared = unit1.getUnitCode().compareTo(unit2.getUnitCode());
+						}
+						return compared;
+					}
+				});
+				
+				if(ExStringUtils.isNotEmpty(schoolId)){
+					for(OrgUnit orgUnit : orgUnitList){
+						if(schoolId.equals(orgUnit.getResourceid())){
+							options.append("<option value='"+orgUnit.getResourceid()+"' selected >"+orgUnit.getUnitCode()+"-"+orgUnit.getUnitName()+"</option>");
+							break;
+						}
+					}
+					singleUnitOptionCacheMap.put(schoolId,ExStringUtils.replaceStartAndEnd(selAttributeSB.append(" >").append(options).append("</select>").toString(),"id="," ","id='selectId' "));
+				    return selAttributeSB.toString();
+				} else {
+					options.append("<option title='请选择' value=''></option>");
+					for(OrgUnit orgUnit : orgUnitList){
+					   SysConfiguration _unittype = CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype");
+					   if(orgUnit==null || _unittype==null){
+						   continue;
+					   }
+						if(!_unittype.getParamValue().equals(orgUnit.getUnitType())){
+							//过滤非校外学习中心的
+							continue;
+						}
+						options.append("<option value='"+orgUnit.getResourceid()+"'");
+						if(ExStringUtils.isNotEmpty(defaultValue) && defaultValue.equals(orgUnit.getResourceid())){
+							options.append(" selected ");
+						}
+						options.append(">"+orgUnit.getUnitCode()+"-"+orgUnit.getUnitName()+"</option>");
+					}
+					unitOptionString = options.toString();
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("根据条件构造成select标签中的option出错", e);
+		}
+		selAttributeSB.append(" >").append(options).append("</select>");
+
+		return selAttributeSB.toString();
+	}
+
+	/**
+	 * 构建select标签的属性
+	 * 
+	 * @param selInfo
+	 * @return
+	 * @throws ServiceException
+	 */
+	@Override
+	public String constructSelectAttribute(Map<String, Object> selInfo) throws ServiceException {
+		StringBuffer selAttribute = new StringBuffer();
+		if(selInfo!=null && selInfo.size()>0){
+			String selId = (String)selInfo.get("selId");
+			if(ExStringUtils.isNotEmpty(selId)){
+				selAttribute.append(" id='"+selId+"' ");
+			}
+			String selName = (String)selInfo.get("selName");
+			if(ExStringUtils.isNotEmpty(selName)){
+				selAttribute.append(" name='"+selName+"' ");
+			}
+			String selOnchange = (String)selInfo.get("selOnchange");
+			if(ExStringUtils.isNotEmpty(selOnchange)){
+				selAttribute.append(" onchange='"+selOnchange+"' ");
+			}
+			String selClass = (String)selInfo.get("selClass");
+			if(ExStringUtils.isNotEmpty(selClass)){
+				selAttribute.append(" class='"+selClass+"' ");
+			}
+			String selStyle = (String)selInfo.get("selStyle");
+			if(ExStringUtils.isNotEmpty(selStyle)){
+				selAttribute.append(" style='"+selStyle+"' ");
+			}
+			String selPlaceholder = (String)selInfo.get("selPlaceholder");
+			if(ExStringUtils.isNotEmpty(selPlaceholder)){
+				selAttribute.append(" data-placeholder='"+selPlaceholder+"' ");
+			}
+		}
+		
+		return selAttribute.toString();
+	}
+
+	@Override
+	public void sysncStudentInfoToLQ(String gradeId) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into edu_teach_linkagequery(resourceid,brschoolid,gradeid,classicid,teachingtype,majorid,version,isdeleted)");
+		sb.append(" select sys_guid(),si.branchschoolid,si.gradeid,si.classicid,si.teachingtype,si.majorid,0,0");
+		sb.append(" from edu_roll_studentinfo si where (si.branchschoolid,si.gradeid,si.classicid,si.teachingtype,si.majorid) not in(");
+		sb.append(" select brschoolid,gradeid,classicid,teachingtype,majorid from edu_teach_linkagequery lq where lq.isdeleted=0)");
+		sb.append(" and si.isdeleted=0 and si.studentstatus in('11','12','16','24','25') and si.gradeid=:gradeId ");
+		sb.append(" group by si.branchschoolid,si.gradeid,si.classicid,si.teachingtype,si.majorid");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", gradeId);
+		try {
+			/*int count = */baseSupportJdbcDao.getBaseJdbcTemplate().executeForMap(sb.toString(), map);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void clearCacheMap() {
+		unitOptionString = "";
+		singleUnitOptionCacheMap.clear();
+		queryInfoCacheMap.clear();
+	}
+
+}

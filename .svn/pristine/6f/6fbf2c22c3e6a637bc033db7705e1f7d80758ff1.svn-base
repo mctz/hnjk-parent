@@ -1,0 +1,221 @@
+长度函数：  fn:length
+
+字符串处理函数： fn:contains 、 fn:containsIgnoreCase 、 fn:endsWith 、 fn:escapeXml 、 fn:indexOf 、 fn:join 、 fn:replace 、 fn:split 、 fn:startsWith 、 fn:substring 、 fn:substringAfter 、 fn:substringBefore 、 fn:toLowerCase 、 fn:toUpperCase 、 fn:trim
+
+JSP 页面上：
+
+<%@ taglib uri="/WEB-INF/fn.tld" prefix="fn" %>
+
+${fn:toUpperCase("sdjkhjshjhjd") }
+
+ 
+
+这个例子将输出 这些字母的大写字母
+一.长度函数 fn:length 函数
+
+长度函数 fn:length 的出现有重要的意义。在 JSTL1.0 中，有一个功能被忽略了，那就是对集合的长度取值。虽然 java.util.Collection 接口定义了 size 方法，但是该方法不是一个标准的 JavaBean 属性方法（没有 get,set 方法），因此，无法通过 EL 表达式“ ${collection.size} ”来轻松取得。
+
+fn:length 函数正是为了解决这个问题而被设计 出来的。它的参数为 input ，将计算通过该属性传入的对象长度。该对象应该为集合类型或 String 类型。其返回结果是一个 int 类型的值。下面看一个示例。
+
+<%ArrayList arrayList1 = new ArrayList();
+
+                             arrayList1.add("aa");
+
+                             arrayList1.add("bb");
+
+                             arrayList1.add("cc");
+
+%>
+
+<%request.getSession().setAttribute("arrayList1", arrayList1);%>
+
+${fn:length(sessionScope.arrayList1)}
+
+假设一个 ArrayList 类型的实例“ arrayList1 ”，并为其添加三个字符串对象，使用 fn:length 函数后就可以取得返回结果为“ 3 ”。
+二.判断函数 fn:contains 函数
+
+fn:contains 函数用来判断源字符串是否包含子字符串。它包括 string 和 substring 两个参数，它们都是 String 类型，分布表示源字符串和子字符串。其返回结果为一个 boolean 类型的值。下面看一个示例。
+
+${fn:contains("ABC", "a")}<br>
+
+${fn:contains("ABC", "A")}<br>
+
+前者返回“ false ”，后者返回“ true ”。
+三. fn:containsIgnoreCase 函数
+
+fn:containsIgnoreCase 函数与 fn:contains 函数的功能差不多，唯一的区别是 fn:containsIgnoreCase 函数对于子字符串的包含比较将忽略大小写。它与 fn:contains 函数相同，包括 string 和 substring 两个参数，并返回一个 boolean 类型的值。下面看一个示例。
+
+${fn:containsIgnoreCase("ABC", "a")}<br>
+
+${fn:containsIgnoreCase("ABC", "A")}<br>
+
+前者和后者都会返回“ true ”。
+四.词头判断函数 fn:startsWith 函数
+
+fn:startsWith 函数用来判断源字符串是否符合一连串的特定词头。它除了包含一个 string 参数外，还包含一个 subffx 参数，表示词头字符串，同样是 String 类型。该函数返回一个 boolean 类型的值。下面看一个示例。
+
+${fn:startsWith ("ABC", "ab")}<br>
+
+${fn:startsWith ("ABC", "AB")}<br>
+
+前者返回“ false ”，后者返回“ true ”。
+五.词尾判断函数 fn:endsWith 函数
+
+fn:endsWith 函数用来判断源字符串是否符合一连串的特定词尾。它与 fn:startsWith 函数相同，包括 string 和 subffx 两个参数，并返回一个 boolean 类型的值。下面看一个示例。
+
+${fn:endsWith("ABC", "bc")}<br>
+
+${fn:endsWith("ABC", "BC")}<br>
+
+前者返回“ false ”，后者返回“ true ”。
+六.字符实体转换函数 fn:escapeXml 函数
+
+fn:escapeXml 函数用于将所有特殊字符转化为字符实体码。它只包含一个 string 参数，返回一个 String 类型的值。
+七.字符匹配函数 fn:indexOf 函数
+
+fn:indexOf 函数用于取得子字符串与源字符串匹配的开始位置，若子字符串与源字符串中的内容没有匹配成功将返回“ -1 ”。它包括 string 和 substring 两个参数，返回结果为 int 类型。下面看一个示例。
+
+${fn:indexOf("ABCD","aBC")}<br>
+
+${fn:indexOf("ABCD","BC")}<br>
+
+前者由于没有匹配成功，所以返回 -1 ，后者匹配成功将返回位置的下标，为 1 。
+八.分隔符函数 fn:join 函数
+
+fn:join 函数允许为一个字符串数组中的每一个字符串加上分隔符，并连接起来。它的参数、返回结果和描述如表 9.25 所示：
+
+表 9.25 　 fn:join 函数
+
+参数 					描述 
+array 					字符串数组。其类型必须为 String[] 类型
+separator 				分隔符。其类型必须为 String 类型
+
+返回结果	返回一个 String 类型的值
+
+下面看一个示例。
+
+<% String[] stringArray = {"a","b","c"}; %>
+
+<%request.getSession().setAttribute("stringArray", stringArray);%>
+
+${fn:join(sessionScope.stringArray,";")}<br>
+
+定义数组并放置到 Session 中，然后通过 Session 得到该字符串数组，使用 fn:join 函数并传入分隔符“ ; ”，得到的结果为“ a;b;c ”。
+
+九.替换函数 fn:replace 函数
+
+fn:replace 函数允许为源字符串做替换的工作。它的参数、返回结果和描述如表 9.26 所示：
+
+表 9.26 　 fn:replace 函数
+
+参数					描述
+
+inputString			源字符串。其类型必须为 String 类型
+
+beforeSubstring		指定被替换字符串。其类型必须为 String 类型
+
+afterSubstring		指定替换字符串。其类型必须为 String 类型
+
+返回结果	返回一个 String 类型的值
+
+下面看一个示例。
+
+${fn:replace("ABC","A","B")}<br>
+
+将“ ABC ”字符串替换为“ BBC ”，在“ ABC ”字符串中用“ B ”替换了“ A ”。
+十.分隔符转换数组函数 fn:split 函数
+
+fn:split 函数用于将一组由分隔符分隔的字符串转换成字符串数组。它的参数、返回结果和描述如表 9.27 所示：
+
+表 9.27 　 fn:split 函数
+
+参数
+	
+
+描述
+
+string
+	
+
+源字符串。其类型必须为 String 类型
+
+delimiters
+	
+
+指定分隔符。其类型必须为 String 类型
+
+返回结果
+	
+
+返回一个 String[] 类型的值
+
+下面看一个示例。
+
+${fn:split("A,B,C",",")}<br>
+
+将“ A,B,C ”字符串转换为数组 {A,B,C} 。
+十一.字符串截取函数 fn:substring 函数
+
+fn:substring 函数用于截取字符串。它的参数、返回结果和描述如表 9.28 所示：
+
+表 9.28 　 fn:substring 函数
+
+参数
+	
+
+描述
+
+string
+	
+
+源字符串。其类型必须为 String 类型
+
+beginIndex
+	
+
+指定起始下标（值从 0 开始）。其类型必须为 int 类型
+
+endIndex
+	
+
+指定结束下标（值从 0 开始）。其类型必须为 int 类型
+
+返回结果
+	
+
+返回一个 String 类型的值
+
+下面看一个示例。
+
+${fn:substring("ABC","1","2")}<br>
+截取结果为“ B ”。
+
+ 
+十二.起始到定位截取字符串函数 fn:substringBefore 函数
+
+fn:substringBefore 函数允许截取源字符从开始到某个字符串。它的参数和 fn:substringAfter 函数相同，不同的是 substring 表示的是结束字符串。下面看一个示例。
+
+${fn:substringBefore("ABCD","BC")}<br>
+
+截取的结果为“ A ”。
+十三.小写转换函数 fn:toLowerCase 函数
+
+fn:toLowerCase 函数允许将源字符串中的字符全部转换成小写字符。它只有一个表示源字符串的参数 string ，函数返回一个 String 类型的值。下面看一个示例。
+
+${fn:toLowerCase("ABCD")}<br>
+
+转换的结果为“ abcd ”。
+十四.大写转换函数 fn:toUpperCase 函数
+
+fn:toUpperCase 函数允许将源字符串中的字符全部转换成大写字符。它与 fn:toLowerCase 函数相同，也只有一个 String 参数，并返回一个 String 类型的值。下面看一个示例。
+
+${fn:toUpperCase("abcd")}<br>
+
+转换的结果为“ ABCD ”。
+十五.空格删除函数 fn:trim 函数
+
+fn:trim 函数将删除源字符串中结尾部分的“空格”以产生一个新的字符串。它与 fn:toLowerCase 函数相同，只有一个 String 参数，并返回一个 String 类型的值。下面看一个示例。
+
+${fn:trim("AB C ")}D<br>
+
+转换的结果为“ AB CD ”，注意，它将只删除词尾的空格而不是全部，因此“ B ”和“ C ”之间仍然留有一个空格。 

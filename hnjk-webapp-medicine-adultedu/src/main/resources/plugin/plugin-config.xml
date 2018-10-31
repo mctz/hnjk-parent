@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+JS组件注册配置
+	<component>:id 组件ID，唯一,name 组件名称
+	<file>
+		fileType:js|css 文件类型
+		filePath:文件在服务器上的路径
+		fileId:ID
+	ex.
+	使用时，通过标签引入如<gh:loadCom components="jquery,tab,datePicker"/>
+ -->
+<components>	
+	<component id="netedu3-defaultcss" name="网院3.0平台默认样式">
+		<file fileType="css" filePath="/themes/default/style.css"/>
+		<file fileType="css" filePath="/themes/css/core.css"/>
+	</component>	
+	
+	<component id="bbs-defaultcss" name="网院3.0论坛默认样式">
+		<file fileType="css" filePath="/style/default/bbs-core.css"/>
+		<file fileType="css" filePath="/style/default/bbs-format.css"/>
+	</component>	
+	
+	<component id="jquery" name="jquery1.4.4内核">
+		<file fileType="js" filePath="/jscript/jquery-1.4.4.min.js"/>		
+		<file fileType="js" filePath="/jscript/jquery.cookie.min.js"/>
+	</component>
+	
+	<component id="framework" name="前端UI框架">
+		<file fileType="js" filePath="/jscript/framework/jquery.bgiframe.min.js"/>
+		<file fileType="js" filePath="/jscript/framework/jquery.validate.min.js"/>
+		<file fileType="js" filePath="/jscript/framework/framework.js"/>		
+	</component>
+	
+	<component id="ztree" name="ztree 数据树组件">
+		<file fileType="js" filePath="/jscript/ztree/jquery-ztree-2.4.min.js"/>
+		<file fileType="css" filePath="/jscript/ztree/zTreeStyle.css"/>		
+	</component>
+	
+	<component id="treeView" name="tree view树组件">
+		<file fileType="js" filePath="/jscript/treeview/jquery.treeview.min.js"/>
+		<file fileType="css" filePath="/jscript/treeview/jquery.treeview.css"/>		
+	</component>
+	
+	<component id="cnArea" name="中国区域联动下拉">
+		<file fileType="js" filePath="/jscript/cnarea/chinaArea.min.js"/>
+		<file fileType="js" filePath="/jscript/cnarea/location.min.js"/>
+	</component>
+	
+	<component id="autocomplete" name="自动填充">
+		<file fileType="js" filePath="/jscript/autocomplete/jquery.flexselect.min.js"/>
+		<file fileType="css" filePath="/jscript/autocomplete/flexselect.css"/>
+	</component>
+	 
+	<component id="multipleupload" name="多文件选择上传"> 
+		<file fileType="js" filePath="/jscript/multipleupload/jquery.MultiFile.min.js"/>
+	</component>
+	
+	
+	<component id="fileupload" name="带进度条的文件上传">
+		<file fileType="js" filePath="/jscript/jquery.uploadify/js/swfobject.js"/>
+		<file fileType="js" filePath="/jscript/jquery.uploadify/js/jquery.uploadify.v2.1.0.min.js"/>
+		<file fileType="css" filePath="/jscript/jquery.uploadify/css/uploadify.css"/>
+	</component>
+	
+	<component id="fineUploader" name="fineUploader文件上传">
+		<file fileType="css" filePath="/jscript/fine-uploader/fine-uploader-new.min.css"/>
+		<file fileType="js" filePath="/jscript/fine-uploader/jquery.fine-uploader.min.js"/>
+	</component>
+
+	<component id="datePicker" name="日期选择">
+		<file fileType="js" filePath="/jscript/My97DatePicker/WdatePicker.js"/>
+		<file fileType="js" filePath="/jscript/My97DatePicker/config.js"/>
+		<file fileType="css" filePath="/jscript/My97DatePicker/skin/WdatePicker.css"/>
+	</component>
+	
+	<component id="ajaxForm" name="ajax提交表单">
+		<file fileType="js" filePath="/jscript/ajaxForm/jquery.form.js"/>
+	</component>
+	
+	<component id="editor" name="富文本编辑器">		
+		<file fileType="js" filePath="/jscript/editor/kindeditor.js"/>
+	</component>
+	
+	<component id="easyslide" name="门户图片滚动插件">		
+		<file fileType="js" filePath="/jscript/easyslide/loopedslider.min.js"/>
+		<file fileType="css" filePath="/jscript/easyslide/loopedslider.css"/>
+	</component>	
+	
+	<component id="tab" name="普通tab组件">
+		<file fileType="js" filePath="/jscript/tabs/ui.tab.js"/>	
+		<file fileType="css" filePath="/jscript/tabs/tab.style.css"/>
+	</component>
+	
+	<component id="blockUI" name="弹出层(带遮罩)">
+		<file fileType="js" filePath="/jscript/blockui/jquery.blockUI-2.31.min.js"/>
+	</component>
+		
+	<component id="validator" name="验证表单">
+		<file fileType="js" filePath="/jscript/validator/jquery.validator.min.js"/>
+		<file fileType="css" filePath="/jscript/validator/jquery.validator.css"/>
+	</component>
+	
+	<component id="preview" name="上传图片预览">
+		<file fileType="js" filePath="/jscript/preview/CJL.0.1.min.js"/>
+		<file fileType="js" filePath="/jscript/preview/ImagePreviewd.js"/>
+	</component>
+	
+	<component id="popWin" name="泡出窗口">
+		<file fileType="js" filePath="/jscript/notificationMessage/jquery.floatfix.js"/>
+		<file fileType="css" filePath="/jscript/notificationMessage/jquery.floatfix.css"/>
+	</component>
+	
+	<component id="flowplayer" name="flash播放器">
+		<file fileType="js" filePath="/jscript/flowplayer/flowplayer-3.2.6.min.js"/>
+	</component>
+	
+	<component id="highcharts" name="highcharts图形">
+		<file fileType="js" filePath="/jscript/Highcharts-2.0.3/highcharts.js"/>		
+	</component>	
+
+	<component id="multiselect" name="多列选择">
+		<file fileType="js" filePath="/jscript/multiselect/jquery.multiselect2side.min.js"/>
+		<file fileType="css" filePath="/jscript/multiselect/jquery.multiselect2side.css"/>
+	</component>
+	
+	<component id="jclock" name="时钟组件">
+		<file fileType="js" filePath="/jscript/jclock/jquery.jclock.min.js"/>
+	</component>
+	
+	<component id="colortips" name="彩色提示层">
+		<file fileType="js" filePath="/jscript/colortips/jquery.tipsy.min.js"/>
+		<file fileType="css" filePath="/jscript/colortips/tipsy.css"/>
+	</component>
+	
+	<component id="workflow" name="工作流">
+		<file fileType="js" filePath="/jscript/workflow/raphael-min.js"/>
+		<file fileType="js" filePath="/jscript/workflow/jquery-ui-1.7.3.custom.min.js"/>
+		<file fileType="js" filePath="/jscript/workflow/raphael-min.js"/>		
+		<file fileType="js" filePath="/jscript/workflow/myflow.js"/>
+		<file fileType="js" filePath="/jscript/workflow/myflow.ext.js"/>
+		<file fileType="css" filePath="/jscript/workflow/workflow.style.css"/>
+	</component>	
+	
+	<component id="course" name="精品课程js">
+		<file fileType="js" filePath="/jscript/course/SpryAccordion.js"/>
+		<file fileType="js" filePath="/jscript/course/SpryTabbedPanels.js"/>		
+		<file fileType="js" filePath="/jscript/course/jCourseMenu.js"/>
+	</component>
+	
+	<component id="iframeAutoHeight" name="iframe自适应高度">
+		<file fileType="js" filePath="/jscript/jquery.iframe-auto-height.1.9.0.min.js"/>
+	</component>
+	
+	<component id="popwindow" name="弹出窗口">
+		<file fileType="js" filePath="/jscript/popwindow/jquery.myext.js"/>
+		<file fileType="js" filePath="/jscript/popwindow/window_src.js"/>
+		<file fileType="css" filePath="/jscript/popwindow/css/office.css"/>
+	</component>	
+	
+	<component id="jqprint" name="打印">
+		<file fileType="js" filePath="/jscript/jquery.jqprint-0.3.js"/>
+	</component>	
+	<component id="JsBarcode" name="条形码">
+		<file fileType="js" filePath="/jscript/JsBarcode.all.js"/>
+	</component>
+
+</components>
+		<!--<component id="layui" name="前端UI框架">
+                <file fileType="js" filePath="/jscript/layui/layui.js"></file>
+                <file fileType="css" filePath="/jscript/layui/css/layui.css"></file>
+            </component>-->

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<meta name="url">/edu3/recruit/recruitmanage/branchschoolmajor-form.html</meta>
+	<meta name="name">brsrecruitplan</meta>
+	<meta name="wfcimg">/images/workflow/brsrecruitplan.gif</meta>
+	<meta name="cnname">申报招生专业</meta>
+    <initial-actions>
+        <action id="100" name="启动工作流">
+            <pre-functions>
+                <function type="class">
+                    <arg name="class.name">com.opensymphony.workflow.util.Caller</arg>
+                </function>
+            </pre-functions>
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="1" owner="${caller}"/>
+            </results>
+        </action>
+    </initial-actions>
+
+    <steps>
+    	<step id="1" name="申请">
+            <actions>
+                <action id="1" name="提交领导审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="ROLE_402881aa297c4d7b01297d48f8170002"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="2" name="学习中心领导审核">
+            <actions>
+                <action id="2" name="提交招生办审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="3" owner="ROLE_402880ed27adfc190127ae0defe10003"/>
+                    </results>
+                </action>
+                 <action id="3" name="退回给拟稿人修改">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="1" owner="ROLE_402880ed27adfc190127ae0f21aa0004"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="3" name="招生办核审">
+            <actions>
+                <action id="4" name="提交招生主管领导审批">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="4" owner="ROLE_402881aa297c4d7b01297d4cba200003"/>
+                    </results>
+                </action>
+                 <action id="5" name="退回给学习中心领导修改">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="ROLE_402881aa297c4d7b01297d48f8170002"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        
+        <step id="4" name="招生主管领导审批">
+            <actions>
+                <action id="6" name="同意上报">
+                	<restrict-to>
+                		<conditions>
+                			<condition type="class">
+                                <arg name="class.name">com.opensymphony.workflow.util.StatusCondition</arg>
+                                <arg name="status">Underway</arg>
+                            </condition>
+                		</conditions>
+                	</restrict-to>
+                    <results>
+                        <unconditional-result old-status="Finished" status="Queued" step="5"/>
+                    </results>
+                </action>
+               <action id="7" name="退回给招生办修改">
+                	<restrict-to>
+                		<conditions>
+                			<condition type="class">
+                                <arg name="class.name">com.opensymphony.workflow.util.StatusCondition</arg>
+                                <arg name="status">Underway</arg>
+                            </condition>
+                		</conditions>
+                	</restrict-to>
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="3" owner="ROLE_402880ed27adfc190127ae0defe10003"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+         <step name="endflow" id="5"/>
+	</steps>
+</workflow>
+

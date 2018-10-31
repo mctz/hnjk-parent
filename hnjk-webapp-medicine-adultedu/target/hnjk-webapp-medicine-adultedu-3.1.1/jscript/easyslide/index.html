@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<title>loopedSlider - Image Example</title>
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="loopedslider.js"></script>
+<script>
+		$(function(){
+			$('#loopedslider').loopedSlider({
+				addPagination: true,
+				autoStart: 5000
+			});
+		});
+	</script>
+<style>
+/*
+		 * Required 
+		*/
+.container {
+	width: 157px;
+	height: 141px;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+}
+
+.slides {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.slides>div {
+	position: absolute;
+	top: 0;
+	width: 157px;
+	display: none;
+}
+/*
+		 * Optional
+		*/
+body {
+	font: normal 15px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	letter-spacing: 0.33px;
+	color: #0e152b;
+	background: #eee;
+	padding: 20px 0;
+}
+
+#loopedslider {
+	margin: 0 auto;
+	width: 157px;
+	position: relative;
+	clear: both;
+}
+
+ul.pagination {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.pagination li {
+	float: left;
+}
+
+ul.pagination li a {
+	padding: 2px 4px;
+}
+
+ul.pagination li.active a {
+	background: blue;
+	color: white;
+}
+</style>
+</head>
+<body>
+	<div id="loopedslider">
+		<div class="container">
+			<div class="slides">
+				<div>
+					<img src="1.jpg" width="157" height="141">
+				</div>
+				<div>
+					<img src="2.jpg" width="157" height="141">
+				</div>
+				<div>
+					<img src="3.jpg" width="157" height="141">
+				</div>
+				<div>
+					<img src="4.jpg" width="157" height="141">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

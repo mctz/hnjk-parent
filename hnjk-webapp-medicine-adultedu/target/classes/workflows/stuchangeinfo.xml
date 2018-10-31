@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<meta name="name">stuchangeinfo</meta>
+	<meta name="cnname">学生学籍异动</meta>
+	<meta name="url">/edu3/register/stuchangeinfo/edit.html</meta>
+	<meta name="wfcimg">/images/workflow/stuchangeinfo.gif</meta>
+    <initial-actions>
+        <action id="100" name="启动工作流">
+            <pre-functions>
+                <function type="class">
+                    <arg name="class.name">com.opensymphony.workflow.util.Caller</arg>
+                </function>
+            </pre-functions>
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="1" owner="${caller}"/>
+            </results>
+        </action>
+    </initial-actions>
+
+    <steps>
+    	<step id="1" name="申请">    		
+            <actions>
+                <action id="1" name="提交校外学习中心审核">
+                    <results> 
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="ROLE_ff80808129a570bb0129a59b4b26000c"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="2" name="校外学习中心审核">
+            <actions>
+                <action id="2" name="提交学籍办教务人员审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="3" owner="ROLE_ff80808129a669820129ab57a5080005"/>
+                    </results>
+                </action>
+                <action id="3" name="退回给学生修改">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="1" owner="ROLE_402880ed27adfc190127ae0c1ef90002"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="3" name="学籍办教务员核审">
+        	<meta name="deny_form_input">stuNum,changeType,majorid,classicid,schoolCenterid,change_to_style</meta>
+            <actions>
+                <action id="4" name="提交学籍办主任审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="4" owner="ROLE_ff80808129a669820129ab52748b0003"/>
+                    </results>
+                </action>
+                <action id="5" name="退回给校外学习中心">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="ROLE_ff80808129a570bb0129a59b4b26000c"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step id="4" name="学籍办主任审核">
+        	<meta name="deny_form_input">stuNum,changeType,majorid,classicid,schoolCenterid,change_to_style</meta>
+            <actions>
+                <action id="6" name="提交院长审核">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="5" owner="ROLE_402880e62981cb43012981db0d690002"/>
+                    </results>
+                </action>
+                 <action id="7" name="退回给校外学习中心">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="2" owner="ROLE_ff80808129a570bb0129a59b4b26000c"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+       
+        <step id="5" name="院长批复">
+        	<meta name="deny_form_input">stuNum,changeType,majorid,classicid,schoolCenterid,change_to_style</meta>
+            <actions>
+                <action id="8" name="批复并归档">
+                    <restrict-to>
+                		<conditions>
+                			<condition type="class">
+                                <arg name="class.name">com.opensymphony.workflow.util.StatusCondition</arg>
+                                <arg name="status">Underway</arg>
+                            </condition>
+                		</conditions>
+                	</restrict-to>
+                    <results>
+                        <unconditional-result old-status="Finished" status="Queued" step="6"/>
+                    </results>
+                </action>
+                <action id="9" name="退回给学籍办主任">
+                    <results>
+                        <unconditional-result old-status="Finished" status="Underway" step="4" owner="ROLE_ff80808129a669820129ab52748b0003"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        
+        <step name="endflow" id="6"/>
+
+	</steps>
+</workflow>
+

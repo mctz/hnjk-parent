@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans        
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		   http://www.springframework.org/schema/tx  
+    	   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+           default-autowire="byName" default-lazy-init="true">	
+    
+    <!-- 根据包路径解析"注解",并把这些bean置入Spring容器 -->      
+    <context:component-scan base-package="com.hnjk" />
+           
+	
+	<!-- 开启切面解析器 -->
+	<!--  <aop:aspectj-autoproxy/>  -->
+	
+	<!-- 银校通数据源 
+	 <bean id="yxtDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
+         <property name="jndiName">  
+             <value>java:comp/env/jdbc/hnjk-yxt</value>  
+         </property>  
+     </bean> 
+	 	--> 	
+	 
+	 <!-- 数据源属性文件 	-->
+	  <bean id="propertyConfigurer"	
+	       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+			<property name="locations">
+				<list>
+					<value>classpath:jdbc/database.properties</value>								       		
+				</list>
+			</property>
+	</bean>
+	
+     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>${datasource.driverClassName}</value></property>
+		<property name="url"><value>${datasource.url}</value></property>
+		<property name="username"><value>${datasource.username}</value></property>
+		<property name="password"><value>${datasource.password}</value></property>		
+	</bean>
+
+	<bean id="sessionFactory"  class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+           <property name="dataSource" ref="dataSource"/>          
+              <property name="packagesToScan">
+				<list>
+					<value>com/hnjk/core/dao/model</value>					
+				</list>
+			</property>          
+           <property name="hibernateProperties">
+                 <props>
+                        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                      <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+					  <prop key="hibernate.query.substitutions">${hibernate.query.substitutions}</prop>                      
+                      <prop key="hibernate.cache.use_second_level_cache">true</prop> 
+                    
+                      <!-- 使用ehcache 作为cache provider
+                      <prop key="hibernate.cache.provider_class">${hibernate.ehcache.provider_class}</prop>                                           
+					  <prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop>
+					   -->
+					   <!-- 使用memcached 作为cache provider -->
+					   <prop key="hibernate.cache.provider_class">${hibernate.memcache.provider_class}</prop>
+					   <prop key="hibernate.memcached.servers">${memcached.servers}</prop> 
+					   <prop key="hibernate.memcached.cacheTimeSeconds">${hibernate.memcached.cacheTimeSeconds}</prop>
+					   
+					   <!-- hibernate search -->
+					   <prop key="hibernate.search.analyzer">${hibernate.search.analyzer}</prop>
+					  <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
+					  <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>	
+					  <prop key="hibernate.search.worker.batch_size">${hibernate.search.worker.batch_size}</prop>			
+                 </props>
+           </property>
+          
+           <property name="lobHandler" ref="defaultLobHandler"/>
+      </bean>
+    
+      <!-- lob类型句柄 -->
+	<bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"/>
+	
+	<!-- 配置事务 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+           <property name="sessionFactory">
+                 <ref local="sessionFactory" />
+           </property>
+     </bean>
+	<!-- 定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"  proxy-target-class="true"/>
+	
+	<!-- 注入SpringContext工具类 -->
+	<bean class="com.hnjk.core.support.context.SpringContextHolder" lazy-init="false"/>
+			
+</beans>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="hnjk-webapp-medicine-adultedu">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/hnjk-core-v3/hnjk-core-v3">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/hnjk-security-v3/hnjk-security-v3">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/hnjk-workflow-v3/hnjk-workflow-v3">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/hnjk-webapp-commons/hnjk-webapp-commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="hnjk-webapp-medicine-adultedu"/>
+        <property name="java-output-path" value="/hnjk-webapp-medicine-adultedu/target/classes"/>
+    </wb-module>
+</project-modules>

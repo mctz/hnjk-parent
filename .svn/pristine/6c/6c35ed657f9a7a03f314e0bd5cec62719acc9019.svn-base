@@ -1,0 +1,308 @@
+package com.hnjk.edu.roll.vo;
+
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.edu.basedata.model.Major;
+import com.hnjk.edu.roll.model.GraduateData;
+import com.hnjk.edu.roll.model.StudentInfo;
+import com.hnjk.edu.teaching.model.TeachingPlan;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.taglib.JstlCustomFunction;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class StudentInfoVo implements Serializable {
+	
+	private String sortNum;//新增序号
+	private String major;
+	private String grade;
+	private String unit;
+	private String classic;
+	private String studentNo;
+	private String examNo;
+	private String studyAttr;
+	private String studyForm;
+	private String inSchoolType;
+	private String studyType;
+	private String enterAttr;
+	private String inSchoolStatus;
+	private String studyStatus;
+	private String isBookGD;
+	private String isApplyGraduation;
+	private String accountStatus;
+	private String isBookStudy;
+	private String teachingType;
+	private String scoreTotal;
+	private String scoreNecTotal;
+	private String scoreLimit;
+	private String enterSchool;
+	private String degree;
+	private String name;
+	private String nameUsed;
+	private String namePY;
+	private String gender;
+	private String certType;
+	private String certNum;
+	private String contactAddress;
+	private String contactZipcode;
+	private String contactPhone;
+	private String mobile;
+	private String email;
+	private String homePage;
+	private String height;
+	private String bloodType;
+	private String bornDay;
+	private String bornAddress;
+	private String country;
+	private String homePlace;
+	private String gaqCode;
+	private String nation;
+	private String health;
+	private String marriage;
+	private String politics;
+	private String faith;
+	private String residenceKind;
+	private String residence;
+	private String currenAddress;
+	private String homeAddress;
+	private String homezipCode;
+	private String homePhone;
+	private String officeName;
+	private String officeZipCode;
+	private String officePhone;
+	private String title;
+	private String specialization;
+	private String industryType;
+	private String workStatus;
+
+	private String attendAdvancedStudies;
+	private String learningStyle;
+	private String studyInSchool;
+	private String studentKind;
+	private String learingstatus;
+	private String isStudyFollow;//是否跟读
+	//后来又添加的一些字段
+	private String yxmc;
+	private String yxdm;
+	private String majorName;
+	private String majorCode;
+	private String entranceDate;
+	private String eduYear;
+	private String graduateDate;
+	private String diplomaNum;
+	private String degreeNum;
+	private String bjyjl;
+	private String xzxm;
+	private String fxzy;
+	private String bz_sh;
+	private String hascard;
+	//导入时用的
+	private String flag;
+	private String message;
+	//未注册导入
+	private String agreeornot;
+	private String classes;//班级
+	private String examCertificateNo; //准考证号
+	private Long totalPoint;//入学总分（成人高考分数）
+	private String indate;
+	private String noReportReason;// 未报到原因
+	private String memo;// 备注
+	//查询审核导出
+	private String degreeName;
+	private double avg;
+	private String thesisScore;
+	private String degreeEnglish;
+	private double avgCreditHour; // 平均学分绩点
+
+	private String preGraduateDate;
+	/**
+	 * update 2014-06-05 10:05:23
+	 * 学信表信息
+	 * @return
+	 */
+	private String KSH;			//1准考证号
+	private String XH; 			//2学号
+	private String XM; 			//3姓名
+	private String XB; 			//4性别
+	private String CSRQ; 		//5出生日期
+	private String SFZH; 		//6身份证号
+	private String ZZMM; 		//7政治面貌
+	private String MZ;  		//8民族
+	private String ZYDM; 		//9专业代码
+	private String ZYMC; 		//10专业名称
+	private String FY; 			//11分院
+	private String XSH; 		//12系所函
+	private String BH; 			//13班号
+	private String CC; 			//14层次
+	private String XXXS; 		//15学习形式
+	private String XZ; 			//16学制
+	private String RXRQ; 		//17入学日期
+	private String YJBYRQ; 		//18预计毕业日期
+	private String XWWYZSBH;  //学位外语证书编号
+	private String SQXWML;  //申请学位门类
+	private String BYQK;  //毕业情况
+	private String XWXSZSH;  //学士学位证书号
+
+	private String studentName;
+	private String status;//导入状态
+	
+
+	public void setStudentInfo(StudentInfo studentInfo) {
+		this.major=studentInfo.getMajor().getMajorName();
+		this.majorCode = studentInfo.getMajor().getMajorCode();
+		this.grade=studentInfo.getGrade().getGradeName();
+		this.unit=studentInfo.getBranchSchool().getUnitName();
+		this.classic="专科".equals(studentInfo.getClassic().getStartPoint())?studentInfo.getClassic().getShortName():studentInfo.getClassic().getEndPoint();
+		this.studentNo=studentInfo.getStudyNo();
+		this.studentName=studentInfo.getStudentName();
+		this.examCertificateNo=studentInfo.getExamCertificateNo();
+		this.examNo=studentInfo.getEnrolleeCode();
+		this.totalPoint=studentInfo.getTotalPoint();
+		this.studyAttr=studentInfo.getAttendAdvancedStudies();
+		this.studyForm=studentInfo.getLearningStyle();
+		this.inSchoolType=studentInfo.getStudyInSchool();
+		this.studyType=studentInfo.getStudentKind();
+		this.enterAttr=studentInfo.getEnterSchool();
+		this.inSchoolStatus=studentInfo.getLearingStatus();
+		this.studyStatus=studentInfo.getStudentStatus();
+		this.isBookGD=studentInfo.getIsOrderSubject();
+		this.isApplyGraduation=studentInfo.getIsApplyGraduate();
+		if(studentInfo.getTeachingPlan()!=null && ExStringUtils.isEmpty(degreeName)){
+			this.degreeName = JstlCustomFunction.dictionaryCode2Value("CodeDegree", studentInfo.getTeachingPlan().getDegreeName());
+		}
+		if(null!=studentInfo.getAccountStatus()) {
+			this.accountStatus=String.valueOf(studentInfo.getAccountStatus());
+		}
+		if(null!=studentInfo.getOrderCourseStatus()) {
+			this.isBookStudy=String.valueOf(studentInfo.getOrderCourseStatus());
+		}
+		this.teachingType=studentInfo.getTeachingType();
+		if(null!=studentInfo.getFinishedCreditHour()) {
+			this.scoreTotal=String.valueOf(studentInfo.getFinishedCreditHour());
+		}
+		if(null!=studentInfo.getFinishedNecessCreditHour()) {
+			this.scoreNecTotal=String.valueOf(studentInfo.getFinishedNecessCreditHour());
+		}
+		if(null!=studentInfo.getFinishedOptionalCourseNum()) {
+			this.scoreLimit= String.valueOf(studentInfo.getFinishedOptionalCourseNum());
+		}
+		this.enterSchool=studentInfo.getEnterAuditStatus();
+		//this.degree=studentInfo.getDegreeStatus();
+		this.name=studentInfo.getStudentBaseInfo().getName();
+		this.nameUsed=studentInfo.getStudentBaseInfo().getNameUsed();
+		this.namePY=studentInfo.getStudentBaseInfo().getNamePY();
+		this.gender=studentInfo.getStudentBaseInfo().getGender();
+		this.certType=studentInfo.getStudentBaseInfo().getCertType();
+		String cNum = studentInfo.getStudentBaseInfo().getCertNum();
+		this.certNum= null!=cNum?cNum.replace("x", "X"):"-";
+		this.contactAddress=studentInfo.getStudentBaseInfo().getContactAddress();
+		this.contactZipcode=studentInfo.getStudentBaseInfo().getContactZipcode();
+		this.contactPhone=studentInfo.getStudentBaseInfo().getContactPhone();
+		this.mobile=studentInfo.getStudentBaseInfo().getMobile();
+		this.email=studentInfo.getStudentBaseInfo().getEmail();
+		this.homePage=studentInfo.getStudentBaseInfo().getHomePage();
+		if(null!=studentInfo.getStudentBaseInfo().getHeight()) {
+			this.height=studentInfo.getStudentBaseInfo().getHeight().toString();
+		}
+		this.bloodType=studentInfo.getStudentBaseInfo().getBloodType();
+		if(null!=studentInfo.getStudentBaseInfo().getBornDay()) {
+			this.bornDay=studentInfo.getStudentBaseInfo().getBornDay().toString().replaceAll("-", "").replaceAll("00:00:00.0", "");
+		}
+		this.bornAddress=studentInfo.getStudentBaseInfo().getBornAddress();
+		this.country=studentInfo.getStudentBaseInfo().getCountry();
+		this.homePlace=studentInfo.getStudentBaseInfo().getHomePlace();
+		this.gaqCode=studentInfo.getStudentBaseInfo().getGaqCode();
+		this.nation=studentInfo.getStudentBaseInfo().getNation();
+		this.health=studentInfo.getStudentBaseInfo().getHealth();
+		this.marriage=studentInfo.getStudentBaseInfo().getMarriage();
+		this.politics=studentInfo.getStudentBaseInfo().getPolitics();
+		this.faith=studentInfo.getStudentBaseInfo().getFaith();
+		this.residenceKind=studentInfo.getStudentBaseInfo().getResidenceKind();
+		this.residence=studentInfo.getStudentBaseInfo().getResidence();
+		this.currenAddress=studentInfo.getStudentBaseInfo().getCurrenAddress();
+		this.homeAddress=studentInfo.getStudentBaseInfo().getHomeAddress();
+		this.homezipCode=studentInfo.getStudentBaseInfo().getHomezipCode();
+		this.homePhone=studentInfo.getStudentBaseInfo().getHomePhone();
+		this.officeName=studentInfo.getStudentBaseInfo().getOfficeName();
+		this.officePhone=studentInfo.getStudentBaseInfo().getOfficePhone();
+		this.title=studentInfo.getStudentBaseInfo().getTitle();
+		this.specialization=studentInfo.getStudentBaseInfo().getSpecialization();
+		this.industryType=studentInfo.getStudentBaseInfo().getIndustryType();
+		this.workStatus=studentInfo.getStudentBaseInfo().getWorkStatus();
+		this.classes = null == studentInfo.getClasses() ? null :studentInfo.getClasses().getClassname();
+	}
+	public void setAttach(GraduateData g) {
+		StudentInfo tmp_studentInfo = g.getStudentInfo();
+		if(null!=tmp_studentInfo){
+			Major tmp_major = tmp_studentInfo.getMajor();
+			TeachingPlan tmp_teachingPlan = tmp_studentInfo.getTeachingPlan();
+			if(null!=tmp_major) {
+				this.majorName=tmp_major.getMajorName();
+			}
+			//if(null!=tmp_major) this.majorCode=tmp_major.getMajorNationCode();
+			if(null!=tmp_teachingPlan) {
+				this.eduYear=tmp_teachingPlan.getEduYear().split("年")[0];
+			}
+		}
+		if(null!=g){
+			this.entranceDate=g.getEntranceDate().toString().replaceAll("-", "");
+			this.graduateDate=g.getGraduateDate().toString().replaceAll("-", "");
+			this.diplomaNum=g.getDiplomaNum();
+			this.degreeNum=g.getDegreeNum();
+			if(ExStringUtils.isNotEmpty(g.getDegreeName())){
+				this.degreeName=g.getDegreeName();
+			}
+			this.hascard = "未提交";
+			if(null!=g.getStudentInfo()){
+				if(null!=g.getStudentInfo().getStudentBaseInfo()){
+					if(null!=g.getStudentInfo().getStudentBaseInfo().getStudentResume()&&null!=g.getStudentInfo().getStudentBaseInfo().getStudentRalation() ) {
+						this.hascard = (g.getStudentInfo().getStudentBaseInfo().getStudentResume().size()>0&&g.getStudentInfo().getStudentBaseInfo().getStudentRalation().size() >0)?"已提交":"未提交";
+					}
+				}
+			}
+		}
+		String schoolName = "";
+		try {
+			schoolName = CacheAppManager.getSysConfigurationByCode("graduateData.schoolName").getParamValue();
+		} catch (Exception e) {
+			
+		}
+		String schoolCode = "";
+		try {
+			schoolCode = CacheAppManager.getSysConfigurationByCode("graduateData.schoolCode").getParamValue();
+		} catch (Exception e) {
+			
+		}
+		this.yxmc=schoolName;
+		this.yxdm=schoolCode;
+		if("24".equals(tmp_studentInfo.getStudentStatus())){
+			this.bjyjl="结业";
+		}else{
+			this.bjyjl="毕业";
+		}
+		//this.bjyjl="毕业";
+		this.xzxm="";
+		this.fxzy="";
+		this.bz_sh="";
+	}
+	
+	//用于导出CSV
+	public String [] toExportArray(){		
+//		return new String[]{
+//				getName(),getStudentNo(),JstlCustomFunction.dictionaryCode2Value("CodeSex", getGender()),getCertNum(),
+//				JstlCustomFunction.dictionaryCode2Value("CodeNation",getNation()),
+//				getGrade(),getClassic(),getMajor(),getUnit(),
+//				getInSchoolStatus(),
+//				"1".equals(getAccountStatus())  ? "激活" :"停用"
+//		};
+		return new String[]{
+				getName(),getStudentNo(), getGender(),getCertNum(),getNation(),
+				getGrade(),getClassic(),getMajor(),getUnit(),getInSchoolStatus(),getAccountStatus()
+		};
+	}
+	
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>New Document</TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<script language="JavaScript" type="text/javascript" src="jquery.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="uploadPreview.js"></script>
+
+</HEAD>
+
+<BODY>
+
+	<script type="text/javascript">
+        $(document).ready(function() {
+            //������#imgDiv�ĸ�Ԫ���ϼӸ�overflow:hidden;��css��ʽ
+            $("input").uploadPreview({ width: 200, height: 200, imgDiv: "#imgDiv", imgType: ["bmp", "gif", "png", "jpg"] });
+        });
+    </script>
+	<form id="form1">
+		<input type="file" /> <br />
+		<div style="overflow: hidden; border: 1px solid red;">
+			<div id="imgDiv"></div>
+		</div>
+	</form>
+
+
+</BODY>
+</HTML>

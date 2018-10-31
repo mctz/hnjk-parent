@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- defaultdir: 包含装饰器页面的目录 page : 页面文件名 name : 别名 role : 角色，用于安全 webapp 
+	: 可以另外指定此文件存放目录 Patterns : 匹配的路径，可以用*,那些被访问的页面需要被装饰。 -->
+<decorators defaultdir="/WEB-INF/decorators">
+	<excludes>
+		<pattern>/edu3/portal/system/channel/list.html*</pattern>
+		<pattern>/edu3/portal/site/index.html*</pattern>
+		<pattern>/edu3/portal/sysmsg/view.html*</pattern>
+		<pattern>/edu3/portal/sysmsg/view.html*</pattern>
+		<pattern>/jscript/editor/*</pattern>
+		<pattern>/edu3/framework/*</pattern>
+	</excludes>
+	<!-- <decorator name="frame" page="frame.jsp"> <pattern>/system/*</pattern> 
+		</decorator> -->
+	<!-- netedu3 <decorator name="netedu3-frame" page="netedu3-frame.jsp"> <pattern>/edu3/*</pattern> 
+		</decorator> -->
+	<decorator name="netedu3-service-frame" page="netedu3-service-frame.jsp">
+		<pattern>/portal/site/service/*</pattern>
+	</decorator>
+	<decorator name="netedu3-help-frame" page="netedu3-help-frame.jsp">
+		<pattern>/portal/help/*</pattern>
+	</decorator>
+</decorators>

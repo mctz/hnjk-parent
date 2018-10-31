@@ -1,0 +1,550 @@
+package com.hnjk.edu.basedata.service.impl;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.utils.ExDateUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.edu.basedata.model.Edumanager;
+import com.hnjk.edu.basedata.service.IEdumanagerService;
+import com.hnjk.platform.system.cache.CacheAppManager;
+import com.hnjk.platform.system.model.SysConfiguration;
+import com.hnjk.security.model.OrgUnit;
+import com.hnjk.security.model.User;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * <code>EdumanagerServiceImpl</code>基础数据-教务管理人员-服务实现.
+ * <p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-3-15 下午02:25:22
+ * @see
+ * @version 1.0
+ */
+@Service("edumanagerService")
+@Transactional
+public class EdumanagerServiceImpl extends BaseServiceImpl<Edumanager>	implements IEdumanagerService {
+
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page findEdumanagerByCondition(Map<String, Object> condition,Page objPage) throws ServiceException {
+		Map<String,Object> values =  new HashMap<String, Object>();
+//		String hql = "select distinct e from "+Edumanager.class.getSimpleName()+" e left join e.roles r where 1=1   ";
+		String hql = "select distinct e from "+Edumanager.class.getSimpleName()+" e left join e.roles r where e.isDeleted = :isDeleted";
+		values.put("isDeleted", 0);
+		
+//		if(condition.containsKey("isDeleted")){
+//			hql += " and e.isDeleted = :isDeleted ";
+//			values.put("isDeleted", condition.get("isDeleted"));
+//		}
+		if (condition.containsKey("saveDateb")||condition.containsKey("saveDatee")) {
+			if (condition.containsKey("saveDateb")) {
+				hql += " and e.saveDate >= :saveDateb ";
+				values.put("saveDateb",ExDateUtils.convertToDate(condition.get("saveDateb").toString()));
+			}
+			if (condition.containsKey("saveDatee")) {
+				hql += " and e.saveDate <= :saveDatee ";
+				values.put("saveDatee",ExDateUtils.convertToDate(condition.get("saveDatee").toString()));
+			}
+		}
+		
+		
+		if(condition.containsKey("checkStatus")){//账号
+			hql += " and e.checkStatus = :checkStatus ";
+			values.put("checkStatus", condition.get("checkStatus"));
+		}
+		
+		if(condition.containsKey("account")){//账号
+			hql += " and e.username = :account ";
+			values.put("account", condition.get("account"));
+		}
+		if(condition.containsKey("username")){
+			hql += " and lower(e.username) like :username ";
+			values.put("username", "%"+condition.get("username").toString().toLowerCase()+"%");
+		}
+		
+		if(condition.containsKey("unitType")){//单位类型
+			hql += " and e.orgUnit.unitType = :unitType ";
+			values.put("unitType", condition.get("unitType"));
+		}
+		
+		if(condition.containsKey("userType")){//用户类型
+			hql += " and e.userType = :userType ";
+			values.put("userType", condition.get("userType"));
+		}
+		
+		if(condition.containsKey("roleCode")){//角色编码 ROLE_TEACHER 为老师的
+			hql += " and r.roleCode like :roleCode ";
+			values.put("roleCode", "%"+condition.get("roleCode")+"%");
+		}		
+		if(condition.containsKey("unitId")){//单位ID
+			hql += " and e.unitId = :unitId ";
+			values.put("unitId", condition.get("unitId"));
+		}
+//		if(condition.containsKey("unitIds")){//单位ID
+//			hql += " and e.unitId in (:unitIds) ";
+//			values.put("unitIds", condition.get("unitIds"));
+//		}
+		if(condition.containsKey("unitIds")){//单位ID
+			//String s[]=(String[])condition.get("unitIds");
+			hql += " and e.unitId in ('"+condition.get("unitIds")+"')";
+			/*for (String ss : s) {
+				hql+=",'"+ss.toString()+"'";
+			}
+			hql+=") ";*/
+		}
+		/*if(condition.containsKey("unitId1")){//非叶节点时
+			//objCriterion.add(Restrictions.eq("parent.resourceid",condition.get("unitId1")));
+			hql+= " and e.unitId= :unitId1";
+			values.put("unitId1", condition.get("unitId1"));
+		}
+		if(condition.containsKey("unitId2")){//叶节点时
+			hql+= " and e.unitId= :unitId2";
+			values.put("unitId2", condition.get("unitId2"));
+		}*/
+		if(condition.containsKey("titleOfTechnical")){//职称
+			hql += " and e.titleOfTechnical like :titleOfTechnical ";
+			values.put("titleOfTechnical", "%"+condition.get("titleOfTechnical")+"%");
+		}
+		if(condition.containsKey("teacherType")){//老师类型
+			String teacherType = condition.get("teacherType").toString();
+			if(teacherType.startsWith("'") && teacherType.endsWith("'")){
+				hql += " and r.roleCode in("+teacherType+")";
+			}else {
+				hql += " and r.roleCode in('"+teacherType+"')";
+			}
+			//values.put("teacherType", condition.get("teacherType"));
+		}
+		if (condition.containsKey("teacherCode")) {
+			hql += " and e.teacherCode like :teacherCode ";
+			values.put("teacherCode", "%"+condition.get("teacherCode")+"%");
+		}
+		if (condition.containsKey("isNewTeacher")) {
+			hql += " and e.isNewTeacher like :isNewTeacher ";
+			values.put("isNewTeacher", "%"+condition.get("isNewTeacher")+"%");
+		}
+		
+		if (condition.containsKey("gender")) {
+			hql += " and e.gender = :gender ";
+			values.put("gender", condition.get("gender"));
+		}
+		if (condition.containsKey("teachingType")) {
+			hql += " and e.teachingType = :teachingType ";
+			values.put("teachingType", condition.get("teachingType"));
+		}	
+		if(condition.containsKey("cnName")){//名字
+			hql += " and lower(e.cnName) like :cnName ";
+			values.put("cnName", "%"+condition.get("cnName").toString().toLowerCase()+"%");
+		}
+		if(condition.containsKey("remarks")){//备注
+			hql += " and e.remarks like :remarks ";
+			values.put("remarks", "%"+condition.get("remarks").toString()+"%");
+		}
+		if(condition.containsKey("educationalLevel")){
+			hql += " and e.educationalLevel = :educationalLevel ";
+			values.put("educationalLevel", condition.get("educationalLevel"));
+		}
+		if(condition.containsKey("courseId")){
+			hql += " and e.currentCourse.resourceid = :courseId ";
+			values.put("courseId", condition.get("courseId"));
+		}
+		if (condition.containsKey("auditDateb")||condition.containsKey("auditDatee")) {
+			if (condition.containsKey("auditDateb")) {
+				hql += " and e.checkDate >= :auditDateb";
+				values.put("auditDateb",ExDateUtils.convertToDate(condition.get("auditDateb").toString()));
+			}
+			if (condition.containsKey("auditDatee")) {
+				hql += " and e.checkDate <= :auditDatee";
+				values.put("auditDatee",ExDateUtils.convertToDate(condition.get("auditDatee").toString()));
+			}
+		}
+		
+	
+		if(condition.containsKey("addsql")){
+			hql += condition.get("addSql");
+		}
+		if(objPage.getOrderBy()!=null){
+			hql += " order by e."+objPage.getOrderBy() +" "+ objPage.getOrder();
+		}
+		
+		return findByHqlSession(objPage, values,hql);
+	}
+
+	private Page findByHqlSession(Page objPage, Map<String, Object> values,String hql) {
+		Session session = exGeneralHibernateDao.getSessionFactory().getCurrentSession();
+		Query q = session.createQuery(hql);
+		if (values != null) {
+			q.setProperties(values);
+		}	
+		if (objPage.isAutoCount()) {
+			String fromHql = "from " + StringUtils.substringAfter(hql, "from");
+			//fromHql = StringUtils.substringBefore(fromHql, "order by");
+			String countHql = "select count(   distinct   e   ) " + fromHql;
+			try {
+				Long totalCount = exGeneralHibernateDao.findUnique(countHql, values);	
+				objPage.setTotalCount(Long.valueOf(totalCount).intValue());
+			} catch (Exception e) {
+				throw new RuntimeException("hql can't be auto count, hql is:" + countHql, e);
+			}	
+		}
+		//设置分页参数
+		q.setFirstResult(objPage.getFirst());
+		q.setMaxResults(objPage.getPageSize());
+
+		List result = q.list();
+		objPage.setResult(result);
+		return objPage;
+	}
+
+	/*
+	@Transactional(readOnly = true)
+	public Page findTeacherByCondition(Map<String, Object> condition,	Page objPage) throws ServiceException {
+		Map<String, Object> values = new HashMap<String, Object>();
+		String hql = "select e from " + User.class.getSimpleName()+ " e where 1=1 ";
+		
+		//查出角色为教师的角色
+		//List<Role> roleList = roleService.findByHql("from "+Role.class.getSimpleName()+" where roleCode like ?", CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue());
+		//Set<Role> roleSet  = new HashSet<Role>(roleList);
+		//hql += " and e.isDeleted = :isDeleted ";
+		//values.put("isDeleted", 0);
+		hql += " and e.roles.roleCode like :roleCode";
+		
+		values.put("roleCode", CacheAppManager.getSysConfigurationByCode("sysuser.role.teacher").getParamValue());
+		if (condition.containsKey("teacherCode")) {
+			hql += " and e.teacherCode = :teacherCode ";
+			values.put("teacherCode", condition.get("teacherCode"));
+		}
+		if (condition.containsKey("gender")) {
+			hql += " and e.gender = :gender ";
+			values.put("gender", condition.get("gender"));
+		}
+		if (condition.containsKey("cnName")) {
+			hql += " and e.cnName like :cnName ";
+			values.put("cnName", condition.get("cnName") + "%");
+		}
+		hql += " order by " + objPage.getOrderBy() + " " + objPage.getOrder();
+		return exGeneralHibernateDao.findByHql(objPage, hql, values);
+	}
+
+*/
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public void batchRegist(String[] ids) {
+//		if (ids != null && ids.length > 0) {
+//			List<User> users = (List<User>) exGeneralHibernateDao
+//					.findEntitysByIds(User.class, Arrays.asList(ids));
+//			for (User u : users) {
+//				u.setEnabled(true);
+//				logger.info("批量注册=" + u.getResourceid());
+//			}
+//		}
+//	}
+
+	@Override
+	public void batchCascadeDelete(String[] ids) {
+		if (ids != null && ids.length > 0) {
+			for (String id : ids) {
+				delete(id);
+				logger.info("批量删除=" + id);
+			}
+		}
+	}
+	
+	@Override
+	public boolean isExistsTeacherCode(String teacherCode) {
+		List list = findByHql(" from "+Edumanager.class.getSimpleName()+" where teacherCode=? ", teacherCode);
+		return (list!=null&&list.size()>0)?true:false;
+	}
+	
+	
+	/*
+	 * 根据用户登录ID获取用户
+	 */
+	@Transactional(readOnly=true)
+	public User isExistsUserName(String userName) throws ServiceException {		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("username", userName);
+		//查用户名
+		User user = (User) exGeneralHibernateDao.findUnique("from "+User.class.getName()+" where username = :username ",map);
+		if( null != user){
+			return user;
+		}else{//如果用户名为空，再查昵称
+			user = (User) exGeneralHibernateDao.findUnique("from "+User.class.getName()+" where customUsername = :username ",map);
+			return user;
+		}		
+	}
+	
+	/*
+	 *	判断是否存在该用户账号的用户 	
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public boolean isExistsUser(String userName) throws ServiceException {		
+		if(null != isExistsUserName(userName)){
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<Edumanager> findEdumanagerByCondition(Map<String, Object> condition) throws ServiceException {
+		Map<String,Object> values =  new HashMap<String, Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append("select distinct e from "+Edumanager.class.getSimpleName()+" e left join e.roles r where 1=1  and (e.checkStatus is null or e.checkStatus = 'Y' or e.checkStatus= 'D') ");
+		
+		if(condition.containsKey("isDeleted")){
+			hql.append(" and e.isDeleted = :isDeleted ");
+			values.put("isDeleted", condition.get("isDeleted"));
+		}		
+		if(condition.containsKey("teacherId")){
+			hql.append(" and e.resourceid = :teacherId");
+			values.put("teacherId", condition.get("teacherId"));
+		}
+		if(condition.containsKey("teacherIds")){
+			hql.append(" and e.resourceid in (:teacherIds) ");
+			values.put("teacherIds", condition.get("teacherIds"));
+		}
+		if(condition.containsKey("roleCode")){//角色编码 ROLE_TEACHER 为老师的
+			hql.append(" and r.roleCode like :roleCode ");
+			values.put("roleCode", "%"+condition.get("roleCode")+"%");
+		}		
+		if(condition.containsKey("unitId")){//单位ID
+			hql.append(" and e.unitId = :unitId ");
+			values.put("unitId", condition.get("unitId"));
+		}
+		if(condition.containsKey("titleOfTechnical")){//职称
+			hql.append(" and e.titleOfTechnical = :titleOfTechnical ");
+			values.put("titleOfTechnical", condition.get("titleOfTechnical"));
+		}
+		if(condition.containsKey("teacherType")){//老师类型
+			hql.append(" and r.roleCode =:teacherType ");
+			values.put("teacherType", condition.get("teacherType"));
+		}
+		if (condition.containsKey("isNewTeacher")) {
+			hql.append(" and e.isNewTeacher like :isNewTeacher ");
+			values.put("isNewTeacher", "%"+condition.get("isNewTeacher")+"%");
+		}
+		
+		if (condition.containsKey("teacherCode")) {
+			hql.append(" and e.teacherCode like :teacherCode ");
+			values.put("teacherCode", "%"+condition.get("teacherCode")+"%");
+		}
+		if (condition.containsKey("teachingType")) {
+			hql.append(" and e.teachingType = :teachingType ");
+			values.put("teachingType", condition.get("teachingType"));
+		}	
+		if(condition.containsKey("cnName")){//名字
+			hql.append(" and lower(e.cnName) like :cnName ");
+			values.put("cnName", "%"+condition.get("cnName").toString().toLowerCase()+"%");
+		}
+		if(condition.containsKey("courseId")){
+			hql.append(" and e.currentCourse.resourceid = :courseId ");
+			values.put("courseId", condition.get("courseId"));
+		}
+		hql.append(" order by e.teacherCode ");
+		return findByHql(hql.toString(), values);
+	}
+	
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<Edumanager> findEdumanagerListByCondition(Map<String, Object> condition) throws ServiceException {
+		Map<String,Object> values =  new HashMap<String, Object>();
+		String hql = "select distinct e from "+Edumanager.class.getSimpleName()+" e left join e.roles r where 1=1   ";
+		hql += " and e.isDeleted = :isDeleted ";
+		values.put("isDeleted", 0);
+		
+//		if(condition.containsKey("isDeleted")){
+//			hql += " and e.isDeleted = :isDeleted ";
+//			values.put("isDeleted", condition.get("isDeleted"));
+//		}
+		
+		if (condition.containsKey("saveDateb")||condition.containsKey("saveDatee")) {
+			if (condition.containsKey("saveDateb")) {
+				hql += " and e.saveDate >= :saveDateb ";
+				values.put("saveDateb",ExDateUtils.convertToDate(condition.get("saveDateb").toString()));
+			}
+			if (condition.containsKey("saveDatee")) {
+				hql += " and e.saveDate <= :saveDatee ";
+				values.put("saveDatee",ExDateUtils.convertToDate(condition.get("saveDatee").toString()));
+			}
+		}
+		
+		
+		if(condition.containsKey("checkStatus")){//账号
+			hql += " and e.checkStatus = :checkStatus ";
+			values.put("checkStatus", condition.get("checkStatus"));
+		}
+		
+		if(condition.containsKey("account")){//账号
+			hql += " and e.username = :account ";
+			values.put("account", condition.get("account"));
+		}
+		if(condition.containsKey("username")){
+			hql += " and lower(e.username) like :username ";
+			values.put("username", "%"+condition.get("username").toString().toLowerCase()+"%");
+		}
+		
+		if(condition.containsKey("unitType")){//单位类型
+			hql += " and e.orgUnit.unitType = :unitType ";
+			values.put("unitType", condition.get("unitType"));
+		}
+		
+		if(condition.containsKey("userType")){//用户类型
+			hql += " and e.userType = :userType ";
+			values.put("userType", condition.get("userType"));
+		}
+		
+		if(condition.containsKey("roleCode")){//角色编码 ROLE_TEACHER 为老师的
+			hql += " and r.roleCode like :roleCode ";
+			values.put("roleCode", "%"+condition.get("roleCode")+"%");
+		}		
+		if(condition.containsKey("unitId")){//单位ID
+			hql += " and e.unitId = :unitId ";
+			values.put("unitId", condition.get("unitId"));
+		}
+		/*if(condition.containsKey("unitId1")){//非叶节点时
+			//objCriterion.add(Restrictions.eq("parent.resourceid",condition.get("unitId1")));
+			hql+= " and e.unitId= :unitId1";
+			values.put("unitId1", condition.get("unitId1"));
+		}
+		if(condition.containsKey("unitId2")){//叶节点时
+			hql+= " and e.unitId= :unitId2";
+			values.put("unitId2", condition.get("unitId2"));
+		}*/
+		if(condition.containsKey("titleOfTechnical")){//职称
+			hql += " and e.titleOfTechnical = :titleOfTechnical ";
+			values.put("titleOfTechnical", condition.get("titleOfTechnical"));
+		}
+		if(condition.containsKey("teacherType")){//老师类型
+			hql += " and r.roleCode =:teacherType ";
+			values.put("teacherType", condition.get("teacherType"));
+		}
+		if (condition.containsKey("teacherCode")) {
+			hql += " and e.teacherCode like :teacherCode ";
+			values.put("teacherCode", "%"+condition.get("teacherCode")+"%");
+		}
+		if (condition.containsKey("isNewTeacher")) {
+			hql+=" and e.isNewTeacher like :isNewTeacher ";
+			values.put("isNewTeacher", "%"+condition.get("isNewTeacher")+"%");
+		}
+		
+		if (condition.containsKey("gender")) {
+			hql += " and e.gender = :gender ";
+			values.put("gender", condition.get("gender"));
+		}
+		if (condition.containsKey("teachingType")) {
+			hql += " and e.teachingType = :teachingType ";
+			values.put("teachingType", condition.get("teachingType"));
+		}	
+		if(condition.containsKey("cnName")){//名字
+			hql += " and lower(e.cnName) like :cnName ";
+			values.put("cnName", "%"+condition.get("cnName").toString().toLowerCase()+"%");
+		}
+		if(condition.containsKey("remarks")){//备注
+			hql += " and e.remarks like :remarks ";
+			values.put("remarks", "%"+condition.get("remarks").toString()+"%");
+		}
+		if(condition.containsKey("educationalLevel")){
+			hql += " and e.educationalLevel = :educationalLevel ";
+			values.put("educationalLevel", condition.get("educationalLevel"));
+		}
+		if(condition.containsKey("courseId")){
+			hql += " and e.currentCourse.resourceid = :courseId ";
+			values.put("courseId", condition.get("courseId"));
+		}
+		if (condition.containsKey("auditDateb")||condition.containsKey("auditDatee")) {
+			if (condition.containsKey("auditDateb")) {
+				hql += " and e.checkDate >= :auditDateb";
+				values.put("auditDateb",ExDateUtils.convertToDate(condition.get("auditDateb").toString()));
+			}
+			if (condition.containsKey("auditDatee")) {
+				hql += " and e.checkDate <= :auditDatee";
+				values.put("auditDatee",ExDateUtils.convertToDate(condition.get("auditDatee").toString()));
+			}
+		}
+		if(condition.containsKey("addsql")){
+			hql += condition.get("addSql");
+		}
+		return findByHql(hql.toString(), values);
+	}
+	
+	/**
+	 * 是否校外学习中心
+	 * 
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public boolean isBrSchool(User user) throws Exception {
+		boolean isBrSchool = false;
+		SysConfiguration config = CacheAppManager.getSysConfigurationByCode("orgunit.brschool.unittype");
+		if(config != null){
+			if(config.getParamValue().equals(user.getOrgUnit().getUnitType())){
+				isBrSchool = true;
+			}
+		}
+		return isBrSchool;
+	}
+
+	@Override
+	public String getTeacherCode(String teacherCodeRule, OrgUnit unit) {
+		StringBuilder teacherCode = new StringBuilder();
+		Map<String,Object> condition = new HashMap<String, Object>();
+
+		String teacherCodeRuleArr[] = teacherCodeRule.split("#");
+		String isUseUnitName = teacherCodeRuleArr[0];
+		Integer bit = Integer.parseInt(teacherCodeRuleArr[1]);
+		String prefix = "",suffix = "";
+		if (teacherCodeRuleArr.length >= 4) {
+			prefix = teacherCodeRule.split("#")[2];
+			suffix = teacherCodeRule.split("#")[3];
+		} else if (teacherCodeRuleArr.length == 3) {
+			prefix = teacherCodeRule.split("#")[2];
+		}
+		if ("Y".equals(isUseUnitName)) {
+			teacherCode.append(ExStringUtils.getPinYinHeadChar(unit.getUnitName()));
+		} else {
+			teacherCode.append(unit.getUnitCode());
+		}
+		teacherCode.append(prefix);
+
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		try {
+			StringBuilder builder = new StringBuilder(200);
+			builder.append("select count(em.TEACHERCODE) TEACHERCODE from EDU_BASE_EDUMANAGER em join HNJK_SYS_USERS u on u.RESOURCEID=em.SYSUSERID");
+			builder.append(" where em.isdeleted=0");
+			builder.append(" and u.unitid = :unitid");
+			condition.put("unitid",unit.getResourceid());
+			resultMap = baseSupportJdbcDao.getBaseJdbcTemplate().findForMap(builder.toString(),condition);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String serialNumber = "";//初始化为0
+		for (int i = 0; i < bit; i++) {
+			serialNumber += "0";
+		}
+		String teacherCodeNumber = ExStringUtils.toString(resultMap.get("TEACHERCODE"));
+		teacherCode.append(ExStringUtils.increase(serialNumber.substring(0,bit-teacherCodeNumber.length())+teacherCodeNumber)).append(suffix);
+		return teacherCode.toString();
+	}
+
+}

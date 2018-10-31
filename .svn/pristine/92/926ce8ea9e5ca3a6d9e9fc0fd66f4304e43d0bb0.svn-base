@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<properties>
+		<maven.compiler.source>6</maven.compiler.source>
+		<maven.compiler.target>6</maven.compiler.target>
+	</properties>
+
+    <parent>
+		<artifactId>hnjk</artifactId>
+		<groupId>com.hnjk</groupId>
+		<version>3.1.1</version>
+	</parent>
+
+	<groupId>com.hnjk</groupId>
+	<artifactId>hnjk-workflow-v3</artifactId>
+	<version>3.1.1</version>
+	<packaging>jar</packaging>
+	<name>hnjk-workflow-v3</name>
+	<description>工作流模块</description>
+	<url>http://v3.hnjk.net:8080</url>
+
+
+	<dependencies>
+		<!--hnjk libs -->
+		<dependency>
+			<groupId>com.hnjk</groupId>
+			<artifactId>hnjk-core-v3</artifactId>			
+		</dependency>
+		
+		<dependency>
+			<groupId>com.hnjk</groupId>
+			<artifactId>hnjk-security-v3</artifactId>			
+		</dependency>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<optional>true</optional>
+		</dependency>
+	
+		<!-- hibernate -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<optional>true</optional>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!--  
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>				
+		-->
+		<!-- j2ee jsp/servlet -->	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- osworkflow -->
+		<dependency>
+			<groupId>bsh</groupId>
+			<artifactId>bsh</artifactId>
+		</dependency>			 
+		<dependency>
+			<groupId>com.opensymphony</groupId>
+			<artifactId>oscore</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>com.opensymphony.propertyset</groupId>
+			<artifactId>propertyset</artifactId>
+		</dependency>
+		<!--unit test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>

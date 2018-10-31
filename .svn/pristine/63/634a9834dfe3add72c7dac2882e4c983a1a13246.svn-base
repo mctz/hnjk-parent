@@ -1,0 +1,305 @@
+package com.hnjk.edu.basedata.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnjk.core.exception.ServiceException;
+import com.hnjk.core.foundation.utils.ExCollectionUtils;
+import com.hnjk.core.foundation.utils.ExStringUtils;
+import com.hnjk.core.rao.dao.helper.Page;
+import com.hnjk.core.rao.dao.jdbc.IBaseSupportJdbcDao;
+import com.hnjk.core.support.base.service.BaseServiceImpl;
+import com.hnjk.edu.basedata.model.Major;
+import com.hnjk.edu.basedata.service.IMajorService;
+
+/**
+ * <code>MajorServiceImpl</code>基础数据-专业基础信息-服务实现.<p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-3-15 下午02:28:35
+ * @see 
+ * @version 1.0
+ */
+@Transactional
+@Service("majorService")
+public class MajorServiceImpl extends BaseServiceImpl<Major> implements IMajorService{
+
+	@Autowired
+	@Qualifier("baseSupportJdbcDao")
+	private IBaseSupportJdbcDao baseSupportJdbcDao;
+	
+	@Override
+	public Page findMajorByCondition(Map<String, Object> condition, Page objPage) throws ServiceException{
+		String hql = "select m.*,ci.classicname from edu_base_major m left join edu_base_classic ci on ci.classiccode=m.classiccode where m.isdeleted=0";
+		List<Object> list = new ArrayList<Object>();
+		if(condition.containsKey("majorName")){
+			hql += " and majorName like ? ";
+			list.add("%"+condition.get("majorName")+"%");
+		}
+		if(condition.containsKey("majorCode")){
+			hql +=" and majorCode = ? ";
+			list.add(condition.get("majorCode"));
+		}
+		if(condition.containsKey("isForeignLng")){
+			if("N".equals(condition.get("isForeignLng"))){
+				hql +=" and (isForeignLng = ? or isForeignLng is null) ";
+			} else {
+				hql +=" and isForeignLng = ? ";
+			}
+			list.add(condition.get("isForeignLng"));
+		}
+		hql += " order by "+objPage.getOrderBy() +" "+ objPage.getOrder();
+		
+		return baseSupportJdbcDao.getBaseJdbcTemplate().findList(objPage, hql, list.toArray(), Major.class);
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void batchCascadeDelete(String[] ids) throws ServiceException{
+		if(ids!=null && ids.length>0){
+			for(String id : ids){
+				Map<String,Object> useMajorMap = new HashMap<String, Object>();
+				Major major = null;
+				try {
+					//delete(id);
+					major = get(id);
+					// 检查这个专业是否已经被使用（教学计划或班级或招生专业或招生专业设置）
+					if(major!=null){
+						StringBuffer sql = new StringBuffer("");
+						sql.append(" select (select max(rm.resourceid) from edu_recruit_major rm where rm.majorid=:majorId and rm.isdeleted=0) rmid, ");
+						sql.append(" (select max(ms.resourceid) from edu_recruit_majorset ms where ms.majorid=:majorId and ms.isdeleted=0) msid, ");
+						sql.append(" (select max(p.resourceid) from edu_teach_plan p where p.majorid=:majorId and p.isdeleted=0) pid, ");
+						sql.append(" (select max(cl.resourceid) from edu_roll_classes cl where cl.majorid=:majorId and cl.isdeleted=0) clid from dual ");
+						Map<String,Object> param = new HashMap<String, Object>();
+						param.put("majorId", id);
+						useMajorMap = baseSupportJdbcDao.getBaseJdbcTemplate().findForMap(sql.toString(), param);
+					}
+				} catch (Exception e) {
+					logger.error("批量删除出错", e);
+				}
+				if(useMajorMap!=null && useMajorMap.size()>0){
+					if(ExStringUtils.isEmpty((String)useMajorMap.get("rmid"))
+						&& ExStringUtils.isEmpty((String)useMajorMap.get("msid"))
+						&& ExStringUtils.isEmpty((String)useMajorMap.get("pid"))
+						&& ExStringUtils.isEmpty((String)useMajorMap.get("clid"))){
+							major.setMajorName(major.getMajorName()+"("+major.getMajorCode()+")");
+							major.setMajorCode(null);
+							major.setIsDeleted(1);
+					} else {
+						throw new ServiceException("该专业已经被使用不能删除！");
+					}
+				}
+				logger.info("批量删除="+id);
+			}
+		}
+	}
+
+	@Override
+	public List<Major> findMajorForBranSchoolLimt(String exceptids)throws ServiceException {
+		
+		List<Major> list = null;
+		if(ExStringUtils.isNotEmpty(exceptids)){//需要过滤的专业
+			String[] ids  = exceptids.split(",");
+			StringBuilder notInId = new StringBuilder(1000);
+			for (int i = 0; i < ids.length; i++) {
+				notInId.append(",'").append(ids[i]).append("'");
+			}
+			String hql    = " from "+Major.class.getSimpleName()+" major where major.isDeleted=0 and major.resourceid not in("+notInId.substring(1)+") order by major.majorName";
+			list	      =  (List<Major>)exGeneralHibernateDao.findByHql(hql);
+		}else {//查询全部
+			String hql    = " from "+Major.class.getSimpleName()+" major where major.isDeleted=0 order by major.majorName";
+			list	      =  (List<Major>)exGeneralHibernateDao.findByHql(hql);
+		}
+		return list;
+		
+	}
+	
+	@Override
+	public Major save(Major major) throws ServiceException {
+		super.save(major);
+		if(isExistEntity("com.hnjk.edu.finance.model.FeeMajor")){//存在子类
+			baseSupportJdbcDao.getBaseJdbcTemplate().getJdbcTemplate().update("insert into edu_fee_major (basemajorid) values (?)", major.getResourceid());
+		}
+		return major;
+	}
+	/**
+	 * 根据条件获取专业信息列表
+	 */
+	@Override
+	public List<Major> findMajorByCondition(Map<String, Object> condition) throws ServiceException{
+		Map<String,Object> values =  new HashMap<String, Object>();
+		String hql = " from "+Major.class.getSimpleName()+" where isDeleted = :isDeleted ";		
+		values.put("isDeleted", 0);
+		
+		if(condition.containsKey("majorName")){
+			hql += " and majorName like :majorName ";
+			values.put("majorName", "%"+condition.get("majorName")+"%");
+		}
+		if(condition.containsKey("majorname")){
+			hql += " and majorName = :majorname ";
+			values.put("majorname", condition.get("majorname"));
+		}
+		if(condition.containsKey("majorCode")){
+			hql +=" and majorCode = :majorCode ";
+			values.put("majorCode",condition.get("majorCode"));
+		}
+		if(condition.containsKey("teachingType")){
+			String teachingType = condition.get("teachingType").toString();
+			if ("net".equals(teachingType) || "direct".equals(teachingType)) {
+				hql += " and major.isAdult='N' ";
+			}else if("face".equals(teachingType)) {
+				hql +=" and major.isAdult='Y' ";
+			}
+		}
+		if(condition.containsKey("passMajorids")){
+			hql +=" and resourceid not in(:passMajorids)" ;
+			values.put("passMajorids", condition.get("passMajorids"));
+		}
+		if(condition.containsKey("addSql")){
+			hql += " "+condition.get("addSql")+" ";
+		}
+		if(condition.containsKey("orderBy")){
+			hql +=" order by "+condition.get("orderBy") +" ";
+		} else {
+			hql += " order by isAdult desc";
+		}
+		
+		return (List<Major>)exGeneralHibernateDao.findByHql(hql, values);
+	}
+	/*
+	 * 按条件获取年级里面的专业
+	
+	 */
+	@Override
+	public List<Major> findAllMajorByGradeAndBr(Map<String, Object> condition) { 
+		Map<String, Object> pama = new HashMap<String, Object>();
+		String sql = "select distinct m.* from edu_teach_guiplan gp " +
+				" left join edu_teach_plan tp on gp.planid  = tp.resourceid " +
+				" left join edu_base_major m on tp.majorid =  m.resourceid " +
+				"where  gp.isdeleted = 0 and tp.isdeleted = 0 ";
+		if(condition.containsKey("grade")){
+			sql += " and gp.gradeid = '"+condition.get("grade")+"'"; 
+		}
+		if(condition.containsKey("branchSchool")){
+			sql +=" and ( tp.brschoolid  = '"+condition.get("branchSchool")+"' or tp.brschoolid is null )";
+		}
+		
+		sql += " order by m.majorcode ";
+		try {
+			return this.baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql, Major.class, pama);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList();
+	}
+	
+	/*
+	 * 按条件获取年级里面的专业
+	 */
+	@Override
+	public List<Major> findAllMajorByGradeAndBrMakeup(Map<String, Object> condition) { 
+		Map<String, Object> pama = new HashMap<String, Object>();
+		String sql = "select distinct m.* from edu_teach_guiplan gp " +
+				" left join edu_teach_plan tp on gp.planid  = tp.resourceid " +
+				" left join edu_base_major m on tp.majorid =  m.resourceid " +
+				"where  gp.isdeleted = 0 and tp.isdeleted = 0 ";
+		if(condition.containsKey("grade")){
+			sql += " and gp.gradeid = '"+condition.get("grade")+"'"; 
+		}
+		if(condition.containsKey("majorid")){
+			sql +=" and m.resourceid= '"+condition.get("majorid")+"'";
+		}
+		if(condition.containsKey("branchSchool")){
+			sql +=" and ( tp.brschoolid  = '"+condition.get("branchSchool")+"' or tp.brschoolid is null )";
+		}
+		
+		sql += " order by m.majorcode ";
+		try {
+			return this.baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql, Major.class, pama);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList();
+	}
+	
+	/**
+	 * 根据条件构造专业的select标签的option（只供select标签用）
+	 * 
+	 * @param condition
+	 * @param defaultValue
+	 * @return
+	 */
+	@Override
+	public String constructOptions(List<Major> majorList, String defaultValue,String displayType) {
+		StringBuffer options = new StringBuffer("");
+		if(ExCollectionUtils.isNotEmpty(majorList)){
+			for(Major major : majorList){
+				options.append("<option value='"+major.getResourceid()+"'");
+				if(ExStringUtils.isNotEmpty(defaultValue) && defaultValue.equals(major.getResourceid())){
+					options.append(" selected ");
+				}
+				options.append(">");
+				if(ExStringUtils.isNotEmpty(displayType) &&  "code".equals(displayType)){
+					options.append(major.getMajorCode()+"-"+major.getMajorName());
+				} else {
+					options.append(major.getMajorName());
+				}
+				options.append("</option>");
+			}
+		}
+		return options.toString();
+	}
+
+	/**
+	 * 根据班主任查找专业
+	 * 
+	 * @param condition
+	 * @param defaultValue
+	 * @return
+	 */
+	@Override
+	public List<Major> findMjorByMaster(String userid) {
+		Map<String, Object> pama = new HashMap<String, Object>();
+		String sql = "select distinct m.* from edu_roll_classes cl  " +
+				" left join edu_base_major m on cl.majorid =  m.resourceid " +
+				"where cl.isdeleted = 0 and m.isdeleted = 0 ";
+		
+		if(ExStringUtils.isNotBlank(userid)){
+			sql +=" and cl.classesmasterid='"+userid+"'";
+		}
+		sql += " order by m.majorcode ";
+		try {
+			return this.baseSupportJdbcDao.getBaseJdbcTemplate().findList(sql, Major.class, pama);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList();
+	}
+
+	/**
+	 * 获取所有基础专业信息，专业编码为key键
+	 * @return
+	 */
+	@Override
+	public Map<String, Major> getMajorMapByCode() {
+		Map<String, Major> majorMap = new HashMap<String, Major>(200);
+		StringBuffer hql = new StringBuffer(200);
+		hql.append("from ").append(Major.class.getSimpleName()).append(" where isDeleted=0 order by majorCode ");
+		List<Major> majorList = findByHql(hql.toString());
+		if(ExCollectionUtils.isNotEmpty(majorList)){
+			for(Major m : majorList){
+				majorMap.put(m.getMajorCode(), m);
+			}
+		}
+		
+		return majorMap;
+	}
+}

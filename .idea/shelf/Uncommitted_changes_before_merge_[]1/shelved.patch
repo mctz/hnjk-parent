@@ -1,0 +1,29 @@
+Index: hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/FileUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/FileUtils.java	(revision 3126)
++++ hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/FileUtils.java	(date 1534751135677)
+@@ -567,9 +567,8 @@
+ 	
+ 	public static void main(String[] ars) throws Exception{
+ 		//copyFolder("D:\\hnjk\\datas", "D:\\Marco\\temp");
+-		//C:\Users\Administrator\Desktop\WEB-INF
+-		File dir = new File("C:\\Users\\Administrator\\Desktop\\WEB-INF");
+-		List<String> deleteFiles = new ArrayList<String>();
++		File dir = new File("C:\\Users\\Administrator\\Desktop\\hnjk-webapp");
++		/*List<String> deleteFiles = new ArrayList<String>();
+ 		deleteFiles.add("attachs");
+ 		deleteFiles.add("upload");
+ 		deleteFiles.add("uploadfile");
+@@ -583,7 +582,8 @@
+ 				deleteFiles.add(j+"_0"+i);
+ 			}
+ 		}
+-	    listDirectory2("D:\\opt",deleteFiles);
++	    listDirectory2("D:\\opt",deleteFiles);*/
++		listDirectory(dir);
+ 	}
+ 	
+ 	

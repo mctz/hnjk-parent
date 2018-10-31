@@ -1,0 +1,1503 @@
+package com.hnjk.core.foundation.utils;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * 提供常用String类型数据工具. <p>
+ * 该类继承了apache 的StringUtils，可以自行扩展.<p>
+ * apache StringUtils的常用方法：<p>
+ * <code>public static boolean isEmpty(String str) </code>: 判断某字符串是否为空，为空的标准是str==null或str.length()==0 <p>
+ * <code>public static boolean isNotEmpty(String str) </code>: 判断某字符串是否非空，等于!isEmpty(String str) <p>
+ * <code>public static boolean isBlank(String str) </code> : 判断某字符串是否为空或长度为0或由空白符(whitespace)构成 <p>
+	<code>public static String trim(String str) </code>:   去掉字符串两端的控制符(control characters, char <= 32),如果输入为null则返回null<p> 
+    <code>public static String trimToNull(String str) </code>:   去掉字符串两端的控制符(control characters, char <= 32),如果变为null或""，则返回null <p>
+    <code>public static String trimToEmpty(String str) </code>:  去掉字符串两端的控制符(control characters, char <= 32),如果变为null或""，则返回"" <p>
+	<code>public static String strip(String str) </code>:   去掉字符串两端的空白符(whitespace)，如果输入为null则返回null <p>
+	<code>public static String stripToNull(String str) </code>:  去掉字符串两端的空白符(whitespace)，如果变为null或""，则返回null <p>
+ 	<code>public static String stripToEmpty(String str)</code>:   去掉字符串两端的空白符(whitespace)，如果变为null或""，则返回"" <p>
+	<code>public static String strip(String str, String stripChars) </code>:  去掉str两端的在stripChars中的字符。 如果str为null或等于""，则返回它本身；如果stripChars为null或""，则返回strip(String str)。 <p>
+    <code>public static String stripStart(String str, String stripChars) </code>:  和以上相似，去掉str前端的在stripChars中的字符。 <p>
+    <code>public static String stripEnd(String str, String stripChars) </code>:   和以上相似，去掉str末端的在stripChars中的字符。 <p>
+    <code> public static String[] stripAll(String[] strs) </code>: 对字符串数组中的每个字符串进行strip(String str)，然后返回。 如果strs为null或strs长度为0，则返回strs本身 <p>
+    <code>public static String[] stripAll(String[] strs, String stripChars) </code>:  对字符串数组中的每个字符串进行strip(String str, String stripChars)，然后返回。    如果strs为null或strs长度为0，则返回strs本身 <p>
+    <code> public static boolean equals(String str1, String str2) </code>: 比较两个字符串是否相等，如果两个均为空则也认为相等。<p> 
+    <code>public static boolean equalsIgnoreCase(String str1, String str2) </code>: 比较两个字符串是否相等，不区分大小写，如果两个均为空则也认为相等。<p> 
+    <code>public static int indexOf(String str, char searchChar) </code>: 返回字符searchChar在字符串str中第一次出现的位置。 如果searchChar没有在str中出现则返回-1， 如果str为null或""，则也返回-1 <p>
+    <code>public static int indexOf(String str, char searchChar, int startPos)</code>:  返回字符searchChar从startPos开始在字符串str中第一次出现的位置。 <p>
+	更多方法请参见apche utils api文档。
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2009-2-25下午04:49:57
+ * @see  org.apache.commons.lang.StringUtils
+ * @version 1.0
+ */
+public class ExStringUtils extends StringUtils {
+	
+	/**定义HTML escape 替换字符*/
+	 private final static byte[] val = { 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x00, 0x01,       
+         0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,       
+         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F }; 
+	
+	 private final static String[] units = { "", "十", "百", "千", "万", "十万", "百万", "千万", "亿", "十亿", "百亿", "千亿", "万亿" };
+	 private final static char[] numArray = { '零', '一', '二', '三', '四', '五', '六', '七', '八', '九' };
+
+	/**
+	 * 随即生产随即数，可以用来生产tocken字符串等.
+	 * @param length 生成长度
+	 * @return 随即数字符串.
+	 */
+	public static String getRandomString(int length) {
+		StringBuffer bu = new StringBuffer();
+		//屏蔽掉1、0以及I、O
+		String[] arr = { "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+				"m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G",
+				"H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+		Random random = new Random();
+		while (bu.length() < length) {
+			String temp = arr[random.nextInt(55)];
+			if (bu.indexOf(temp) == -1) {
+				bu.append(temp);
+			}
+		}
+		return bu.toString();
+	}
+	
+	/**
+	 * 随即生产随即数，生成数纯粹由数字组成.
+	 * @param length 生成长度
+	 * @return 随即数字符串.
+	 */
+	public static String getRandomStringOnlyByInt(int length) {
+		StringBuffer bu = new StringBuffer();
+		String[] arr = {"0","1", "2", "3", "4", "5", "6", "7", "8", "9"};
+		Random random = new Random();
+		while (bu.length() < length) {
+			String temp = arr[random.nextInt(9)];
+			if (bu.indexOf(temp) == -1) {
+				bu.append(temp);
+			}
+		}
+		return bu.toString();
+	}
+	
+	
+	/**
+	 * 获取某个区间的随机整数.
+	 * @param sek 随机种子
+	 * @param min 最小整数
+	 * @param max 最大整数
+	 * @return 随机整数
+	 */
+	public static int getRandomInt(int sek, int min, int max) {
+		Random random = new Random();
+		int temp = 0;
+		do {
+			temp = random.nextInt(sek);
+		} while (temp < min || temp > max);
+		return temp;
+	}
+	
+	/**
+	 * 实现了js 版本的unescape方法.<p>
+	 * 用于前台JS对传入的参数做了escape，JAVA后台取到参数后需要unescape。
+	 * @param s
+	 * @return
+	 */
+	 public static String unescape(String s) {       
+         StringBuffer sbuf = new StringBuffer();       
+         int i = 0;       
+         int len = s.length();       
+         while (i < len) {       
+         int ch = s.charAt(i);       
+         if ('A' <= ch && ch <= 'Z') {   
+         sbuf.append((char) ch);       
+         } else if ('a' <= ch && ch <= 'z') {        
+         sbuf.append((char) ch);       
+         } else if ('0' <= ch && ch <= '9') {    
+             sbuf.append((char) ch);       
+         } else if (ch == '-' || ch == '_'|| ch == '.' || ch == '!' || ch == '~' || ch == '*'|| ch == '\'' || ch == '(' || ch == ')') {       
+         sbuf.append((char) ch);       
+         } else if (ch == '%') {   
+             int cint = 0;       
+             if ('u' != s.charAt(i + 1)) {       
+             cint = (cint << 4) | val[s.charAt(i + 1)];       
+             cint = (cint << 4) | val[s.charAt(i + 2)];       
+             i += 2;       
+             } else {       
+                 cint = (cint << 4) | val[s.charAt(i + 2)];       
+                 cint = (cint << 4) | val[s.charAt(i + 3)];       
+                 cint = (cint << 4) | val[s.charAt(i + 4)];       
+                 cint = (cint << 4) | val[s.charAt(i + 5)];       
+                 i += 5;       
+             }       
+             sbuf.append((char) cint);   
+         } else {       
+             sbuf.append((char) ch);       
+         }       
+         i++;       
+         }       
+         return sbuf.toString();       
+	 }  
+	 
+	 /**
+	  * 转换中文字符
+	  * @param str
+	  * @return
+	  */
+	 public static String getChinesStr(String str){
+		 try {
+			return new String(str.getBytes("gb2312"), "iso-8859-1");
+		} catch (UnsupportedEncodingException e) {			
+			return str;
+		}
+	 }
+	 
+	 /**
+	  * 全角转半角的 转换函数  
+	  * @param str
+	  * @return
+	  */
+	  public static String full2HalfChange(String str) {
+		  char[] c = str.toCharArray();
+          for (int i = 0; i < c.length; i++) {
+            if (c[i] == '\u3000') {
+            	c[i] = ' ';
+            } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
+            	c[i] = (char) (c[i] - 65248);
+            }
+          }
+          return new String(c);
+	   }  
+	  
+	  /**
+	  * 字符串是否大于1MB，大于返回true,小则false 
+	  * @param str
+	  * @return
+	  */
+	  public static boolean isBiggerThen1Mb(String str) {  	        
+		  byte[] b  = str.getBytes();
+		  if(b.length < 1024*1024){
+			  return false;
+		  }else{
+			  return true;
+		  }
+	   }  
+		  
+	 /**
+	  *获取js通过encodeURIComponent(encodeURIComponent('value_txt'))双编码传递的中文 
+	  * @param str
+	  * @return
+	  */
+	  public static String getEncodeURIComponentByTwice(String str){
+		  try {
+			  if(isNotEmpty(str)){
+				  str = java.net.URLDecoder.decode(str,"UTF-8");
+			  }
+		  } catch (UnsupportedEncodingException e) {
+		    	// TODO Auto-generated catch block
+		      str="";
+	      }
+		  return str;
+	  }
+	  /**
+	  *获取js通过encodeURIComponent('value_txt')一次编码传递的中文 
+	  * @param str
+	  * @return
+	  */
+	  public static String getEncodeURIComponentByOne(String str){
+		  try {
+			  if(isNotEmpty(str)){
+				  str = new String(str.getBytes("ISO8859-1"), "UTF-8");
+			  }
+		  } catch (UnsupportedEncodingException e) {
+		    	// TODO Auto-generated catch block
+		      str="";
+	      }
+		  return str;
+	  }
+	  
+	  /**
+	  * 判断数字，正则表达式
+	  * @param str
+	  * @param type 1:只对整数处理；2：对整数小数处理
+	  * @return
+	  */
+	  public static boolean isNumeric(String str,int type){
+		  if(isBlank(str)) {
+			  return false;
+		  }
+		  Pattern pattern = null;
+		  if(1==type){
+			  //pattern = Pattern.compile("^\\d+\\.\\d+$");
+			  pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		  } else {
+			  pattern = Pattern.compile("^\\d+$|^\\d+\\.\\d+$");
+		  }
+          Matcher matcher = pattern.matcher(str);
+          
+          return matcher.matches();
+	  }
+	  
+	  /**
+	   * 在某个字符串前面补充字符
+	   * @param supStr 补充的字符
+	   * @param data 要处理的字符串
+	   * @param length 处理后整个字符串的长度
+	   * @return
+	   */
+	  public static String suppleFront(char supStr, String data, int length) {
+		  StringBuffer dataSB = new StringBuffer();
+		  if(data != null){
+			  for(int i = 0; i < length-data.length(); i++){
+				  dataSB.append(supStr);
+			  }
+			  dataSB.append(data);
+			  return dataSB.toString();
+		  }
+		  
+		  return null;
+	  }
+
+	/**
+	 * 删除rep数组中匹配的字符串
+	 * @param content
+	 * @param rep
+	 * @return
+	 */
+	public static String remove4All(String content, String... rep) {
+		for (String rp : rep) {
+			content = content.replaceAll(rp,"");
+		}
+	  	return content;
+	}
+
+	/**
+	 * 字符串截取
+	 * <p>("user.username",".",true/false)  -> user
+	 * <p>("user",".",true)  -> user
+	 * @param str
+	 * @param regex
+	 * @param flag 没有匹配结果时，当flag为真则返回原字符串的值，否则返回空字符串
+	 */
+	public static String substringByRegex(String str,String regex, boolean flag) {
+		String result = "";
+		if (str.contains(regex)) {
+			result = str.substring(0,str.indexOf(regex));
+		} else if (flag) {
+			result = str;
+		}
+		return result;
+	}
+
+	public static String removeStartToEnd(String unitOptionString, String s, String s1) {
+		return unitOptionString;
+	}
+
+	public static String nvl2(Object obj1,Object obj2,Object obj3) {
+		return obj1!=null?toString(obj2):toString(obj3);
+	}
+
+	public static String appendSpace(String string, int places) {
+		int length = toString(string).length();
+		StringBuilder builder = new StringBuilder(string);
+		for (; length < places; length++) {
+			builder.append("  ");
+		}
+		return builder.toString();
+	}
+
+	public static String replaceStartAndEnd(String toString, String s1, String s2, String s3) {
+		StringBuilder builder = new StringBuilder();
+		int indexBegin = toString.indexOf(s1);
+		int indexEnd = toString.indexOf(s2,indexBegin);
+		builder.append(toString.substring(0,indexBegin)).append(s3).append(toString.substring(indexEnd+s2.length()));
+		return  builder.toString();
+	}
+
+	/**
+	 * 获取url对应的域名
+	 * @param url
+	 * @return
+	 */
+	public static String getDomain(String url) {
+		String result = "";
+		int j = 0, startIndex = 0, endIndex = 0;
+		for (int i = 0; i < url.length(); i++) {
+			if (url.charAt(i) == '/') {
+				j++;
+				if (j == 2)
+					startIndex = i;
+				else if (j == 3)
+					endIndex = i;
+			}
+		}
+		result = url.substring(startIndex + 1, endIndex);        return result;
+	}
+
+	/**
+	 * 通过域名获取真实的ip地址
+	 * @param domain
+	 * @return
+	 */
+	public static String getIP(String domain) {
+		String ipAddress = "";
+		InetAddress iAddress = null;
+		try {
+			iAddress = InetAddress.getByName(domain);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		if (iAddress != null){
+			ipAddress = iAddress.getHostAddress();
+		}
+		return ipAddress;
+	}
+
+	/**
+	   * 判断是否异或
+	   * @param b1
+	   * @param b2
+	   * @return
+	   */
+	  public boolean xorForBool(boolean b1,boolean b2) {
+		boolean flag = true;
+		flag = ExBeanUtils.xorForNull(b1, b2);
+		if(!flag && b1!=b2){
+			flag = true;
+		}
+		return flag;
+	  }
+
+	 /**
+	  * 字符串添加空格
+	  * @param para
+	  * @return
+	  */
+	public static String appendSpace(String  para){  
+		int length = para.length();  
+		char[] value = new char[length << 1];  
+		for (int i=0, j=0; i<length; ++i, j = i << 1) {  
+			value[j] = para.charAt(i);  
+			value[1 + j] = ' ';  
+		}  
+		return new String(value);  
+	}
+
+	/**
+	 * 字符串数组转字符串(带标点)
+	 * @param strArrays
+	 * @return
+	 */
+	public static String toString(String[] strArrays) {
+		StringBuffer sb = new StringBuffer();
+		if(strArrays==null){
+			return "";
+		}
+		for(int i = 0; i < strArrays.length; i++){
+		 sb. append(strArrays[i]).append(",");
+		}
+		sb.setLength(sb.length()-1);
+		return sb.toString();
+	}
+
+	/**
+	 * 数字转汉子
+	 * @param num
+	 * @return
+	 */
+	public static String digital2week(int num) {
+		String word = "";
+		switch (num) {
+		case 1:
+			word = "一";
+			break;
+		case 2:
+			word = "二";
+			break;
+		case 3:
+			word = "三";
+			break;
+		case 4:
+			word = "四";
+			break;
+		case 5:
+			word = "五";
+			break;
+		case 6:
+			word = "六";
+			break;
+		case 7:
+			word = "日";
+			break;
+		default:
+			break;
+		}
+		return word;
+	}
+
+	/**
+	 * str1!=isEmpty()?str1:str2
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
+	public static String nvl(String str1,String str2) {
+		// TODO Auto-generated method stub
+		if(isEmpty(str1)){
+			return str2==null?"":str2;
+		}
+		return str1;
+	}
+	
+	/**
+	 * obj1==null?obj2:obj1
+	 * @param obj1
+	 * @param obj2
+	 * @return
+	 */
+	public static Object nvl4Obj(Object obj1,Object obj2) {
+		// TODO Auto-generated method stub
+		if(obj1==null){
+			return obj2;
+		}
+		return obj1;
+	}
+	
+	/**
+	 * str1!=null?str1:str2
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
+	public static String nvl(Object str1,Object str2) {
+		// TODO Auto-generated method stub
+		if(str1==null){
+			return str2==null?"":str2.toString();
+		}
+		return str1.toString();
+	}
+	
+	/**
+	 * str1!=isEmpty()?str2:str3
+	 * @param str1
+	 * @param str2
+	 * @param str3
+	 * @return
+	 */
+	public String nvl2(String str1, String str2, String str3) {
+		if(isEmpty(str1)){
+			return str3==null?"":str3;
+		}else {
+			return str2==null?"":str2;
+		}
+	}
+
+	/**
+	 * 给每个元素加上左右标点
+	 * 调用：（{"a","b"}, "《", "》"）	返回："《a》,《b》"
+	 * @param strArray
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static String addSymbol(String[] strArray, String left,String right) {
+		if(strArray==null){
+			return "";
+		}
+		StringBuffer result = new StringBuffer();
+		for (String string : strArray) {
+			result.append(left+string+right+",");
+		}
+		return result.substring(0, result.length()-1);
+	}
+	
+	/**
+	 * 给每个元素加上左右标点，中间逗号（,）隔开
+	 * 调用：（{"a","b"}, "《", "》"）	返回："《a》,《b》"
+	 * @param list
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static String addSymbol(List<String> list, String left, String right) {
+		if(list==null){
+			return "";
+		}
+		if(list.size()==0){
+			return "";
+		}
+		StringBuffer result = new StringBuffer();
+		for (Object object : list) {
+			result.append(left+object.toString()+right+",");
+		}
+		return result.substring(0, result.length()-1);
+	}
+
+	/**
+	 * 数字转为星期名称
+	 * @param days
+	 * @return
+	 */
+	public static String getDaysName(String days) {
+		days = days.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+		StringBuffer daysString = new StringBuffer();
+		if(ExStringUtils.isBlank(days)){
+			return "";
+		}
+		String[] dayArray = days.split(",");
+		for (int len=0, start=0, end = 0;len<dayArray.length; len++) {
+			int day = Integer.valueOf(dayArray[len]);
+			if(dayArray.length==1){
+				daysString.setLength(0);
+				daysString.append("星期"+digital2week(day));
+				continue;
+			}
+			if(start==0){
+				start = day;
+				end = day;
+				daysString.setLength(0);
+				daysString.append("星期"+digital2week(start));
+			}
+			if(day-end>1 || len==dayArray.length-1){//不连续
+				if(start!=end || day-end==1){
+					if(day-end==1) {//如果最后一个连续
+						daysString.append("至"+"星期"+digital2week(day));
+						continue;
+					}
+					daysString.append("至"+"星期"+digital2week(end));
+				}
+				daysString.append("，"+"星期"+digital2week(day));
+				start = day;
+			}
+			end = day;
+		}
+		return daysString.toString();
+	}
+
+	/**
+	 * 数字转为周名称
+	 * @param weeks
+	 * @return
+	 */
+	public static String getWeeksName(String weeks) {
+		weeks = weeks.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+		StringBuffer weeksString = new StringBuffer();
+		if(ExStringUtils.isBlank(weeks)){
+			return "";
+		}
+		String[] weekArray = weeks.split(",");
+		List<String> weekList = new ArrayList<String>();
+		for (int i = 0; i < weekArray.length; i++) {
+			weekList.add(weekArray[i]);
+		}
+		List<String> weekRemoveList = new ArrayList<String>();
+		//判断是否单周或双周
+		int len=0;
+		int mod = Integer.parseInt(weekArray[0])%2;
+		for (; len < weekArray.length; len++) {
+			if(Integer.parseInt(weekArray[len])%2==mod){
+				weekRemoveList.add(weekArray[len]);
+				continue;
+			}else {
+				break;
+			}
+		}
+		if(len>6){//单/双周 查询长度
+			weeksString.append(weekArray[0]+"-"+weekArray[len-1]+"周"+(mod==0?"(双周)":"(单周)"));
+			if(len<weekArray.length){
+				weeksString.append("，");
+				weekList.removeAll(weekRemoveList);
+			}else {
+				return weeksString.toString();
+			}
+		}
+			
+		//判断是否连续
+		for (int index=0, start=0, end = 0;index<weekList.size(); index++) {
+			int week = Integer.valueOf(weekList.get(index));
+			if(weekList.size()==1){
+				weeksString.append(week);
+				continue;
+			}
+			if(start==0){
+				start = week;
+				end = week;
+				weeksString.append(start);
+			}
+			if(week-end>1 || index==weekList.size()-1){//不连续
+				if(start!=end || week-end==1){
+					if(week-end==1) {//如果最后一个连续
+						weeksString.append("-"+week);
+						continue;
+					}
+					weeksString.append("-"+end);
+				}
+				weeksString.append("周，"+week);
+				start = week;
+			}
+			end = week;
+		}
+		return weeksString.append("周").toString();
+	}
+
+	/**
+	 * 数字字符串去重并排序
+	 * @param digitalStr 数字之间用英文逗号隔开，中间不允许空格
+	 * @param maxNum:最大值(只返回比maxNum小的值)
+	 * @return 1,3,1,2 返回 1,2,3
+	 */
+	public static String orderDistinctDigitalString(String digitalStr,int maxNum) {
+		StringBuffer result = new StringBuffer();
+		digitalStr = digitalStr.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+		if(digitalStr.startsWith(",")) {
+			digitalStr = digitalStr.substring(1, digitalStr.length());
+		}
+		if(digitalStr.endsWith(",")) {
+			digitalStr = digitalStr.substring(0, digitalStr.length()-1);
+		}
+		if(ExStringUtils.isNotBlank(digitalStr) && digitalStr.contains(",")){
+			for(int i=0;i<maxNum;i++){
+				if(digitalStr.startsWith(i+",") || digitalStr.contains(","+i+",") || digitalStr.endsWith(","+i)){
+					result.append(i+",");
+				}
+			}
+			return result.deleteCharAt(result.length()-1).toString();
+		}else {
+			return digitalStr;
+		}
+	}
+
+	/**
+	 * 获取maxNum范围类digitalStr数字字符串中没有出现的数字
+	 * @param digitalStr
+	 * @param maxNum
+	 * @return
+	 */
+	public static String getInverseDigitalString(String digitalStr, int maxNum) {
+		StringBuffer result = new StringBuffer();
+		digitalStr = digitalStr.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "");
+		if(digitalStr.startsWith(",")) {
+			digitalStr = digitalStr.substring(1, digitalStr.length());
+		}
+		if(digitalStr.endsWith(",")) {
+			digitalStr = digitalStr.substring(0, digitalStr.length()-1);
+		}
+		if(ExStringUtils.isNotBlank(digitalStr) && digitalStr.contains(",")){
+			for(int i=1;i<=maxNum;i++){
+				if(!(digitalStr.startsWith(i+",") || digitalStr.contains(","+i+",") || digitalStr.endsWith(","+i))){
+					result.append(i+",");
+				}
+			}
+			return result.deleteCharAt(result.length()-1).toString();
+		}else {
+			return digitalStr;
+		}
+	}
+
+	/**
+	 * 获取文件后缀名
+	 * @param filePath
+	 * @return
+	 */
+	public static String getPostfix(String filePath) {
+	 	if (!ExStringUtils.isNotEmpty(filePath)) {
+            return null;
+        }
+        if (filePath.contains(".")) {
+            return filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
+        }
+        return null;
+	}
+
+	/**
+	 * 判断字符串string是否包含查询的元素s
+	 * @param string "1,2,3"
+	 * @param s "2"
+	 * @return
+	 */
+	public static boolean isContainsStr(String string, String s) {
+		// TODO Auto-generated method stub
+		if(isEmpty(string)){
+			return false;
+		}
+		string = string.trim();
+		if(string.equals(s) || string.startsWith(s+",")){
+			return true;
+		}
+		if(string.contains(","+s+",")){
+			return true;
+		}
+		if(string.endsWith(","+s)){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 数字转汉字
+	 * @param num
+	 * @return
+	 */
+	public static String digital2character(int num) {
+		String numStr = num+"";
+		return digital2character(numStr);
+	}
+
+	/**
+	 * 数字转汉字
+	 * @param numStr
+	 * @return
+	 */
+	public static String digital2character(String numStr) {
+		
+		if (isNumeric(numStr)) {
+			if(isBlank(numStr)){
+				return "";
+			}
+			StringBuffer sb = new StringBuffer();
+			char[] numbers = numStr.toCharArray();
+			for (char c : numbers) {
+				  int value = Integer.parseInt(String.valueOf(c));
+				  sb.append(numArray[value]);
+			}
+			return sb.toString();
+		}
+		return "";
+	}
+	
+	public static String digital2characterWithUnit(String numStr) {
+		if (!numStr.contains(".")) {
+			return digital2characterWithUnit(Integer.parseInt(numStr));
+		}else if (isNumeric(numStr, 2)) {
+			return digital2characterWithUnit(Double.valueOf(numStr));
+		}
+		return "";
+	}
+	
+	public static String digital2characterWithUnit(int num) {
+		char[] val = String.valueOf(num).toCharArray();
+		int len = val.length;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < len; i++) {
+			String m = val[i] + "";
+			int n = Integer.valueOf(m);
+			boolean isZero = n == 0;
+			String unit = units[(len - 1) - i];
+			if (isZero) {
+				if ('0' == val[i - 1] || i==len-1) {
+					continue;
+				} else {
+					sb.append(numArray[n]);
+				}
+			} else {
+				sb.append(numArray[n]);
+				sb.append(unit);
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String digital2characterWithUnit(double decimal) {
+		String decimals = String.valueOf(decimal);
+		int decIndex = decimals.indexOf(".");
+		int integ = Integer.valueOf(decimals.substring(0, decIndex));
+		int dec = Integer.valueOf(decimals.substring(decIndex + 1));
+		String result = digital2characterWithUnit(integ) + "." + digital2character(dec);
+		return result;
+	}
+
+	public static String toString(List<String> weekList) {
+		// TODO Auto-generated method stub
+		StringBuffer stringBuffer = new StringBuffer();
+		if(weekList!=null && weekList.size()>0){
+			for (String _string : weekList) {
+				stringBuffer.append(","+_string);
+			}
+			stringBuffer.deleteCharAt(0);
+		}
+		return stringBuffer.toString();
+	}
+
+	/**
+	 * 数字字符串转数组
+	 * @param str
+	 * @return
+	 */
+	public static String[] toArray4Digital(String str) {
+		// TODO Auto-generated method stub
+		if(isNotBlank(str)){
+			return str.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "").split(",");
+		}else {
+			return null;
+		}
+	}
+
+	/**
+	 * 数字字符串取交集
+	 * @param actualWeekList
+	 * @param weeks
+	 * @return
+	 */
+	public static List<String> intersectDigitalArray(List<String> actualWeekList, String[] weeks) {
+		List<String> result = new ArrayList<String>();
+		for (String string : weeks) {
+			if(actualWeekList.contains(string)){
+				result.add(string);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 数字字符串转list
+	 * @param string
+	 * @return
+	 */
+	public static List<String> toList4Digital(String string) {
+		// TODO Auto-generated method stub
+		String[] arrys = toArray4Digital(string);
+		List<String> digitalList = new ArrayList<String>();
+		if(arrys!=null){
+			for (String number : arrys) {
+				digitalList.add(number);
+			}
+		}
+		return digitalList;
+	}
+
+	/**
+	 * 全部不为空，即有一个为空则返回false
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotBlank4All(String ... str) {
+		for (String s :str) {
+			if (isBlank(s)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 是否包含空值，即有一个为空则返回TRUE
+	 * @param str
+	 * @return
+	 */
+	public static boolean isBlank(String ... str) {
+		for (String s :str) {
+			if (isBlank(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 不同时为空，即有一个参数不为空则返回true
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotBlank(String ...str) {
+		for (String string : str) {
+			if(isNotBlank(string)){
+				return true;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 全部不为空，即有一个为空则返回false
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotEmpty4All(String ...str) {
+		for (String string : str) {
+			if(isEmpty(string)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 不同时为空，即有一个参数不为空则返回true
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotEmpty(String ...str) {
+		for (String string : str) {
+			if(isNotEmpty(string)){
+				return true;
+			}
+		}
+		return true;
+	}
+	/**
+	 * 把汉子和数字隔开
+	 * @param str
+	 * @return
+	 */
+	public static List<String> splitNumber(String str) {
+		// TODO Auto-generated method stub
+		List<String> list = new ArrayList<String>();
+		if(ExStringUtils.isNotEmpty(str)){
+			int len = str.length();
+			String s = "";
+			for(int i=0;i<len;i++){
+				char a = str.charAt(i);
+				if(i!=0 && (a<256 && str.charAt(i-1)<256 || a>256 && str.charAt(i-1)>256)){
+					s += String.valueOf(a);
+				}else if (i==0) {
+					s = String.valueOf(a);
+				}else {
+					list.add(s);
+					s = String.valueOf(a);
+				}
+				if(i==len-1){
+					list.add(s);
+				}
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 四舍五入
+	 * @param value
+	 * @return
+	 */
+	public static String mathRound(String value) {
+		if(isNumeric(value,2)){
+			return Math.round(Double.parseDouble(value))+"";
+		}
+		return value;
+	}
+	
+	public static boolean containsCharacter(String value) {
+		if(ExStringUtils.isNotEmpty(value)){
+			int len = value.length();
+			for(int i=0;i<len;i++){
+				char a = value.charAt(i);
+				if(a>256) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 删除第一个标志字符串以及之前的所有字符
+	 * @param str
+	 * @param point
+	 * <pre>
+	 * removeStartString("2017年3月10日","年")		= 3月10日
+	 * removeStartString("www.baidu.com",".")	= baidu.com
+	 * <pre>
+	 * @return
+	 */
+	public static String removeStartString(String str, String point) {
+		int i=str.indexOf(point);
+		if(i<0){
+			return str;
+		}else {
+			return str.substring(i+point.length(),str.length());
+		}
+    }
+	 
+	/**
+	 * 删除最后一个标志字符串以及之后的所有字符
+	 * @param str,point
+	 * <pre>
+	 * removeEndString("mywork.word",".")		= mywork
+	 * removeEndString("www.baidu.com",".")		= www.baidu
+	 * </pre>
+	 * @return
+	 */
+	public static String removeEndString(String str,String point) {
+		// TODO Auto-generated method stub
+		if(ExStringUtils.isEmpty(str)){
+			return str;
+		}
+		int i=str.lastIndexOf(point);
+		if(i<0){
+			return str;
+		}else {
+			return str.substring(0,i);
+		}
+	}
+
+	/**
+	 * 删除结尾字符串，并且忽略大小写
+	 * @param str,point
+	 * <pre>
+	 * removeEndString("mywork.word",".word")		= mywork
+	 * removeEndString("www.baidu.COM",".com")		= www.baidu
+	 * </pre>
+	 * @return
+	 */
+	public static String removeEndWithIgnoreCase(String str,String remove) {
+		if (isEmpty(str) || isEmpty(remove)) {
+			return str;
+		}
+		if (endsWithIgnoreCase(str,remove)) {
+			return str.substring(0, str.length() - remove.length());
+		}
+		return str;
+	}
+
+	/**
+	 * String.valueOf(obj)
+	 * @param obj
+	 * @return
+	 */
+	public static String toString(Object obj) {
+		// TODO Auto-generated method stub
+		if(obj==null){
+			return "";
+		}else {
+			return String.valueOf(obj);
+		}
+	}
+
+	public static String toString(Cell cell) {
+		String value = "";
+		if(cell != null){
+			if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {//判断是否为boolean类型
+				value = String.valueOf(cell.getBooleanCellValue());
+			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				if (HSSFDateUtil.isCellDateFormatted(cell)) {//单元格为时间格式
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					if (cell.getCellStyle().getDataFormat() == 20 || cell.getCellStyle().getDataFormat() == 32) {
+						sdf = new SimpleDateFormat("HH:mm");
+					} else if(cell.getCellStyle().getDataFormat() == 14 || cell.getCellStyle().getDataFormat() == 31){// 日期
+						sdf = new SimpleDateFormat("yyyy-MM-dd");
+					} else if (cell.getCellStyle().getDataFormat() == 57) {
+						sdf = new SimpleDateFormat("yyyy_MM");
+					}
+					Date date = cell.getDateCellValue();
+					value = sdf.format(date);
+				} else {
+					value = ExNumberUtils.toString(new BigDecimal(cell.getNumericCellValue()));
+					if(value.endsWith(".00")){
+						value = value.substring(0,value.length()-3);
+					}
+				}
+			} else {
+				value = String.valueOf(cell.getStringCellValue());
+			}
+		}
+		if(ExStringUtils.isNotEmpty(value)) {
+			value = trimToEmpty(value);
+		}
+		return value;
+	}
+
+	public static String showCharset(String name) {
+		String charset = "UTF-8";
+		try {
+			if(name.equals(new String(name.getBytes(), "GB2312"))){
+				charset = "GB2312";
+			}else if(name.equals(new String(name.getBytes(), "UTF-8"))){
+				charset = "UTF-8";
+			}else if(name.equals(new String(name.getBytes(), "GBK"))){
+				charset = "GBK";
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return charset;
+	}
+
+	 /**
+     * 判断字符是否是中文
+     *
+     * @param c 字符
+     * @return 是否是中文
+     */
+    public static boolean isChinese(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+            return true;
+        }
+        return false;
+    }
+ 
+    /**
+     * 判断字符串是否是乱码
+     *
+     * @param strName 字符串
+     * @return 是否是乱码
+     */
+    public static boolean isMessyCode(String strName) {
+        Pattern p = Pattern.compile("\\s*|t*|r*|n*");
+        Matcher m = p.matcher(strName);
+        String after = m.replaceAll("");
+        String temp = after.replaceAll("\\p{P}", "").replaceAll("[a-zA-Z]","").replaceAll("[0-9]", "");
+        char[] ch = temp.trim().toCharArray();
+        float chLength = ch.length;
+        float count = 0;
+        if(temp.contains("???")) {
+			return true;
+		}
+        if(temp.contains("%%%")) {
+			return true;
+		}
+        StringBuilder messyCode = new StringBuilder();
+        for (int i = 0; i < ch.length; i++) {
+            char c = ch[i];
+                if (isChinese(c)) {
+                    count = count + 1;
+                }else {
+                	messyCode.append(c);
+				}
+        }
+        if (count!=chLength) {
+        	//System.out.println("字符串【"+strName+"】乱码，非中文字符【"+messyCode.toString()+"】");
+            return true;
+        } else {
+            return false;
+        }
+ 
+    }
+
+    /**
+     * 获取字符串中数字的个数
+     * @param content
+     * @return
+     */
+	public static int getDigitalCount(String content) {
+		// TODO Auto-generated method stub
+		int count = 0;
+		if(isNotEmpty(content)){
+			char[] ch = content.trim().toCharArray();
+			for (char c : ch) {
+				if(Character.isDigit(c)) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	/**
+     * 获取字符串中数字和空格的个数
+     * @param content
+     * @return
+     */
+	public static int getDigitalAndSpaceCount(String content) {
+		// TODO Auto-generated method stub
+		int count = 0;
+		if(isNotEmpty(content)){
+			char[] ch = content.toCharArray();
+			for (char c : ch) {
+				if(Character.isDigit(c) || Character.isSpaceChar(c)) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public static String getMapValuesByKeys(Map<String, Object> map, String split, String... keys) {
+		// TODO Auto-generated method stub
+		if(map==null){
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String key : keys) {
+			String value = map.get(key)==null?"":map.get(key).toString();
+			if(!"".equals(value)){
+				builder.append(value).append(split);
+			}
+		}
+		return removeEnd(builder.toString(), split);
+	}
+
+	/**
+	 * 将map中为null的值转为空（即""）
+	 * @param map
+	 */
+	public static void convert2BlankForMap(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		for (Map.Entry<String, Object> entry : map.entrySet()) { 
+			if(entry.getValue()==null){
+				map.put(entry.getKey(), "");
+			}
+		}
+	}
+
+	public static Object replaceLast(String string, String orgStr,String objStr) {
+		// TODO Auto-generated method stub
+		StringBuilder builder = new StringBuilder();
+		int index = string.lastIndexOf(orgStr);
+		int orglen  = orgStr.length();
+		//int objlen = objStr.length();
+		if(orglen==0) {
+			return string;
+		}
+		builder.append(string.substring(0, index));
+		builder.append(objStr);
+		builder.append(string.substring(index+orglen, string.length()));
+		return builder.toString();
+	}
+
+	public static boolean isNotBlank(Object object) {
+		return !isBlank(object);
+	}
+	
+	public static boolean isBlank(Object object) {
+		// TODO Auto-generated method stub
+		if(object==null){
+			return true;
+		}
+		if(isBlank(object.toString())){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isNotEmpty(Object object) {
+		return !isEmpty(object);
+	}
+	
+	public static boolean isEmpty(Object object) {
+		// TODO Auto-generated method stub
+		if(object==null){
+			return true;
+		}
+		if(isEmpty(object.toString())){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 从字符串数组中删除元素（第一个位置 到 第一个出现str的位置）
+	 * @param arrys
+	 * @param str
+	 * @return
+	 */
+	public static String[] removeStartString(String[] arrys, String str) {
+		// TODO Auto-generated method stub
+		List<String> list = new ArrayList<String>();
+		boolean isContains = false;
+		for (String string : arrys) {
+			if(isContains){
+				list.add(string);
+			}else if(string.equals(str)){
+				isContains = true;
+			}
+		}
+		if(!isContains) {
+			list = Arrays.asList(arrys);
+		}
+		return (String[]) list.toArray(new String[list.size()]);
+	}
+
+	/**
+	 *
+	 * @param mapList
+	 * @param keys
+	 * @return
+	 */
+	public static String getValueByKeyFromMapList(List<Map<String, Object>> mapList, String... keys) {
+		// TODO Auto-generated method stub
+		String results = "";
+		if(mapList==null){
+			return "";
+		}else if (mapList.size()==0) {
+			return "";
+		}else {
+			StringBuilder builder = new StringBuilder();
+			for (Map<String, Object> map : mapList) {
+				String values = "(";
+				for (String key : keys) {
+					values += "'" + map.get("key")+"',";
+				}
+				values = values.substring(0, values.length()-1)+")";
+				builder.append(values).append(",");
+			}
+			results = builder.substring(0, builder.length()-1);
+		}
+		return results;
+	}
+
+	/**
+	 * 将str中的数字转为汉字
+	 * @param str
+	 * @return
+	 */
+	public static String str2character(String str) {
+		StringBuffer sb = new StringBuffer();
+		try {
+			char[] numbers = str.toCharArray();
+			for (char c : numbers) {
+				if(isNumeric(c+"")){
+					int value = Integer.parseInt(String.valueOf(c));
+					sb.append(numArray[value]);
+				}else {
+					sb.append(c);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * 根据汉字获取拼音
+	 * @param src
+	 * @return
+	 */
+	public static String getPingYin(String src) {
+		char[] t1 = null;
+		t1 = src.toCharArray();
+		String[] t2 = new String[t1.length];
+		HanyuPinyinOutputFormat t3 = new HanyuPinyinOutputFormat();
+		t3.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+		t3.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		t3.setVCharType(HanyuPinyinVCharType.WITH_V);
+		StringBuilder t4 = new StringBuilder();
+		int t0 = t1.length;
+		try {
+			for (int i = 0; i < t0; i++) {
+				// 判断是否为汉字字符
+				if (Character.toString(t1[i]).matches("[\\u4E00-\\u9FA5]+")) {
+					t2 = PinyinHelper.toHanyuPinyinStringArray(t1[i], t3);
+					t4.append(t2[0]);
+				}
+				else {
+					t4.append(Character.toString(t1[i]));
+				}
+			}
+			return t4.toString();
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return t4.toString();
+	}
+
+	/**
+	 * 根据汉字获取拼音首字母
+	 * @param str
+	 * @return
+	 */
+	public static String getPinYinHeadChar(String str) {
+		String convert = "";
+		try {
+			for (int j = 0; j < str.length(); j++) {
+				char word = str.charAt(j);
+				String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(word,
+						new HanyuPinyinOutputFormat());
+				if (pinyinArray != null) {
+					convert += pinyinArray[0].charAt(0);
+				} else {
+					convert += word;
+				}
+			}
+		} catch (BadHanyuPinyinOutputFormatCombination e) {
+			e.printStackTrace();
+		}
+		return convert;
+	}
+
+	/**
+	 * 字符串数字加1
+	 * @param num
+	 * @return
+	 */
+	public static String increase(String num) {
+		char[] chars = num.toCharArray();
+		for (int i = num.length() - 1; i >= 0; i--) {
+			if (chars[i] == '9') {
+				chars[i] = '0';
+			} else {
+				chars[i]++;
+				break;
+			}
+		}
+		return new String(chars);
+	}
+	
+	public static String htmlEncode(String source) {
+        if (source == null) {
+            return "";
+        }
+        String html = "";
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < source.length(); i++) {
+            char c = source.charAt(i);
+            switch (c) {
+            case '<':
+                buffer.append("&lt;");
+                break;
+            case '>':
+                buffer.append("&gt;");
+                break;
+            case '&':
+                buffer.append("&amp;");
+                break;
+            case '"':
+                buffer.append("&quot;");
+                break;
+            case 10:
+            case 13:
+                break;
+            default:
+                buffer.append(c);
+            }
+        }
+        html = buffer.toString();
+        return html;
+    }
+
+}

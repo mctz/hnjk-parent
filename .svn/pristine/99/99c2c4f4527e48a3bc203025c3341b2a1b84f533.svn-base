@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>等待系统服务...</title>
+<link href="/style/default.css" type="text/css" rel="stylesheet">
+<link href="/style/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<div align="center" id="waitText" style="height: 430px">
+		<h2>正在等待系统服务...</h2>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+.overlay_dialog {
+	background-color: #333;
+	filter: Alpha(Opacity = 30, Style = 0);
+	-moz-opacity: 0.4;
+	opacity: 0.4;
+}
+
+.dialog_nw {
+	width: 5px;
+	background: url(office/top_left.gif) no-repeat;
+	height: 30px;
+}
+
+.dialog_n {
+	background: url(office/top_center.gif) repeat-x;
+	height: 30px;
+}
+
+.dialog_ne {
+	width: 5px;
+	height: 30px;
+	background: url(office/top_right.gif) no-repeat;
+}
+
+.dialog_w {
+	width: 5px;
+	background: url(office/mid_left.gif) repeat-y;
+}
+
+.dialog_e {
+	width: 5px;
+	background: url(office/mid_right.gif) repeat-y;
+}
+
+.dialog_sw {
+	width: 5px;
+	height: 23px;
+	background: url(office/bottom_left.gif) no-repeat;
+}
+
+.dialog_s {
+	background-color: #ECF3F6;
+	background: url(office/bottom_center.gif) repeat-x;
+	height: 23px;
+}
+
+.dialog_se {
+	width: 5px;
+	height: 23px;
+	background: url(office/bottom_right.gif) no-repeat;
+}
+
+.dialog_sizer {
+	/* width: 15px; 
+	height: 23px;
+	*/
+	width: 5px;
+	height: 5px;
+	background: url(office/sizer.gif) no-repeat;
+	cursor: se-resize;
+}
+
+.dialog_close {
+	width: 25px;
+	height: 24px;
+	background: transparent url(office/close.gif) no-repeat 0 0;
+	float: right;
+	margin-right: 3px;
+	cursor: pointer;
+	z-index: 2000;
+}
+
+.dialog_minimize {
+	width: 25px;
+	height: 24px;
+	background: transparent url(office/mini.gif) no-repeat 0 0;
+	float: right;
+	margin-right: 3px;
+	cursor: pointer;
+	z-index: 2000;
+}
+
+.dialog_maximize {
+	width: 25px;
+	height: 24px;
+	background: transparent url(office/maxi.gif) no-repeat 0 0;
+	float: right;
+	margin-right: 3px;
+	z-index: 2000;
+	cursor: pointer;
+}
+
+.dialog_title {
+	float: left;
+	height: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	width: auto;
+	color: #15428B;
+	line-height: 20px;
+}
+
+.dialog_content {
+	overflow: auto;
+	background-color: #fff;
+}
+
+.dialog_buttons {
+	text-align: center;
+	background-color: #eee;
+	overflow: hidden;
+	padding-top: 2px;
+}
+
+.dialog_buttons button {
+	margin: 0 1px 0 1px; /*左右间距*/
+}
+
+.dialog_progress {
+	float: left;
+	margin: auto;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	background: #FFF url(default/progress.gif) no-repeat center center;
+}
+
+.top_draggable, .bottom_draggable {
+	cursor: move;
+}
+
+.status_bar {
+	font-size: 12px;
+}
+
+.status_bar input {
+	font-size: 12px;
+}
+
+.dialog {
+	display: block;
+	position: absolute;
+}
+
+.dialog table.table_window {
+	border-collapse: collapse;
+	border-spacing: 0;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.dialog table.table_window td, .dialog table.table_window th {
+	padding: 0;
+}
+
+.dialog_masker {
+	position: absolute;
+}
+
+.dialog .title_window {
+	-moz-user-select: none;
+}

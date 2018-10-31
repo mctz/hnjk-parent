@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<description>memecached client</description>
+
+		<bean id="spyMemcachedClient" class="com.hnjk.core.foundation.cache.MemcachedManager">
+		<property name="memcachedClient">
+			<bean class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+				<property name="servers" value="192.168.1.215:11211" />
+				<!-- 默认是TEXT -->
+				<property name="protocol" value="TEXT" />
+				<!-- 默认是ARRAY_MOD -->
+				<property name="locatorType" value="CONSISTENT" />
+				<!-- 默认是2500毫秒 -->
+				<property name="opTimeout" value="1000" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

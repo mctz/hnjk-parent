@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+	
+	<description>cache 配置</description>
+	
+	<!-- ehcache manager
+	<bean id="ehcacheManager" class="com.hnjk.core.foundation.cache.EhCacheManager">
+		<property name="ehcache">
+			<bean id="ehCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		  		<property name="configLocation">  
+		            <value>classpath:ehcache.xml</value>
+		  		</property>
+		 	</bean>
+		</property>
+	</bean>
+	 -->
+	<!-- memcached manager -->
+	<bean id="memcacheManager" class="com.hnjk.core.foundation.cache.MemcachedManager">
+		<property name="memcachedClient">
+			<bean class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+				<property name="servers" value="${memcached.servers}" />
+				<!-- 默认是TEXT -->
+				<property name="protocol" value="${memcached.protocol}" />
+				<!-- 默认是ARRAY_MOD -->
+				<property name="locatorType" value="CONSISTENT" />
+				<!-- 默认是2500毫秒 -->
+				<property name="opTimeout" value="5000" />
+			</bean>
+		</property>
+	</bean>
+</beans>

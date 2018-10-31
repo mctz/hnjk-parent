@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<description>schedule test</description>
+	<bean id="timerTaskExcutor" class="org.springframework.scheduling.timer.TimerTaskExecutor" lazy-init="false">  
+        <property name="delay" value="10"></property>  
+        <property name="timer" ref="myTimer"/>  
+    </bean>  
+    
+    <bean id="myTask" class="com.hnjk.core.support.schedule.MyTask"/>
+    
+    <bean id="myTimer" class="com.hnjk.core.support.schedule.MyTimer">
+    	<property name="hourOfday" value="12"></property>
+    	<property name="minuteOfday" value="01"></property>
+    	<property name="secondOfday" value="0"></property>
+    	<property name="task" ref="myTask"/>
+    </bean>  
+	
+
+</beans>

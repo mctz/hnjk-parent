@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd"	
+	default-lazy-init="true">
+
+	<description>JMX服务</description>
+	<!-- 自动注册服务-->
+	<context:mbean-export  default-domain="com.hnjk.edu.jmx" registration="replaceExisting" />	
+	<bean id="registry" class="com.hnjk.edu.jmx.ExRmiRegistryFactoryBean"  p:port="${jmx.rmi.port}"  lazy-init="false"/>	
+	
+	<!-- jmx远程连接 -->
+ 
+	<bean id="serverConnector" class="com.hnjk.edu.jmx.ExConnectorServerFactoryBean" lazy-init="false">
+		<property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://${jmx.rmi.ip}:${jmx.rmi.port}/edu3connector" />
+		<property name="environment">
+			<map>
+					
+			</map>
+		</property>
+	</bean>          
+   
+   <!-- 文档转换服务client -->
+   <bean id="documentConvertServer" class="com.hnjk.edu.jmx.client.DocumentConvertServiceImpl">
+	   	<property name="ftpServerIp" value="202.38.227.237"/>
+	   	<!-- <property name="ftpServerIp" value="120.77.226.218"/> -->
+	   	<property name="ftpServerPort" value="9021"/>
+	   	<property name="ftpUsername" value="hzg"/>
+	   	<property name="ftpPassword" value="edu3for237"/>
+   </bean>
+</beans>

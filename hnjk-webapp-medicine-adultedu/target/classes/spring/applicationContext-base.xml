@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans        
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		   http://www.springframework.org/schema/tx  
+    	   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/util
+           http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+	default-autowire="byName" default-lazy-init="true">
+
+	<!-- 根据包路径解析"注解",并把这些bean置入Spring容器 -->
+	<context:component-scan base-package="com.hnjk" />
+
+
+<!-- JNDI 方式数据源，正式环境使用 --> 
+<!-- 	 <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  -->
+<!-- 		<property name="jndiName"> <value>java:comp/env/jdbc/druid-test</value> </property>  -->
+<!-- 	</bean>  -->
+
+	<!-- 开启切面解析器 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 银校通数据源 -->
+	<bean id="yxtDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/hnjk-yxt</value>
+		</property>
+	</bean>
+
+	<bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
+		<property name="statementExecutableSqlLogEnable" value="false" />
+	</bean>
+
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.hnjk.edu.*.service.*</value>
+				<value>com.hnjk.edu.*.service.impl.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor"
+			pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+	<!-- 数据源属性文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc/database.properties</value>
+				<value>classpath:/sys_conf.properties</value>
+				<value>classpath:druid/wall.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="oracle" />
+		<property name="config" ref="wall-filter-config" />
+<!-- 		对被认为是攻击的SQL进行LOG.error输出 -->
+		<property name="logViolation" value="true" />
+<!-- 		对被认为是攻击的SQL抛出SQLExcepton -->
+		<property name="throwException" value="true" />
+	</bean>
+
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
+		init-method="init">
+		<!-- 指定配置装载的目录 -->
+		<property name="dir" value="META-INF/druid/wall/oracle" />
+<!-- 		<property name="dir">   -->
+<!-- 		            <value>classpath:druid/wall.properties</value> -->
+<!-- 		  		</property> -->
+	</bean>
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${datasource.driverClassName}" />
+		<property name="url" value="${datasource.url}" />
+		<property name="username" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="100" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="10000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 这里建议配置为TRUE，防止取到的连接不可用 -->
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 输出日志 -->
+		<!-- <property name="timeBetweenLogStatsMillis" value="300000" /> -->
+
+		<!-- 这里配置提交方式，默认就是TRUE，可以不用配置 -->
+
+		<property name="defaultAutoCommit" value="true" />
+
+		<property name="removeAbandoned" value="true" /> <!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandonedTimeout" value="1800" /> <!-- 1800秒，也就是30分钟 -->
+		<property name="logAbandoned" value="true" /> <!-- 关闭abanded连接时输出错误日志 -->
+		<!-- 验证连接有效与否的SQL，不同的数据配置不同 -->
+		<property name="validationQuery" value="select 1 from dual " />
+		<!-- SQL合并配置 -->
+		<!-- stat在最前面拦截检测的时间在StatFilter统计的SQL执行时间内 -->
+<!-- 	参数值：wall	sql 防火墙暂时不开，项目中有比较多的 where 1=1 -->
+		<property name="filters" value="stat,config" />
+		<property name="connectionProperties"
+			value="config.decrypt=${config.decrypt};config.decrypt.key=${publicKey};druid.stat.slowSqlMillis=5000" />
+<!-- 		<property name="proxyFilters"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="wall-filter" /> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+		<!-- <property name="useGlobalDataSourceStat" value="true" /> -->
+		<!-- <property name="filters" value="stat" /> -->
+		<!-- <property name="connectionProperties" value="druid.stat.mergeSql=true" 
+			/> -->
+		<!-- <property name="proxyFilters"> -->
+		<!-- <list> -->
+		<!-- <ref bean="logFilter" /> -->
+		<!-- </list> -->
+		<!-- </property> -->
+		<!--定期输出日志，单位毫秒 -->
+		<property name="timeBetweenLogStatsMillis" value="300000" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- add hbm.xml resources location <property name="mappingDirectoryLocations" 
+			value="classpath:mapping"/> -->
+		<!-- 收集已声明过的类 -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.opensymphony.workflow.spi.hibernate3</value>
+				<value>com.opensymphony.module.propertyset.hibernate3</value>
+				<value>com/hnjk/core/support/base/model</value>
+				<value>com/hnjk/security/model/</value>
+				<value>com/hnjk/platform/system/model</value>
+				<value>com/hnjk/edu/basedata/model</value>
+				<value>com/hnjk/edu/recruit/model</value>
+				<value>com/hnjk/edu/portal/model</value>
+				<value>com/hnjk/edu/roll/model</value>
+				<value>com/hnjk/edu/teaching/model</value>
+				<value>com/hnjk/edu/learning/model</value>
+				<value>com/hnjk/edu/finance/model</value>
+				<value>com/hnjk/edu/evaluate/model</value>
+				<value>com/hnjk/edu/arrange/model</value>
+				<value>com/hnjk/edu/textbook/model</value>
+				<value>com/hnjk/edu/work/model</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.query.substitutions">${hibernate.query.substitutions}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+
+				<!-- 使用ehcache 作为cache provider <prop key="hibernate.cache.provider_class">${hibernate.ehcache.provider_class}</prop> 
+					<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop> -->
+				<!-- 使用memcached 作为cache provider -->
+				<prop key="hibernate.cache.provider_class">${hibernate.memcache.provider_class}</prop>
+				<prop key="hibernate.memcached.servers">${memcached.servers}</prop>
+				<prop key="hibernate.memcached.cacheTimeSeconds">${hibernate.memcached.cacheTimeSeconds}</prop>
+
+				<!-- hibernate search -->
+				<prop key="hibernate.search.analyzer">${hibernate.search.analyzer}</prop>
+				<prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
+				<prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
+				<prop key="hibernate.search.worker.batch_size">${hibernate.search.worker.batch_size}</prop>
+
+			</props>
+		</property>
+		<property name="eventListeners">
+			<map>
+				<entry key="post-insert" value-ref="historyEvenListener" />
+				<entry key="post-update" value-ref="historyEvenListener" />
+				<entry key="post-delete" value-ref="historyEvenListener" />
+				<entry key="flush" value-ref="patchedDefaultFlushEvenListener" />
+			</map>
+		</property>
+		<property name="lobHandler" ref="defaultLobHandler" />
+	</bean>
+
+	<!-- lob类型句柄 -->
+	<bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" />
+
+	<!-- 配置事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<!-- 定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- 注入SpringContext工具类 -->
+	<bean class="com.hnjk.core.support.context.SpringContextHolder"
+		lazy-init="false" />
+
+	<!-- 注入hibernate监听 -->
+	<bean id="historyEvenListener" class="com.hnjk.platform.system.history.HistoryEvenListener" />
+	<bean id="patchedDefaultFlushEvenListener"
+		class="com.hnjk.core.rao.dao.listener.PatchedDefaultFlushEventListener" />
+	<!-- 注入组件文件bean -->
+	<bean id="loadComponentsFile" class="com.hnjk.extend.plugin.web.LoadComponentsFile">
+		<property name="configFile">
+			<value>classpath:plugin/plugin-config.xml</value>
+		</property>
+	</bean>
+
+</beans> 

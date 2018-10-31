@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<description>Quartz的本地Cron式执行任务配置</description>
+
+	<!-- Quartz本地Schduler -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<!-- Triggers集成 -->
+		<property name="triggers">
+			<list>
+				<ref local="studentPaymentInfoTrigger"/>
+				<ref local="enquiryPaymentTrigger"/>
+				<!-- <ref local="checkFileTrigger"/> -->
+				<!-- <ref local="sensitiveWordTrigger"/> -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- 定义触发时间 , studentPaymentInfo式Trigger定义 -->
+	<bean id="studentPaymentInfoTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="studentPaymentInfoJobDetail" />
+		<property name="cronExpression">
+			<value>0 0 1 * * ?</value>  <!-- SS MM HH DD MM WW (YY) 0 0/1 * * * ? -->
+		</property>
+	</bean>
+	
+	<!-- 
+		定义调用对象和调用对象的方法
+		studentPaymentInfoJobDetail, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean 
+	-->
+	<bean id="studentPaymentInfoJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="studentPaymentInfo" />
+		<property name="targetMethod" value="scanPaymentStandar" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 定义触发时间 , sensitiveWord式Trigger定义 -->
+	<bean id="sensitiveWordTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sensitiveWordJobDetail" />
+		<property name="cronExpression">
+			<value>0 0 */1 * * ?</value>  <!-- SS MM HH DD MM WW (YY) 0 0/1 * * * ? -->
+		</property>
+	</bean>
+	
+	<!-- 定义调用对象和调用对象的方法sensitiveWordJobDetail -->
+	<bean id="sensitiveWordJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="sensitiveWordInfo" />
+		<property name="targetMethod" value="loadSensitiveWord" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 定义触发时间 , checkFile的Trigger定义 每天早上9点半-->
+	<bean id="checkFileTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="checkFileJobDetail" />
+		<property name="cronExpression">
+			<value>0 30 */9 * * ?</value>  <!-- SS MM HH DD MM WW (YY) 0 0/1 * * * ? -->
+		</property>
+	</bean>
+	
+	<!-- 定义调用对象和调用对象的方法checkFileJobDetail -->
+	<bean id="checkFileJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="checkFileInfo" />
+		<property name="targetMethod" value="handlerCheckFile" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 定义触发时间 , enquiryPaymentTrigger式Trigger定义 -->
+	<bean id="enquiryPaymentTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="enquiryPaymentJobDetail" />
+		<property name="cronExpression">
+			<value>0 0 2 * * ?</value>  <!-- SS MM HH DD MM WW (YY) 0 0/1 * * * ? -->
+		</property>
+	</bean>
+	
+	<!-- 
+		定义调用对象和调用对象的方法
+		enquiryPaymentJobDetail, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean 
+	-->
+	<bean id="enquiryPaymentJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="enquiryPaymentInfo" />
+		<property name="targetMethod" value="enquiryPayment" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 被studentPaymentInfo执行的普通Spring Bean -->
+	<bean id="studentPaymentInfo" class="com.hnjk.job.Scheduler" /> 
+	<!-- 被sensitiveWordInfo执行的普通Spring Bean -->
+	<bean id="sensitiveWordInfo" class="com.hnjk.job.SensitiveWordScheduler" /> 
+	<!-- 被checkFileInfo执行的普通Spring Bean -->
+	<bean id="checkFileInfo" class="com.hnjk.job.CheckFileScheduler" /> 
+	<!-- 被enquiryPaymentInfo执行的普通Spring Bean -->
+	<bean id="enquiryPaymentInfo" class="com.hnjk.job.EnquiryPaymentScheduler" /> 
+	
+</beans>

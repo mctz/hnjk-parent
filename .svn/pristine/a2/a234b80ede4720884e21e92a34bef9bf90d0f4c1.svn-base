@@ -1,0 +1,149 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>角色权限管理</title>
+<script type="text/javascript">    
+     jQuery(document).ready(function(){    
+		showHide();
+	});
+    
+     function validateOnlyRes(){
+    	var res = jQuery("#resForm #resourceid");
+    	var resourceCode = jQuery("#resForm #resourceCode");  
+    	if(resourceCode.val()==""){ alertMsg.warn("请输入资源编码"); resourceCode.focus() ;return false; }
+    	var url = "${baseUrl}/edu3/framework/system/authoriza/resource/validateCode.html";
+    	jQuery.post(url,{resourceCode:resourceCode.val(),resourceid:res.val(),type:"resource"},function(data){
+    		if(data == "exist"){ alertMsg.warn("编码已存在!"); }else{ alertMsg.correct("恭喜，此编码可用！")}
+    	})
+    }
+    
+     function showHide(){
+    	$("#cdext").css("display",($('#resourceType').val()=='func'?"":"none"));
+    }
+</script>
+</head>
+
+<body>
+
+	<h2 class="contentTitle">编辑资源</h2>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post"
+				action="${baseUrl}/edu3/system/authoriza/resource/save.html"
+				id="resForm" class="pageForm"
+				onsubmit="return validateCallback(this);">
+				<input type="hidden" id="resourceid" name="resourceid"
+					value="${resource.resourceid }" /> <input type="hidden"
+					id="isChild" name="isChild" value="${resource.isChild }" />
+				<div class="pageFormContent" layoutH="97">
+					<table class="form">
+						<tr>
+							<td width="20%">资源编码:</td>
+							<td width="30%"><input type="text" id="resourceCode"
+								name="resourceCode" value="${resource.resourceCode }"
+								class="required alphanumeric" style="width: 70%" /> <span
+								class="buttonActive" style="margin-left: 8px"><div
+										class="buttonContent">
+										<button type="button" onclick="validateOnlyRes()">检查唯一性</button>
+									</div></span></td>
+							<td width="25%"><label>资源名称:</label><input type="text"
+								name="resourceName" value="${resource.resourceName }"
+								class="required" style="width: 40%" /></td>
+							<td width="25%"><label>第一人称资源名:</label><input type="text"
+								id="firstPersonName" name=firstPersonName
+								value="${resource.firstPersonName }" style="width: 40%" /></td>
+						</tr>
+						<tr>
+							<td width="20%">父资源:</td>
+							<td width="30%"><select name="parentId" size="1">
+									<c:forEach items="${resList}" var="res" varStatus="vs">
+										<option value="${res.resourceid }"
+											<c:if test="${res.resourceLevel == 0 }"> style="font-weight:bold;color: red" </c:if>
+											<c:if test="${res.resourceLevel == 1 }"> style="font-weight:bold;color: green" </c:if>
+											<c:if test="${res.resourceLevel == 2 }"> style="font-weight:bold;color: cornflowerblue" </c:if>
+											<c:if test="${(res.resourceid eq resource.parent.resourceid) or (parentResource.resourceid eq res.resourceid) }"> selected </c:if>>
+											<c:forEach var="seconds" begin="1" end="${res.resourceLevel}"
+												step="1">&nbsp;&nbsp;&nbsp;&nbsp;</c:forEach> ${res.resourceName }
+										</option>
+									</c:forEach>
+							</select> <!--<input type="text" value="${parentResource.resourceName }" readonly="readonly" style="width:50%"/>
+									<input type="hidden" name="parentId" value="${parentResource.resourceid }"/>-->
+							</td>
+							<td width="20%"><label>资源类型:</label></td>
+							<td width="30%"><gh:select id="resourceType"
+									name="resourceType" dictionaryCode="resourceType"
+									onchange="showHide()" value="${resource.resourceType}"
+									style="width:52%" classCss="required" /></td>
+						</tr>
+						<tr>
+							<td>资源排序:</td>
+							<td><input type="text" name="showOrder"
+								value="${resource.showOrder }" style="width: 50%" /></td>
+							<td><label>资源描述:</label></td>
+							<td><input type="text" name="resourceDescript"
+								value="${resource.resourceDescript }" style="width: 50%" /></td>
+						</tr>
+						<tr>
+							<td>资源路径:</td>
+							<td colspan="3"><input type="text" name="resourcePath"
+								value="${resource.resourcePath }" class="required"
+								style="width: 81%" /></td>
+						</tr>
+						<tr id='cdext' style="display: none">
+							<td colspan="4">
+								<table border='0' width="100%">
+									<td width="10%">样式CSS:</td>
+									<td width="10%"><select name="style" size="1">
+											<option value="add"
+												<c:if test="${resource.style eq 'add' }"> selected </c:if>>添加</option>
+											<option value="edit"
+												<c:if test="${resource.style eq 'edit' }"> selected </c:if>>修改</option>
+											<option value="delete"
+												<c:if test="${resource.style eq 'delete' }"> selected </c:if>>删除</option>
+											<option value="download"
+												<c:if test="${resource.style eq 'download' }"> selected </c:if>>下载</option>
+											<option value="print"
+												<c:if test="${resource.style eq 'print' }"> selected </c:if>>打印</option>
+											<option value="icon"
+												<c:if test="${resource.style eq 'icon' }"> selected </c:if>>其他</option>
+									</select>
+									<td width="10%">页面类型:</td>
+									<td width="10%"><input type="text" name="pageType"
+										value="${resource.pageType }" size="10" /></td>
+									<td width="15%">JS方法:</td>
+									<td width="30%"><input type="text" name="jsFunction"
+										value="${resource.jsFunction }" style="width: 80%" /></td>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<div style="color: red;">
+						<ul>
+							<li>&nbsp;</li><li>（1）资源编码必须以RES_为前缀；</li><li>&nbsp;</li>
+							<li>（2）资源路径如果为空，请填写#；</li><li>&nbsp;</li>
+							<li>（3）权限粒度较粗(不需要进行功能点的设置的时候)请选择"模块"，资源路径使用url/**的格式</li><li>&nbsp;</li>
+							<li>（3）页面类型默认为list</li>
+						</ul>
+					</div>
+				</div>
+				<div class="formBar">
+					<ul>
+						<li><div class="buttonActive">
+								<div class="buttonContent">
+									<button type="submit">提交</button>
+								</div>
+							</div></li>
+						<li><div class="button">
+								<div class="buttonContent">
+									<button type="button" class="close"
+										onclick="navTab.closeCurrentTab();">取消</button>
+								</div>
+							</div></li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

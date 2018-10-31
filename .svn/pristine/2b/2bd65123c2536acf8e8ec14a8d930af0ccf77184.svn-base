@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <!-- tempdir setting -->     
+    <diskStore path="java.io.tmpdir"/>
+   	<!--cache cluster -->
+   	 <!--
+   <cacheManagerPeerProviderFactory
+            class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+            properties="peerDiscovery=automatic,
+                        multicastGroupAddress=230.0.0.1,
+                        multicastGroupPort=4446, timeToLive=0"           
+            />
+	
+	<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" />
+     -->
+	 	<!--t1
+	 <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+									 properties="peerDiscovery=manual,rmiUrls=//192.168.1.51:40002/CACHE_APP_DICT|
+									 //192.168.1.51:40003/CACHE_APP_DICT"/>
+
+
+    <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" />
+	-->
+	<!-- default -->
+	<defaultCache maxElementsInMemory="10000" overflowToDisk="true" eternal="false"
+		memoryStoreEvictionPolicy="LRU" diskExpiryThreadIntervalSeconds="600"
+		timeToIdleSeconds="60" timeToLiveSeconds="100000" diskPersistent="false" >
+		<cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+        <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>  
+      </defaultCache>
+	
+    <cache name="CACHE_APP_DICT" maxElementsInMemory="50000" overflowToDisk="true" eternal="true">
+		<cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+        <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+	</cache>
+       
+    <cache name="CACHE_APP_CONFIG" maxElementsInMemory="50000" overflowToDisk="true" eternal="true">
+	 <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+   <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>   
+	</cache>
+    
+   <cache name="CACHE_SEC_RESOURCE" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+    	<cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+       <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>      
+	</cache>
+	
+   <cache name="CACHE_SEC_USERS" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+    <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+       <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>        
+   </cache> 	
+   
+   <cache name="CACHE_SEC_ORGS" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+   		 <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>          
+      
+	</cache>
+	
+   <cache name="CACHE_SEC_ROLES" maxElementsInMemory="50000" overflowToDisk="true" eternal="true">
+   		 <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+         <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>          
+	</cache>
+	
+   <cache name="CACHE_SEC_USER_DEPT" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+	  <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+         <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>        
+	</cache>
+	
+    <cache name="CACHE_SEC_USER_ROLE" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+     <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+         <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/> 
+	</cache>
+	
+   <cache name="CACHE_SEC_ROLE_RESOURCE" maxElementsInMemory="50000" overflowToDisk="true" eternal="true" >
+      <cacheEventListenerFactory  
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"  
+                properties="replicateAsynchronously=true, replicatePuts=true,  
+                            replicatePutsViaCopy=true, replicateUpdates=true,  
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,  
+                            asynchronousReplicationIntervalMillis=200"/>  
+         <bootstrapCacheLoaderFactory  class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/> 
+	</cache>
+</ehcache>

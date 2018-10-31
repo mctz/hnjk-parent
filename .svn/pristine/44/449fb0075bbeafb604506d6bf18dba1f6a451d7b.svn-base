@@ -1,0 +1,70 @@
+﻿body, div, h1, h2, h3, ul, li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 12px;
+}
+
+body {
+	padding: 20px;
+	height: 1500px;
+}
+/** 清浮动 **/
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.clearfix {
+	display: inline-block;
+}
+
+/* Hides from IE-mac \*/
+* html .clearfix {
+	height: 1%;
+}
+
+.clearfix {
+	display: block;
+}
+
+.ui-tab-container {
+	width: 90%;
+}
+
+.ui-tab-container ul {
+	border-bottom: 1px solid #ccc;
+}
+
+.ui-tab-container ul li {
+	float: left;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #ccc;
+	padding: 3px 5px;
+	margin: 0 5px;
+	background: #eee;
+	cursor: pointer;
+	border-bottom: none;
+}
+
+.ui-tab-container ul li.ui-tab-active {
+	background: #fff;
+	margin-bottom: -1px;
+	border-bottom: 1px solid #fff;
+}
+
+.ui-tab-container ul li.ui-tab-disable {
+	background: #ff0000;
+	border-bottom: 1px solid #999;
+	margin-bottom: -1px;
+}
+
+.ui-tab-container .ui-tab-content {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-top: none;
+}

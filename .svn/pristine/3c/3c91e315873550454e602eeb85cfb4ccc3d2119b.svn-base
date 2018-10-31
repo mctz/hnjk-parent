@@ -1,0 +1,346 @@
+package com.hnjk.edu.roll.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.hnjk.core.support.base.model.BaseModel;
+import com.hnjk.core.support.context.Constants;
+import com.hnjk.edu.basedata.model.Classic;
+import com.hnjk.edu.basedata.model.Major;
+import com.hnjk.edu.teaching.model.TeachingGuidePlan;
+import com.hnjk.security.model.OrgUnit;
+import com.hnjk.security.model.User;
+
+/**
+ * 学籍异动表
+ * <code>StuChangeInfo</code>
+ * <p>
+ * 走工作流.
+ * <p>
+ * 
+ * @author： 广东学苑教育发展有限公司.
+ * @since： 2010-4-19 下午06:10:35
+ * @see
+ * @version 1.0
+ */
+@Entity
+@Table(name = "EDU_ROLL_STUCHANGEINFO")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PUBLIC)
+public class StuChangeInfo extends BaseModel implements Serializable {
+
+	/**
+	 * 学生学籍信息
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDENTID")
+	private StudentInfo studentInfo;
+
+	/**
+	 * 异动类型，来自字典 CodeStudentStatusChange
+	 * 11-休学 12-复学 13-退学 18-清退 81-转专业 82-转教学点 83-转层次 84-转年级
+	 */
+	@Column(name = "CHANGETYPE", nullable = false)
+	private String changeType;
+
+	/**
+	 * 201308 gchw增字段
+	 * 申请人
+	 */
+	@Column(name="APPLICATIONMAN")
+	private String applicationMan;
+
+	/**
+	 * 申请人ID
+	 */
+	@Column(name="APPLICATIONMANID")
+	private String applicationManId;
+
+	/**
+	 * 申请日期
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "APPLICATIONDATE")
+	private Date applicationDate;
+
+	/**
+	 * 原因
+	 */
+	@Column(name = "REASON",length=2000)
+	private String reason;
+
+	/**
+	 * 备注；情况说明
+	 */
+	@Column(name = "MEMO")
+	private String memo;
+
+	/**
+	 * 最后审核状态
+	 */
+	@Column(name = "FINALAUDITSTATUS")
+	private String finalAuditStatus = Constants.BOOLEAN_NO;
+
+	/**
+	 * 是否需要转课程
+	 */
+	@Column(name = "ISCHANGECOURSE")
+	private String isChangeCourse;
+
+	/**
+	 * 排序号
+	 */
+	@Column(name = "SHOWORDER")
+	private Long showOrder;
+
+	/**
+	 * 流程实例ID
+	 */
+	@Column(name = "WF_ID")
+	private long wf_id;
+
+	/**
+	 * 异动前年级教学计划
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGEBEFORETEACHINGPLANID")	
+	private TeachingGuidePlan changeBeforeTeachingGuidePlan;
+
+	/**
+	 * 3.2.10新增
+	 * 异动后年级教学计划
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGETEACHINGPLANID")
+	private TeachingGuidePlan changeTeachingGuidePlan;
+
+	/**
+	 * 异动前学习中心
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGEBEFOREBRSCHOOLID")
+	private OrgUnit changeBeforeBrSchool;
+
+	/**
+	 * 异动前学校名称(校际转入的学校 非办学单位)
+	 */
+	@Column(name="CHANGEBEFORESCHOOLNAME")
+	private String changeBeforeSchoolName;
+
+	/**
+	 * 异动后学习中心
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGEBRSCHOOLID")
+	private OrgUnit changeBrschool;
+
+	/**
+	 * 异动前层次名称(校际转入没有教学计划的)
+	 */
+	@Column(name="CHANGEBEFORECLASSICNAME")
+	private String changeBeforeClassicName;
+
+	/**
+	 * 异动后层次
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGECLASSICID")
+	private Classic changeClassicId;
+
+	/**
+	 * 3.1.9 新增字段
+	 * 异动前学习方式
+	 */
+	@Column(name="CHANGEBEFORELEARINGSTYLE")
+	private String changeBeforeLearingStyle;
+
+	/**
+	 * 异动前专业名称(校际转入没有教学计划的)
+	 */
+	@Column(name="CHANGEBEFOREMAJORNAME")
+	private String changeBeforeMajorName;
+
+	/**
+	 * 3.0.3 新增
+	 * 异动后专业
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGEMAJORID")
+	private Major changeMajor;
+
+	/**
+	 * 异动前班级
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGEBEFORECLASSID")
+	private Classes changeBeforeClass;
+
+	/**
+	 * 异动后班级
+	 */
+	@OneToOne(optional = true, cascade = { CascadeType.MERGE,CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CHANGECLASSID")
+	private Classes changeClass;
+
+	/**
+	 * 3.1.10 新增
+	 * 异动后教学模式
+	 */
+	@Column(name="CHANGETEACHINGTYPE")
+	private String changeTeachingType;
+
+	/**
+	 * 所属银行（广东医退费银行信息）
+	 */
+	@Column(name = "BANKNAME")
+	private String bankName;
+
+	/**
+	 * 银行卡号（广东医退费银行信息）
+	 */
+	@Column(name = "CARDNO")
+	private String cardNo;
+
+	/**
+	 * 开户行名称（广东医退费银行信息）
+	 */
+	@Column(name = "BANKADDRESS")
+	private String bankAddress;
+
+	/**
+	 * 异动后学习中心确认接收
+	 */
+	@Column(name="CHANGEBRSCHOOLACCEPT")
+	private String changeBrschoolAccept=Constants.BOOLEAN_WAIT;
+
+	/**
+	 * 异动后学习中心确认接收用户
+	 */
+	@Column(name="ACCEPTMAN")
+	private String acceptMan;
+
+	/**
+	 * 异动后学习中心确认接收用户ID
+	 */
+	@Column(name="ACCEPTMANID")
+	private String acceptManId;
+
+	/**
+	 * 异动后学习中心确认接收时间
+	 */
+	@Column(name="ACCEPTDATE")
+	private Date acceptDate ;
+
+	/**
+	 * 审核人
+	 */
+	@Column(name="AUDITMAN")
+	private String auditMan;
+
+	/**
+	 * 审核人ID
+	 */
+	@Column(name="AUDITMANID")
+	private String auditManId;
+
+	/**
+	 * 审核时间
+	 */
+	@Column(name="AUDITDATE")
+	private Date auditDate;
+
+	/**
+	 * 异动前学籍状态
+	 */
+	@Column(name="CHANGEBEFORESTUDENTSTATUS")
+	private String changeBeforeStudentStatus;
+
+	/**
+	 * 结束日期
+	 */
+	@Column(name="endDate")
+	private Date endDate ;
+
+	/**
+	 * 异动后学习方式
+	 */
+	//@Column(name="CHANGELEARNINGSTYLE")
+	@Transient
+	private String changeLearningStyle;
+
+	@Transient
+	private String changeBeforeTeachingGuidePlanId;
+	
+	@Transient
+	private String changeBeforeBrSchoolId;
+	
+	@Transient
+	private String stuNum;
+	@Transient
+	private String stuName;
+	@Transient
+	private String stuCenter;
+	@Transient
+	private String major;
+	@Transient
+	private String classic;
+
+
+	public String getStuNum() {
+		stuNum = "";
+		if (null != studentInfo) {
+			stuNum = studentInfo.getStudyNo();
+		}
+		return stuNum;
+	}
+
+	public String getStuName() {
+		stuName = "";
+		if (null != studentInfo) {
+			stuName = studentInfo.getStudentName();
+		}
+		return stuName;
+	}
+
+	public String getStuCenter() {
+		stuCenter = "";
+		if (null != studentInfo && null!=studentInfo.getBranchSchool()) {
+			stuCenter = studentInfo.getBranchSchool().getUnitName();
+		}
+		return stuCenter;
+	}
+
+	public String getMajor() {
+		major = "";
+		if (null != studentInfo && null!=studentInfo.getMajor()) {
+			major = studentInfo.getMajor().getMajorName();
+		}
+		return major;
+	}
+
+	public String getClassic() {
+		classic = "";
+		if (null != studentInfo && studentInfo.getClassic() !=null) {
+			classic = studentInfo.getClassic().getClassicName();
+		}
+		return classic;
+	}
+}

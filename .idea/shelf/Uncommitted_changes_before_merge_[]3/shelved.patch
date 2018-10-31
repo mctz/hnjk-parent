@@ -1,0 +1,330 @@
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties	(date 1535420402146)
+@@ -17,9 +17,8 @@
+ #StandbyMenuPassword
+ confirmPassword=hold?fish:palm
+ #memcached配置
+-#memcached.servers=192.168.1.215:11211
++#memcached.servers=127.0.0.1:11211
+ memcached.servers=192.168.1.249:11211
+-#memcached.servers=192.168.6.10:11211
+ memcached.protocol=TEXT
+ ##系统故障接受邮箱
+ web.system.admin.email = hzg@hnjk.com
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/spring/applicationContext-base.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/spring/applicationContext-base.xml	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/spring/applicationContext-base.xml	(date 1535437605689)
+@@ -19,7 +19,6 @@
+ 	<!-- 根据包路径解析"注解",并把这些bean置入Spring容器 -->
+ 	<context:component-scan base-package="com.hnjk" />
+ 
+-
+ <!-- JNDI 方式数据源，正式环境使用 --> 
+ <!-- 	 <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  -->
+ <!-- 		<property name="jndiName"> <value>java:comp/env/jdbc/druid-test</value> </property>  -->
+@@ -192,7 +191,13 @@
+ 				<prop key="hibernate.cache.provider_class">${hibernate.memcache.provider_class}</prop>
+ 				<prop key="hibernate.memcached.servers">${memcached.servers}</prop>
+ 				<prop key="hibernate.memcached.cacheTimeSeconds">${hibernate.memcached.cacheTimeSeconds}</prop>
+-
++				<!-- 使用redis 作为缓存 -->
++				<!--<prop key="hibernate.cache.provider_class>">${hibernate.ehcache.provider_class}</prop>
++				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop>
++				<prop key="hibernate.cache.use_query_cache">true</prop>
++				<prop key="hibernate.cache.region_prefix">hibernate</prop>
++				<prop key="hibernate.generate_statistics">true</prop>
++				<prop key="hibernate.cache.use_structured_entries">true</prop>-->
+ 				<!-- hibernate search -->
+ 				<prop key="hibernate.search.analyzer">${hibernate.search.analyzer}</prop>
+ 				<prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
+@@ -240,5 +245,4 @@
+ 			<value>classpath:plugin/plugin-config.xml</value>
+ 		</property>
+ 	</bean>
+-
+ </beans> 
+\ No newline at end of file
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/conf/redisson.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/conf/redisson.yaml	(date 1535425565139)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/conf/redisson.yaml	(date 1535425565139)
+@@ -0,0 +1,27 @@
++singleServerConfig:
++  idleConnectionTimeout: 10000
++  pingTimeout: 5000
++  connectTimeout: 5000
++  timeout: 5000
++  retryAttempts: 1
++  retryInterval: 1000
++  reconnectionTimeout: 3000
++  failedAttempts: 1
++  password:
++  subscriptionsPerConnection: 3
++  clientName: redis
++  address: [
++    "redis://127.0.0.1:6379"
++  ]
++  subscriptionConnectionMinimumIdleSize: 1
++  subscriptionConnectionPoolSize: 3
++  connectionMinimumIdleSize: 3
++  connectionPoolSize: 3
++  database: 0
++  dnsMonitoring: false
++  dnsMonitoringInterval: 5000
++threads: 0
++# Codec
++codec: !<org.redisson.codec.SnappyCodec> {}
++useLinuxNativeEpoll: false
++eventLoopGroup: null
+\ No newline at end of file
+Index: hnjk-webapp-medicine-adultedu/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/pom.xml	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/pom.xml	(date 1535427378698)
+@@ -341,6 +341,64 @@
+ 		   <artifactId>lombok</artifactId>
+ 		   <scope>provided</scope>
+ 	    </dependency>
++
++
++	   <!-- hibernate-redis -->
++	   <dependency>
++		   <groupId>com.github.debop</groupId>
++		   <artifactId>hibernate-redis</artifactId>
++		   <version>2.3.2</version>
++	   </dependency>
++	   <dependency>
++		   <groupId>de.ruedigermoeller</groupId>
++		   <artifactId>fst</artifactId>
++		   <version>2.30</version>
++	   </dependency>
++	   <dependency>
++		   <groupId>org.redisson</groupId>
++		   <artifactId>redisson</artifactId>
++		   <version>2.3.0</version>
++	   </dependency>
++	   <!-- config redis data and client jar-->
++	   <dependency>
++		   <groupId>org.springframework.data</groupId>
++		   <artifactId>spring-data-redis</artifactId>
++		   <version>1.4.2.RELEASE</version>
++	   </dependency>
++	   <dependency>
++		   <groupId>redis.clients</groupId>
++		   <artifactId>jedis</artifactId>
++		   <version>2.5.0</version>
++		   <type>jar</type>
++		   <scope>compile</scope>
++	   </dependency>
++	   <dependency>
++		   <groupId>org.apache.geronimo.specs</groupId>
++		   <artifactId>geronimo-servlet_3.0_spec</artifactId>
++		   <version>1.0</version>
++	   </dependency>
++	   <!--logstash begin -->
++	   <dependency>
++		   <groupId>com.cwbase</groupId>
++		   <artifactId>logback-redis-appender</artifactId>
++		   <version>1.1.5</version>
++		   <exclusions>
++			   <exclusion>
++				   <groupId>redis.clients</groupId>
++				   <artifactId>jedis</artifactId>
++			   </exclusion>
++		   </exclusions>
++	   </dependency>
++	   <dependency>
++		   <groupId>commons-pool</groupId>
++		   <artifactId>commons-pool</artifactId>
++		   <version>1.5.4</version>
++	   </dependency>
++	   <dependency>
++		   <groupId>org.apache.commons</groupId>
++		   <artifactId>commons-pool2</artifactId>
++		   <version>2.5.0</version>
++	   </dependency>
+    </dependencies>
+  
+ </project>
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/conf/hibernate-redis.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/conf/hibernate-redis.properties	(date 1535427839479)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/conf/hibernate-redis.properties	(date 1535427839479)
+@@ -0,0 +1,15 @@
++##########################################################
++#
++# properities for hibernate-redis
++#
++##########################################################
++
++# Redisson configuration file
++redisson-config=classpath:conf/redisson.yaml
++
++# Cache Expiry settings
++# 'hibernate' is second cache prefix
++# 'common', 'account' is actual region name
++redis.expiryInSeconds.default=120
++redis.expiryInSeconds.hibernate.common=0
++redis.expiryInSeconds.hibernate.account=1200
+\ No newline at end of file
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/logback.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/logback.xml	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/logback.xml	(date 1535290559540)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ 
+ <configuration>
+-	<substitutionProperty name="log.base" value="../logs/hnjk" />
++	<substitutionProperty name="log.base" value="d:/log/hnjk/hnjk" />
+ 	<jmxConfigurator />
+ 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+ 		<layout class="ch.qos.logback.classic.PatternLayout">
+@@ -44,6 +44,18 @@
+ 			<pattern>%date [%thread] %-5level %logger{35} - %msg%n</pattern>
+ 		</layout>
+ 	</appender>
++
++	<!-- key需要与logstash配置文件中配置的key相匹配 -->
++	<appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
++		<source>logstashdemo</source>
++		<type>dev</type>
++		<host>127.0.0.1</host>
++		<key>logstash</key>
++		<tags>dev</tags>
++		<mdc>true</mdc>
++		<location>true</location>
++		<callerStackIndex>0</callerStackIndex>
++	</appender>
+ 
+ 	<!-- 需要记录日志的包 -->
+ 	<logger name="com.hnjk">
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties	(date 1535509641192)
+@@ -1,18 +1,16 @@
+-datasource.driverClassName=oracle.jdbc.driver.OracleDriver
++datasource.driverClassName=oracle.jdbc.OracleDriver
++#oracle.jdbc.OracleDriver
+ #2、加密：在控制台中执行如下命令：java -cp druid-1.1.16.jar com.alibaba.druid.filter.config.ConfigTools you_password  ，复制 publicKey、password ，对应到context.xml对应的参数中
+ config.decrypt=true
+ publicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIGUCRw6iqc6COG6uI+eTLNpBlq4jLQd4A0/git3lOrf66/8Au7W0FCUV+1HXA68+RXaJBlVCGDpQPkgAZZeWlsCAwEAAQ==
+ 
+-datasource.url=jdbc:oracle:thin:@192.168.1.247:1521/orcl
+-#datasource.username=xy_gdwy_beta_20180105_2
+-datasource.username=xy_gdy_beta_20180104
+-#datasource.username=xy_gzdx_beta
+-#datasource.username=xy_gdwyinit_20171109
+-#datasource.username=xy_gxykd_beta
++#datasource.url=jdbc:oracle:thin:@192.168.6.10:1521/orcl
++datasource.url=jdbc:oracle:thin:@192.168.1.248:1521/orcl
++#datasource.url=jdbc:oracle:thin:@125.88.254.178:68/orcl
++
++datasource.username=xy_glyxy_beta
+ datasource.password=W2Zvw8jvSlOZmJ/Urrky8DIv3liqGsNv9PROhn5Qydb3whnaKY8OMSdDrubPgi03BKcqyCabC4boQ4SSVojd2A==
+ 
+-
+-
+ datasource.maxActive=10
+ datasource.maxIdle=2
+ datasource.maxWait=120000
+@@ -21,19 +19,30 @@
+ datasource.testOnBorrow=true
+ datasource.testOnReturn=false
+ 
+-
+ hibernate.dialect=org.hibernate.dialect.OracleDialect
+ hibernate.show_sql=true
+ hibernate.query.substitutions=yes 'Y',no 'N'
+ #use ehcache
+-hibernate.ehcache.provider_class=org.hibernate.cache.EhCacheProvider
+-hibernate.cache.provider_configuration_file_resource_path=classpath:ehcache.xml
++#hibernate.ehcache.provider_class=org.hibernate.cache.EhCacheProvider
++#hibernate.cache.provider_configuration_file_resource_path=classpath:ehcache.xml
+ #use memcached
+ hibernate.memcache.provider_class=com.googlecode.hibernate.memcached.MemcachedCacheProvider
+ hibernate.memcached.cacheTimeSeconds=60
++#use redis
++hibernate.ehcache.provider_class=org.hibernate.cache.redis.hibernate4.SingletonRedisRegionFactory
++hibernate.cache.provider_configuration_file_resource_path=classpath:conf/hibernate-redis.properties
+ 
+ #hibernate search
+ hibernate.search.analyzer=org.apache.lucene.analysis.cn.ChineseAnalyzer
+ hibernate.search.default.directory_provider=org.hibernate.search.store.FSDirectoryProvider
+ hibernate.search.default.indexBase=d:/lucene/indexes
+ hibernate.search.worker.batch_size=1000
++
++# Redis settings
++redis.host = 127.0.0.1
++redis.port = 6379
++redis.pass =
++redis.maxIdle = 300
++redis.maxActive = 600
++redis.maxWait = 1000
++redis.testOnBorrow = true
+Index: hnjk-webapp-medicine-adultedu/src/main/resources/spring/redis-context.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/resources/spring/redis-context.xml	(date 1535427610459)
++++ hnjk-webapp-medicine-adultedu/src/main/resources/spring/redis-context.xml	(date 1535427610459)
+@@ -0,0 +1,32 @@
++<beans     xmlns="http://www.springframework.org/schema/beans"
++           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++           xmlns:p="http://www.springframework.org/schema/p"
++           xmlns:tx="http://www.springframework.org/schema/tx"
++           xmlns:context="http://www.springframework.org/schema/context"
++           xsi:schemaLocation="
++            http://www.springframework.org/schema/beans
++            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
++            http://www.springframework.org/schema/tx
++            http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
++            http://www.springframework.org/schema/context
++            http://www.springframework.org/schema/context/spring-context-3.0.xsd
++               ">
++
++    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
++        <property name="maxIdle" value="${redis.maxIdle}" />
++        <property name="maxTotal" value="${redis.maxActive}" />
++        <property name="maxWaitMillis" value="${redis.maxWait}" />
++        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
++    </bean>
++
++    <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
++          p:host-name="${redis.host}"
++          p:port="${redis.port}"
++          p:password="${redis.pass}"
++          p:pool-config-ref="poolConfig"/>
++
++    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
++        <property name="connectionFactory"   ref="connectionFactory" />
++    </bean>
++
++</beans>
+\ No newline at end of file

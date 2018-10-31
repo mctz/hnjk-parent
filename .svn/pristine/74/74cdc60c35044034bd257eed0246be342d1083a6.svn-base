@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+       <jnlp
+       		spec="1.0+"
+            codebase="http://192.168.1.32:8080/hnjk-webapp-v3/applets/"
+            href="webcam-applet.jnlp">
+        <information>
+            <title>广东医学院继续教育学院-图像采集</title>
+            <vendor>华南教科</vendor>
+            <homepage href="http://www.hnjk.net/"/>
+            <description>用于学生图像采集.</description>
+            <description kind="short">图像采集</description>
+            <offline-allowed/> 
+        </information>
+        <security>
+            <all-permissions/>
+        </security>
+         <resources os="Windows">
+           <property name="sun.java2d.noddraw" value="true"/>
+         </resources>
+         <resources>
+            <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+" initial-heap-size="215m"  max-heap-size="215m"/>
+            <property name="sun.java2d.noddraw" value="true"/>
+            <jar href="hnjk-webcam.jar" main="true"/>
+            <jar href="jmf.jar"/>                
+         </resources>
+       
+         <applet-desc
+             name="webcam"
+             main-class="com.hnjk.webcam.WebCamApplet"
+             width="800" 
+             height="380">
+                       
+         </applet-desc>
+       
+         <!--
+         <application-desc main-class="com.hnjk.webcam.WebCamApplet"/>
+         -->
+       </jnlp>

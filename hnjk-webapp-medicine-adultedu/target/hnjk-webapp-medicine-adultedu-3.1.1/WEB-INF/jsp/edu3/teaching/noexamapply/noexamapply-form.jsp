@@ -1,0 +1,151 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/common/common.jsp"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>免考申请</title>
+<script type="text/javascript">
+		function validateCallback(form, callback) {
+			var $form = $(form);
+			if (!$form.valid()) {
+				alertMsg.error(DWZ.msg["validateFormError"]);
+				return false; 
+			}
+			var score	= $("input[name='scoreForCount']").val();
+			var checked_4 = true;
+			 if(isNaN(score)){
+				 checked_4 = false;
+			 }else if(0>score||100<score){
+				 checked_4 = false;
+			 }
+
+			if(checked_4==false){
+				alertMsg.warn("保存申请失败。存在非法成绩(0到100之间数字)。");
+				return false;
+			}
+			$.ajax({
+				type:'POST',
+				url:$form.attr("action"),
+				data:$form.serializeArray(),
+				dataType:"json",
+				cache: false,
+				success: callback || validateFormCallback,
+				
+				error: DWZ.ajaxError
+			});
+			return false;
+		}
+	</script>
+</head>
+<body>
+	<h2 class="contentTitle">编辑免试免考</h2>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post"
+				action="${baseUrl}/edu3/teaching/noexamapply/save.html"
+				class="pageForm" onsubmit="return validateCallback(this);">
+				<input type="hidden" name="resourceid"
+					value="${noExamApply.resourceid }" /> <input type="hidden"
+					name="checkManId" value="${noExamApply.checkManId }" /> <input
+					type="hidden" name="checkMan" value="${noExamApply.checkMan }" /> <input
+					type="hidden" name="checkStatus"
+					value="${noExamApply.checkStatus }" /> <input type="hidden"
+					name="checkTime"
+					value="<fmt:formatDate value="${noExamApply.checkTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" />
+				<div class="pageFormContent" layoutH="97">
+					<table class="form">
+						<tr>
+							<td width="20%">学生学号:</td>
+							<td width="30%"><input type="text" style="width: 50%"
+								value="${noExamApply.studentInfo.studyNo }" readonly="readonly"
+								class="required" /> <input type="hidden" name="studentId"
+								value="${noExamApply.studentInfo.resourceid }" /></td>
+							<td width="20%">学生姓名:</td>
+							<td width="30%"><input type="text" name="studentName"
+								style="width: 50%"
+								value="${noExamApply.studentInfo.studentName }"
+								readonly="readonly" class="required" /></td>
+						</tr>
+						<tr>
+							<td>教学站:</td>
+							<td><input type="text" id="stuCenter4" style="width: 50%"
+								value="${noExamApply.studentInfo.branchSchool }"
+								readonly="readonly" /></td>
+							<td>年级:</td>
+							<td><input type="text" id="grade4" style="width: 50%"
+								value="${noExamApply.studentInfo.grade }" readonly="readonly" /></td>
+						</tr>
+						<tr>
+							<td>专业:</td>
+							<td><input type="text" id="major4" style="width: 50%"
+								value="${noExamApply.studentInfo.major }" readonly="readonly" /></td>
+							<td>层次:</td>
+							<td><input type="text" id="classic4" style="width: 50%"
+								value="${noExamApply.studentInfo.classic }" readonly="readonly" /></td>
+						</tr>
+						<tr>
+							<td>课程名称:</td>
+							<td><select name="courseId" class="required">
+									<option value="">请选择...</option>
+									<c:forEach
+										items="${noExamApply.studentInfo.teachingPlan.teachingPlanCourses }"
+										var="course" varStatus="vs">
+										<option value="${course.course.resourceid }"
+											<c:if test="${ course.course.resourceid eq noExamApply.course.resourceid }">selected</c:if>>${course.course.courseName }</option>
+									</c:forEach>
+							</select> <font color="red">*</font></td>
+							<td>免修类型:</td>
+							<td><gh:select name="unScore"
+									dictionaryCode="CodeUnScoreStyle"
+									value="${noExamApply.unScore}" classCss="required"
+									style="width:52%" /> <input type="hidden" id="subjectTime"
+								name="subjectTime"
+								value="<fmt:formatDate value="${noExamApply.subjectTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" />
+								<font color="red">*</font></td>
+						</tr>
+						<!-- 如果是教务人员，则 -->
+						<c:if test="${ not isStudent }">
+							<tr>
+								<td>成绩类型:</td>
+								<td><gh:select dictionaryCode="CodeCourseScoreStyle"
+										name="courseScoreType" value="${noExamApply.courseScoreType }"
+										style="width:52%" /></td>
+								<td>总评成绩:</td>
+								<td><input type="text" name="scoreForCount"
+									value="${noExamApply.scoreForCount }" style="width: 50%"
+									class="number" /></td>
+							</tr>
+						</c:if>
+						<tr>
+							<td>备注:</td>
+							<td colspan="3"><textarea name="memo"
+									style="width: 50%; height: 80px" value="${noExamApply.memo }" /></textarea></td>
+						</tr>
+						<tr>
+							<td>上传附件(点击附件名称即可下载):</td>
+							<td colspan="3"><gh:upload hiddenInputName="attachId"
+									uploadType="attach" baseStorePath="users,${noExamApply.studentInfo.studyNo }"
+									extendStorePath="attachs" formType="NOEXAMAPPLY" attachList="${attachList }" /></td>
+						</tr>
+
+					</table>
+				</div>
+				<div class="formBar">
+					<ul>
+						<li><div class="buttonActive">
+								<div class="buttonContent">
+									<button type="submit">提交</button>
+								</div>
+							</div></li>
+						<li><div class="button">
+								<div class="buttonContent">
+									<button type="button" class="close"
+										onclick="navTab.closeCurrentTab();">取消</button>
+								</div>
+							</div></li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

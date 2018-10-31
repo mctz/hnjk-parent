@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AjcSettings">
+    <option name="ajcPath" value="$MAVEN_REPOSITORY$/org/aspectj/aspectjtools/1.6.11/aspectjtools-1.6.11.jar" />
+    <option name="delegateToJavac" value="true" />
+  </component>
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="ajc" />
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="hnjk-core-v3" />
+        <module name="hnjk-security-v3" />
+        <module name="hnjk-webapp-commons" />
+        <module name="hnjk-webapp-medicine-adultedu" />
+        <module name="hnjk-workflow-v3" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hnjk" target="1.5" />
+      <module name="hnjk-core-v3" target="6" />
+      <module name="hnjk-security-v3" target="6" />
+      <module name="hnjk-webapp-commons" target="6" />
+      <module name="hnjk-webapp-medicine-adultedu" target="6" />
+      <module name="hnjk-workflow-v3" target="6" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

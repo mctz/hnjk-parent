@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflows>
+	<workflow type="resource" name="example" cnname="例子"
+		location="workflows/example.xml" />
+	<workflow type="resource" name="common-actions" cnname="全局动作"
+		location="workflows/common-actions.xml" />
+	<workflow type="resource" name="reserve" cnname="保留入学资格流程"
+		location="workflows/reserve.xml" />
+	<workflow type="resource" name="stuchangeinfo" cnname="学籍移动流程"
+		location="workflows/stuchangeinfo.xml" />
+	<workflow type="resource" name="brsrecruitplan" cnname="招生专业申报流程"
+		location="workflows/brsrecruitplan.xml" />
+</workflows>

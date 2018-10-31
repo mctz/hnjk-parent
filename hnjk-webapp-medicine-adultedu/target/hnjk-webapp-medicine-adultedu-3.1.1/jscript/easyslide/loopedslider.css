@@ -1,0 +1,54 @@
+.container1 {
+	width: 157px;
+	height: 141px;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+}
+
+.slides {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.slides>div {
+	position: absolute;
+	top: 0;
+	width: 157px;
+	display: none;
+}
+
+#loopedslider {
+	margin: 0 auto;
+	width: 157px;
+	position: relative;
+	clear: both;
+}
+
+ul.pagination {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.pagination li {
+	float: left;
+}
+
+ul.pagination li a {
+	padding: 2px 4px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #666666
+}
+
+ul.pagination li.active a {
+	background: red;
+	color: white;
+	opacity: 0.5;
+	filter: alpha(opacity = 50);
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100,
+		FinishOpacity=50, Style=3, StartX=0, FinishX=100, StartY=0, FinishY=16);
+	-moz-opacity: 0.5;
+}

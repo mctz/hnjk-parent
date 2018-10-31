@@ -1,0 +1,2921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="GROUP_BY_SEVERITY" value="true" />
+  </component>
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="hnjk-webapp-medicine-adultedu:war exploded" />
+    </artifacts-to-build>
+  </component>
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java" line="1938" />
+  </component>
+  <component name="BuildServerSettings">
+    <option name="LOGIN" value="msl" />
+    <option name="SERVER_URL" value="http://localhost:8111" />
+    <option name="REMEMBER_ME" value="true" />
+    <option name="USE_IDEA_PROXY_SETTINGS" value="true" />
+    <option name="INSPECTIONS_BUILD_TYPE_IDS" />
+    <option name="DUPLICATES_BUILD_TYPE_IDS" />
+    <option name="COVERAGE_SETTINGS" />
+    <option name="TEST_STATUS_ENABLED" value="true" />
+    <option name="TEST_STATUS_SHOW_SUCCESSFUL" value="false" />
+    <option name="POSTPONE_SUITABLE_CONFIGURATIONS_SEARCH" value="false" />
+    <option name="ARTIFACTS_BUILD_TYPE_IDS" />
+    <option name="PERFORM_COMMIT_IF_SUCCESSFUL" value="true" />
+    <option name="PERFORM_COMMIT_IF_NO_NEW_FAILED_TESTS" value="false" />
+    <option name="REQUEST_CONFIRMATON" value="false" />
+    <option name="PRE_TESTED_COMMIT" value="true" />
+    <option name="FILTER_BY_STATUS" value="false" />
+    <option name="FILTER_MARKED_AS_FIXED" value="false" />
+    <option name="SHOW_CLOSE_PROMPT" value="true" />
+    <option name="TOOL_WINDOW_SELECTED_CONTENT_INDEX" value="0" />
+    <option name="FILTER_BY_CURRENT_PROJECT" value="true" />
+    <treeState key="project">
+      <selectedPath>
+        <pathElement>
+          <option name="myNodeId" value="helperText" />
+          <option name="myNodeType" value="jetbrains.buildServer.tree.descriptors.LinkedTextDescriptor" />
+        </pathElement>
+      </selectedPath>
+    </treeState>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c8c8b954-fe2b-4df2-aec7-9e31698a9a67" name="Default" comment="2162任务修复">
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/StudentBaseInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/StudentBaseInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/EdumanagerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/EdumanagerServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/ExameeInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/ExameeInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ExamInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ExamInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourse.java" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourse.java" afterDir="false" />
+    </list>
+    <list id="53a7e085-7f0b-4a25-a973-6d90d26818d1" name="layui" comment="" />
+    <list id="efa73bab-c6ff-4cb6-82f2-e16201ffc13f" name="属性文件" comment="属性文件">
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties" beforeDir="false" afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties" afterDir="false" />
+    </list>
+    <list id="587153f5-de4d-4c50-bcd3-847e251c5114" name="工具类" comment="" />
+    <list id="4053cbfa-c20c-46f2-94bb-1665ef3fe042" name="热部署配置文件" comment="">
+      <change afterPath="$PROJECT_DIR$/hnjk-core-v3/src/main/resources/rebel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-security-v3/src/main/resources/rebel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-webapp-commons/src/main/resources/rebel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/rebel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-workflow-v3/src/main/resources/rebel.xml" afterDir="false" />
+    </list>
+    <list id="d0e1f4b6-2ce2-4fad-b10f-7e7fda7ebaa2" name="项目文件" comment="">
+      <change afterPath="$PROJECT_DIR$/hnjk-core-v3/hnjk-core-v3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-security-v3/hnjk-security-v3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-webapp-commons/hnjk-webapp-commons.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/hnjk-webapp-medicine-adultedu.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk-workflow-v3/hnjk-workflow-v3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hnjk.iml" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/hnjk-workflow-v3/target/" />
+    <ignored path="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/target/" />
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/hnjk-core-v3/target/" />
+    <ignored path="$PROJECT_DIR$/hnjk-security-v3/target/" />
+    <ignored path="$PROJECT_DIR$/hnjk-webapp-commons/target/" />
+    <ignored path="E:\Workspaces\intellijIdea_workspace\hnjk-parent\.idea\shelf/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <file path="$PROJECT_DIR$/hnjk-security-v3/hnjk-security-v3.iml" ignored="false" />
+    <file path="$PROJECT_DIR$/hnjk-core-v3/hnjk-core-v3.iml" ignored="false" />
+    <file path="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/hnjk-webapp-medicine-adultedu.iml" ignored="false" />
+    <file path="$PROJECT_DIR$/hnjk-workflow-v3/hnjk-workflow-v3.iml" ignored="false" />
+    <file path="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties" ignored="true" />
+    <file path="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties" ignored="true" />
+    <file path="$PROJECT_DIR$/hnjk-core-v3/src/main/resources/rebel.xml" ignored="false" />
+    <file path="$PROJECT_DIR$/hnjk-security-v3/src/main/resources/rebel.xml" ignored="false" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CheckStyle-IDEA-workspace">
+    <option name="configuration">
+      <map>
+        <entry key="last-active-plugin-version" value="5.23.0" />
+      </map>
+    </option>
+  </component>
+  <component name="CommittedChangesCache">
+    <option name="initialCount" value="1024" />
+    <option name="refreshEnabled" value="true" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/hnjk_parent$Test.ic" NAME="Test Coverage Results" MODIFIED="1533394596670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.hnjk.edu.util.*</FILTER>
+    </SUITE>
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="ErrorTreeViewConfiguration">
+    <option name="hideWarnings" value="true" />
+    <option name="HIDE_WARNINGS" value="true" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1113665108">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="16" />
+          <entry key="project.open.time.120" value="1" />
+          <entry key="project.open.time.192" value="1" />
+          <entry key="project.open.time.203" value="1" />
+          <entry key="project.open.time.21" value="1" />
+          <entry key="project.open.time.26" value="1" />
+          <entry key="project.open.time.36" value="1" />
+          <entry key="project.open.time.40" value="1" />
+          <entry key="project.open.time.41" value="1" />
+          <entry key="project.open.time.43" value="1" />
+          <entry key="project.open.time.47" value="1" />
+          <entry key="project.open.time.50" value="1" />
+          <entry key="project.open.time.65" value="1" />
+          <entry key="project.open.time.73" value="1" />
+          <entry key="project.open.time.78" value="1" />
+          <entry key="project.open.time.81" value="1" />
+          <entry key="project.open.time.91" value="1" />
+          <entry key="project.open.time.95" value="1" />
+          <entry key="project.open.time.98" value="1" />
+          <entry key="project.opened" value="18" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="css" value="30" />
+          <entry key="java" value="6500" />
+          <entry key="jsp" value="1567" />
+          <entry key="properties" value="128" />
+          <entry key="txt" value="324" />
+          <entry key="xml" value="26" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="CSS" value="30" />
+          <entry key="JAVA" value="6500" />
+          <entry key="JSP" value="1567" />
+          <entry key="PLAIN_TEXT" value="324" />
+          <entry key="Properties" value="128" />
+          <entry key="XML" value="26" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="class" value="3" />
+          <entry key="css" value="5" />
+          <entry key="ftl" value="2" />
+          <entry key="jasper" value="8" />
+          <entry key="java" value="282" />
+          <entry key="js" value="2" />
+          <entry key="jsp" value="64" />
+          <entry key="png" value="1" />
+          <entry key="pom" value="1" />
+          <entry key="properties" value="11" />
+          <entry key="tld" value="1" />
+          <entry key="xml" value="7" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="CLASS" value="3" />
+          <entry key="CSS" value="5" />
+          <entry key="FTL" value="2" />
+          <entry key="Image" value="1" />
+          <entry key="JAVA" value="282" />
+          <entry key="JSP" value="64" />
+          <entry key="JavaScript" value="2" />
+          <entry key="PLAIN_TEXT" value="8" />
+          <entry key="Properties" value="11" />
+          <entry key="XML" value="9" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="补考成绩录入">
+      <favorite_root url="com.hnjk.edu.teaching.controller.ExamResultController java.lang.String failexamCourseList(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, org.springframework.ui.ModelMap model, com.hnjk.core.rao.dao.helper.Page objPage)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+    <favorites_list name="成绩审核查询">
+      <favorite_root url="com.hnjk.edu.teaching.service.impl.ExamResultsServiceImpl com.hnjk.core.rao.dao.helper.Page queryExamResultsInfoForFaceTeachType(java.util.Map&lt;java.lang.String,java.lang.Object&gt; condition, com.hnjk.core.rao.dao.helper.Page page)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+    <favorites_list name="成绩录入查询">
+      <favorite_root url="com.hnjk.edu.teaching.service.jdbcimpl.TeachingJDBCServiceImpl com.hnjk.core.rao.dao.helper.Page findTeachingPlanClassCourseByCondition(java.util.Map&lt;java.lang.String,java.lang.Object&gt; condition, com.hnjk.core.rao.dao.helper.Page objPage)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+    <favorites_list name="查询与打印成绩">
+      <favorite_root url="com.hnjk.edu.teaching.controller.ExamResultController java.lang.String searchStuExamResultsList(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, org.springframework.ui.ModelMap model, com.hnjk.core.rao.dao.helper.Page objPage)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+    <favorites_list name="打印历年成绩单、全部成绩单">
+      <favorite_root url="com.hnjk.edu.teaching.controller.TeachingReportController void personalYearReportCard(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+    <favorites_list name="个人成绩单打印">
+      <favorite_root url="com.hnjk.edu.teaching.controller.TeachingReportController void personalReportCard(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)" module="hnjk-webapp-medicine-adultedu" type="method" klass="com.intellij.ide.favoritesTreeView.smartPointerPsiNodes.MethodSmartPointerNode" />
+    </favorites_list>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="22" column="39" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourse.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="165" column="14" selection-start-line="165" selection-start-column="14" selection-end-line="165" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/model/StudentInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4172">
+              <caret line="414" column="23" selection-start-line="414" selection-start-column="17" selection-end-line="414" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/ExameeInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="65" column="36" selection-start-line="65" selection-start-column="36" selection-end-line="65" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/StudentBaseInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="152" column="26" selection-start-line="152" selection-start-column="20" selection-end-line="152" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/EnrolleeInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1720">
+              <caret line="35" column="15" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/StandbyMenuController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="210" column="43" selection-start-line="210" selection-start-column="31" selection-end-line="210" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ExamInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="400">
+              <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindBugs-IDEA-Workspace">
+    <toolWindowEditorPreview>false</toolWindowEditorPreview>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>studentRegistryFormDownload()</find>
+      <find>/edu3/roll/studentRegistryForm/downloadPDF.html</find>
+      <find>filterExamClassType</find>
+      <find>examClassType</find>
+      <find>教材</find>
+      <find>edu3/teaching/teachingplan/edit.html</find>
+      <find>//20181015  因为系统</find>
+      <find>setexamClassType</find>
+      <find>考查</find>
+      <find>scoreStyle</find>
+      <find>courseScoreType</find>
+      <find>inportElectiveExam()</find>
+      <find>/edu3/teaching/electiveExamResult/inputScore.html</find>
+      <find>EmbeddedViewerApplet</find>
+      <find>JRViewerSimple</find>
+      <find>print1</find>
+      <find>LEARINGSTATUS</find>
+      <find>ISAPPLYGRADUATE</find>
+      <find>teaching</find>
+      <find>mar</find>
+      <find>gen</find>
+      <find>籍贯</find>
+      <find>homeplace</find>
+      <find>homepl</find>
+      <find>考生号</find>
+      <find>入学日期</find>
+      <find>inDate</find>
+      <find>教师编号</find>
+      <find>EDU_RECRUIT_EXAMINEE</find>
+      <find>EDU_RECRUIT_ENROLLEEINFO</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>TimeManage</replace>
+      <replace>CADREINFO</replace>
+      <replace>cadreInfo</replace>
+      <replace>cadreInfoPage_</replace>
+      <replace>classLeaderSearchBody</replace>
+      <replace>cadreApplyInfoPage_</replace>
+      <replace>cadreApplyInfoQuery</replace>
+      <replace>cadreApplyInfoManageBody</replace>
+      <replace>cadreInfoForm_</replace>
+      <replace>appraisingForm_</replace>
+      <replace>positionid+'1'</replace>
+      <replace>positionid+'2'</replace>
+      <replace>posid_1</replace>
+      <replace>posid_2</replace>
+      <replace>&quot;${posid_1}&quot;</replace>
+      <replace>&quot;${posid_2}&quot;</replace>
+      <replace>cadreInfoApplyForm_</replace>
+      <replace>cadreInfoApplyPageForm</replace>
+      <replace>class=&quot;numForExcel&quot;</replace>
+      <replace>returnAmountsPage</replace>
+      <replace>/edu3/finance/studentpayment/returnAmountInfo.html</replace>
+      <replace>returnAmountsPageForm</replace>
+      <replace>returnAmountsQuery</replace>
+      <replace />
+      <replace>returnAmountsManageBody</replace>
+      <replace>returnAmounts</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\reports\examPrint</dir>
+    </dirStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/model/StuChangeInfo.java" />
+        <option value="$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/FtpUtils.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/web.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/extend/plugin/web/LoadComponentsTag.java" />
+        <option value="$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/BaseSecurityCodeUtils.java" />
+        <option value="$PROJECT_DIR$/hnjk-security-v3/src/main/java/com/hnjk/security/model/User.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/pom.xml" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/noexamapply/brschool-noexamapply-form.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/service/jdbcImpl/RollJDBCServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/service/impl/StudentInfoServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/teacher/edumanager-form.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/TeachingPlanCourseStatusServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-list.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationDegreeController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/StudentExamResultsServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/service/impl/BranchSchoolPlanServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/MajorController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/MajorServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StudentInfoController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ExameeInfoController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/learning/studentleanplan/student-card.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/vo/StudentExamResultsVo.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/login.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/sys_conf.properties" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/SysFileManageController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourseTimePeriod.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StuChangeInfoController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/service/impl/StuChangeInfoServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeacherManageController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/ITeachingPlanCourseTimePeriodService.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseTimePeriodController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/TeachingPlanCourseTimePeriodServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/timeperiod/timeperiod-list.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/themes/css/luqu.css" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/themes/css/pintuer.css" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examResult/searchExamResult_list.jsp" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationStudentController.java" />
+        <option value="$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/support/base/controller/FileUploadAndDownloadSupportController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/jdbcimpl/TeachingJDBCServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ExamResultsServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ExamInfo.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourse.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/StudentBaseInfo.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/EdumanagerServiceImpl.java" />
+        <option value="$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/ExameeInfo.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JRebelWorkspace">
+    <option name="jrebelEnabledAutocompile" value="true" />
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="false" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\Program Files\repository" />
+        <option name="mavenHome" value="D:/installPath/apache/apache-maven-3.2.5" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="hnjk-core-v3" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="hnjk-webapp-medicine-adultedu module" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="jsp" pattern=".jsp" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="111" />
+    <option name="y" value="14" />
+    <option name="width" value="1861" />
+    <option name="height" value="1096" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>JavaScript</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk" type="462c0819:PsiDirectoryNode" />
+              <item name="edu" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk" type="462c0819:PsiDirectoryNode" />
+              <item name="edu" type="462c0819:PsiDirectoryNode" />
+              <item name="teaching" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="jdbc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="reports" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="reports" type="462c0819:PsiDirectoryNode" />
+              <item name="examPrint" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="reports" type="462c0819:PsiDirectoryNode" />
+              <item name="recruit" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="themes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="themes" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="edu3" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="edu3" type="462c0819:PsiDirectoryNode" />
+              <item name="basedata" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="edu3" type="462c0819:PsiDirectoryNode" />
+              <item name="basedata" type="462c0819:PsiDirectoryNode" />
+              <item name="classroom" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="edu3" type="462c0819:PsiDirectoryNode" />
+              <item name="teaching" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="edu3" type="462c0819:PsiDirectoryNode" />
+              <item name="teaching" type="462c0819:PsiDirectoryNode" />
+              <item name="timeperiod" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hnjk-parent" type="462c0819:PsiDirectoryNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="hnjk-parent" type="58d84e3e:PackageViewProjectNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="616d4139:PackageViewModuleNode" />
+            </path>
+            <path>
+              <item name="hnjk-parent" type="58d84e3e:PackageViewProjectNode" />
+              <item name="hnjk-webapp-medicine-adultedu" type="616d4139:PackageViewModuleNode" />
+              <item name="com.hnjk" type="1f31426a:PackageElementNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="AndroidView" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder5" value="5" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth0" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth1" value="167" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth2" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth3" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth4" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth5" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder3" value="3" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder5" value="5" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth0" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth1" value="167" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth2" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth3" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth4" value="168" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth5" value="168" />
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
+    <property name="ToolWindowAnt Build.ShowToolbar" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/ExamResultsServiceImpl.class" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.jscs" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.jscs" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.selected.package.eslint" value="" />
+    <property name="node.js.selected.package.jscs" value="" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.51944166" />
+    <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\jsp\edu3\work\userTimeManage" />
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\jscript" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\reports\examPrint" />
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\reports\recruit" />
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\templates\excel" />
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\themes\default\images\grid" />
+      <recent name="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\style\default\images" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hnjk.edu.work.model" />
+    </key>
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.hnjk.edu.work.service" />
+    </key>
+  </component>
+  <component name="RestServicesNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="Found 1723 services " type="fcff1e1b:RestServiceStructure$RootNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\java\com\hnjk\edu\teaching\service\impl\UniversalExamServiceImpl.java</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\java\com\hnjk\edu\teaching\controller\AbnormalExamController.java</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\java\com\hnjk\edu\teaching\controller\ExamResultController.java</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\java\com\hnjk\edu\teaching\controller\TeacherManageController.java</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\java\com\hnjk\edu\teaching\vo\UniversalExamDetailsVO.java</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\jsp\edu3\teaching\abnormalExam\abnormalExam-form.jsp</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\jsp\edu3\teaching\abnormalExam\abnormalExam-view.jsp</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\jsp\edu3\teaching\abnormalExam\brschool-abnormalExam-form.jsp</PATH>
+          <PATH vcs="svn" revision="3268">E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu\src\main\webapp\WEB-INF\jsp\edu3\teaching\abnormalExam\brschool-abnormalExam-stu-list.jsp</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Tomcat Server.hnjk-parent">
+    <configuration name="ExportColb" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="com.hnjk.edu.util.ExportColb" />
+      <module name="hnjk-webapp-medicine-adultedu" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hnjk.edu.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileUtils" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="com.hnjk.core.foundation.utils.FileUtils" />
+      <module name="hnjk-core-v3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hnjk.core.foundation.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="com.hnjk.edu.util.Test" />
+      <module name="hnjk-webapp-medicine-adultedu" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hnjk.edu.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hnjk-parent" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.82" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="COMMON_VM_ARGUMENTS" value="-server -Xms2000m -Xmx2000m -Xmn1000m -XX:PermSize=500M -XX:MaxPermSize=2000m -XX:-UseBiasedLocking -XX:AutoBoxCacheMax=20000 -XX:+AlwaysPreTouch" />
+      <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="UPDATE_CLASSES_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="SHOW_DIALOG_ON_UPDATE" value="false" />
+      <deployment>
+        <artifact name="hnjk-webapp-medicine-adultedu:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/xy" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_hnjk-parent_2" />
+        <option name="HTTP_PORT" value="18087" />
+        <option name="JNDI_PORT" value="12099" />
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="javadebug" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Debug with VisualVM">
+        <option name="DEBUG_PORT" value="javadebug" />
+        <option name="visualVMId" value="71072622297991" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="JRebel Debug">
+        <option name="DEBUG_PORT" value="javadebug" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug with VisualVM">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Executor">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run with VisualVM">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="hnjk-webapp-medicine-adultedu:war exploded" />
+        </option>
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Tomcat Server.hnjk-parent" />
+      <item itemvalue="Application.ExportColb" />
+      <item itemvalue="Application.FileUtils" />
+      <item itemvalue="Application.Test" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Application.FileUtils" />
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Application.ExportColb" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+    <option name="MERGE_DRY_RUN" value="true" />
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-core-v3" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-core-v3" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-security-v3" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-security-v3" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-commons" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-commons" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-webapp-medicine-adultedu" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-workflow-v3" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent\hnjk-workflow-v3" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent" />
+          <option name="myCopyRoot" value="E:\Workspaces\intellijIdea_workspace\hnjk-parent" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c8c8b954-fe2b-4df2-aec7-9e31698a9a67" name="Default" comment="" />
+      <changelist id="d0e1f4b6-2ce2-4fad-b10f-7e7fda7ebaa2" name="项目配置文件" comment="" />
+      <changelist id="efa73bab-c6ff-4cb6-82f2-e16201ffc13f" name="属性文件" comment="" />
+      <changelist id="4053cbfa-c20c-46f2-94bb-1665ef3fe042" name="热部署配置文件" comment="" />
+      <changelist id="53a7e085-7f0b-4a25-a973-6d90d26818d1" name="layui" comment="" />
+      <changelist id="587153f5-de4d-4c50-bcd3-847e251c5114" name="工具类" comment="" />
+      <created>1530858605778</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1530858605778</updated>
+      <workItem from="1530858611094" duration="5611000" />
+      <workItem from="1530869830124" duration="1302000" />
+      <workItem from="1530873981900" duration="281000" />
+      <workItem from="1531098969361" duration="25446000" />
+      <workItem from="1531138081091" duration="2463000" />
+      <workItem from="1531185458424" duration="22584000" />
+      <workItem from="1531219494271" duration="1013000" />
+      <workItem from="1531272595706" duration="26736000" />
+      <workItem from="1531496073869" duration="2805000" />
+      <workItem from="1531704294409" duration="9710000" />
+      <workItem from="1531722713328" duration="38661000" />
+      <workItem from="1531825614748" duration="1090000" />
+      <workItem from="1531829638352" duration="1819000" />
+      <workItem from="1531835277275" duration="589000" />
+      <workItem from="1531836051051" duration="738000" />
+      <workItem from="1531876089729" duration="65348000" />
+      <workItem from="1532093223584" duration="16967000" />
+      <workItem from="1532183000283" duration="36000" />
+      <workItem from="1532183123368" duration="710000" />
+      <workItem from="1532217777251" duration="747000" />
+      <workItem from="1532259128580" duration="735000" />
+      <workItem from="1532259946061" duration="16956000" />
+      <workItem from="1532309081470" duration="7837000" />
+      <workItem from="1532317000036" duration="20419000" />
+      <workItem from="1532343998793" duration="4084000" />
+      <workItem from="1532351509130" duration="1382000" />
+      <workItem from="1532395738698" duration="31278000" />
+      <workItem from="1532431182144" duration="2418000" />
+      <workItem from="1532447851732" duration="733000" />
+      <workItem from="1532482448653" duration="26784000" />
+      <workItem from="1532522156130" duration="4697000" />
+      <workItem from="1532568327901" duration="324000" />
+      <workItem from="1532568729526" duration="19359000" />
+      <workItem from="1532591770290" duration="3312000" />
+      <workItem from="1532595141041" duration="3157000" />
+      <workItem from="1532616456310" duration="520000" />
+      <workItem from="1532785196978" duration="1197000" />
+      <workItem from="1532912776009" duration="133000" />
+      <workItem from="1532912988659" duration="29702000" />
+      <workItem from="1532952530175" duration="11141000" />
+      <workItem from="1532999183763" duration="198000" />
+      <workItem from="1532999440466" duration="31655000" />
+      <workItem from="1533038182452" duration="810000" />
+      <workItem from="1533087230656" duration="25511000" />
+      <workItem from="1533173938669" duration="525000" />
+      <workItem from="1533175742334" duration="20395000" />
+      <workItem from="1533221595473" duration="342000" />
+      <workItem from="1533259167470" duration="32092000" />
+      <workItem from="1533308054223" duration="10902000" />
+      <workItem from="1533446420937" duration="5768000" />
+      <workItem from="1533461456509" duration="1305000" />
+      <workItem from="1533518593174" duration="17292000" />
+      <workItem from="1533605687480" duration="11762000" />
+      <workItem from="1533634329693" duration="2202000" />
+      <workItem from="1533691488750" duration="11632000" />
+      <workItem from="1533713196772" duration="1143000" />
+      <workItem from="1533714718346" duration="4478000" />
+      <workItem from="1533778049275" duration="15758000" />
+      <workItem from="1533866910738" duration="12878000" />
+      <workItem from="1533893322071" duration="1681000" />
+      <workItem from="1533898598709" duration="1789000" />
+      <workItem from="1534123325881" duration="25709000" />
+      <workItem from="1534222528366" duration="10570000" />
+      <workItem from="1534295984801" duration="31879000" />
+      <workItem from="1534345559260" duration="94000" />
+      <workItem from="1534345705572" duration="19525000" />
+      <workItem from="1534404757936" duration="682000" />
+      <workItem from="1534405481235" duration="13069000" />
+      <workItem from="1534484966071" duration="654000" />
+      <workItem from="1534486120888" duration="5289000" />
+      <workItem from="1534566402417" duration="108000" />
+      <workItem from="1534566560502" duration="227000" />
+      <workItem from="1534591923568" duration="1449000" />
+      <workItem from="1534604340147" duration="6000" />
+      <workItem from="1534729156569" duration="91007000" />
+      <workItem from="1535019670118" duration="2464000" />
+      <workItem from="1535075715848" duration="2160000" />
+      <workItem from="1535078821039" duration="1381000" />
+      <workItem from="1535118261278" duration="911000" />
+      <workItem from="1535272528870" duration="5596000" />
+      <workItem from="1535282196840" duration="2069000" />
+      <workItem from="1535284828918" duration="7275000" />
+      <workItem from="1535356352104" duration="3178000" />
+      <workItem from="1535376794943" duration="783000" />
+      <workItem from="1535420362027" duration="88106000" />
+      <workItem from="1535714866294" duration="590000" />
+      <workItem from="1535939643158" duration="1576000" />
+      <workItem from="1535945407036" duration="2705000" />
+      <workItem from="1536028113414" duration="9104000" />
+      <workItem from="1536038513956" duration="9712000" />
+      <workItem from="1536110685651" duration="16891000" />
+      <workItem from="1536149641049" duration="841000" />
+      <workItem from="1536197277791" duration="13846000" />
+      <workItem from="1536293238085" duration="5371000" />
+      <workItem from="1536336691534" duration="1063000" />
+      <workItem from="1536369289512" duration="595000" />
+      <workItem from="1536381509520" duration="1366000" />
+      <workItem from="1536416326276" duration="2108000" />
+      <workItem from="1536802899131" duration="13277000" />
+      <workItem from="1536833506984" duration="23340000" />
+      <workItem from="1537012918046" duration="15551000" />
+      <workItem from="1537182912787" duration="2778000" />
+      <workItem from="1537234205361" duration="44414000" />
+      <workItem from="1537352048161" duration="4222000" />
+      <workItem from="1537417168415" duration="2254000" />
+      <workItem from="1537493518008" duration="18000" />
+      <workItem from="1537493615006" duration="29699000" />
+      <workItem from="1537838570333" duration="15179000" />
+      <workItem from="1537863642532" duration="19351000" />
+      <workItem from="1537945375816" duration="1679000" />
+      <workItem from="1537948572255" duration="82915000" />
+      <workItem from="1538226364962" duration="3190000" />
+      <workItem from="1538229673366" duration="1153000" />
+      <workItem from="1538271085582" duration="10034000" />
+      <workItem from="1538295064755" duration="174000" />
+      <workItem from="1538296743307" duration="1457000" />
+      <workItem from="1538298267459" duration="1512000" />
+      <workItem from="1538445564328" duration="2058000" />
+      <workItem from="1538665781681" duration="2130000" />
+      <workItem from="1538961858752" duration="508000" />
+      <workItem from="1538962426216" duration="69501000" />
+      <workItem from="1539153729123" duration="16421000" />
+      <workItem from="1539220897421" duration="1562000" />
+      <workItem from="1539222576162" duration="468000" />
+      <workItem from="1539223227171" duration="2612000" />
+      <workItem from="1539226006122" duration="4152000" />
+      <workItem from="1539238080159" duration="14420000" />
+      <workItem from="1539253935776" duration="4029000" />
+      <workItem from="1539259910779" duration="100000" />
+      <workItem from="1539260101361" duration="1428000" />
+      <workItem from="1539263839150" duration="7454000" />
+      <workItem from="1539307336245" duration="24528000" />
+      <workItem from="1539567192761" duration="62748000" />
+      <workItem from="1539828058784" duration="2783000" />
+      <workItem from="1539834985787" duration="1341000" />
+      <workItem from="1539836911647" duration="25557000" />
+      <workItem from="1539935214983" duration="85000" />
+      <workItem from="1539935384833" duration="20829000" />
+      <workItem from="1540172094868" duration="26179000" />
+      <workItem from="1540260209768" duration="6213000" />
+      <workItem from="1540289987351" duration="87000" />
+      <workItem from="1540290378709" duration="64000" />
+      <workItem from="1540290610174" duration="8051000" />
+      <workItem from="1540357299354" duration="46173000" />
+      <workItem from="1540518511411" duration="6075000" />
+      <workItem from="1540776463295" duration="175000" />
+      <workItem from="1540776773108" duration="12478000" />
+      <workItem from="1540869368252" duration="19077000" />
+    </task>
+    <task id="LOCAL-00069" summary="删除上课时间bug">
+      <created>1538190036837</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1538190036837</updated>
+    </task>
+    <task id="LOCAL-00070" summary="排课界面显示班级人数为0的班级-bug">
+      <created>1538190205267</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1538190205267</updated>
+    </task>
+    <task id="LOCAL-00071" summary="分页查询优化-去掉sql排序">
+      <created>1538203212132</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1538203212133</updated>
+    </task>
+    <task id="LOCAL-00072" summary="导出成绩序号">
+      <created>1538213782132</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1538213782134</updated>
+    </task>
+    <task id="LOCAL-00073" summary="成绩审核-学籍状态过滤">
+      <created>1538214937955</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1538214937955</updated>
+    </task>
+    <task id="LOCAL-00074" summary="提供下载ActiveX插件配置脚本">
+      <created>1538279753258</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1538279753260</updated>
+    </task>
+    <task id="LOCAL-00075" summary="下载选修课成绩录入模版">
+      <created>1538280249315</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1538280249315</updated>
+    </task>
+    <task id="LOCAL-00076" summary="成绩打印">
+      <created>1538280288075</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1538280288075</updated>
+    </task>
+    <task id="LOCAL-00077" summary="排考界面分页查询bug">
+      <created>1538988067459</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1538988067460</updated>
+    </task>
+    <task id="LOCAL-00078" summary="下载ActiveX插件配置脚本优化">
+      <created>1538988156505</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1538988156505</updated>
+    </task>
+    <task id="LOCAL-00079" summary="导出学生补考成绩（汕大）">
+      <created>1539137103191</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1539137103191</updated>
+    </task>
+    <task id="LOCAL-00080" summary="年度查询报错（属性没有使用空格隔开，在Tomcat7下会报错，而Tomcat6下不会报错）">
+      <created>1539143023262</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1539143023262</updated>
+    </task>
+    <task id="LOCAL-00081" summary="成绩审核优化 - 自动生成补考年度信息">
+      <created>1539143158038</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1539143158038</updated>
+    </task>
+    <task id="LOCAL-00082" summary="导出学生补考成绩（汕大）">
+      <created>1539143221349</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1539143221349</updated>
+    </task>
+    <task id="LOCAL-00083" summary="添加菜单图标">
+      <created>1539161089765</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1539161089766</updated>
+    </task>
+    <task id="LOCAL-00084" summary="成绩审核优化 - 自动生成补考年度信息（正考缺考）">
+      <created>1539161259260</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1539161259260</updated>
+    </task>
+    <task id="LOCAL-00085" summary="导出班级成绩 - 默认只导出教学计划内课程成绩">
+      <created>1539169744173</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1539169744173</updated>
+    </task>
+    <task id="LOCAL-00086" summary="网络课程平时成绩计算有误，注释这段代码">
+      <created>1539224228719</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1539224228720</updated>
+    </task>
+    <task id="LOCAL-00087" summary="广外录取通知书">
+      <created>1539238264747</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1539238264749</updated>
+    </task>
+    <task id="LOCAL-00088" summary="导出班级成绩表bug及文件命名">
+      <created>1539242350913</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1539242350913</updated>
+    </task>
+    <task id="LOCAL-00089" summary="按照编辑模版导出课表">
+      <created>1539256030861</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1539256030863</updated>
+    </task>
+    <task id="LOCAL-00090" summary="导出班级成绩表bug及文件命名">
+      <created>1539269772416</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1539269772418</updated>
+    </task>
+    <task id="LOCAL-00091" summary="课程安排表界面修改">
+      <created>1539318812243</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1539318812244</updated>
+    </task>
+    <task id="LOCAL-00092" summary="课程安排表界面修改">
+      <created>1539318825303</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1539318825303</updated>
+    </task>
+    <task id="LOCAL-00093" summary="导出注册统计">
+      <created>1539579041519</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1539579041520</updated>
+    </task>
+    <task id="LOCAL-00094" summary="桂林医毕业审核及学位审核">
+      <created>1539685039821</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1539685039821</updated>
+    </task>
+    <task id="LOCAL-00095" summary="学位审核界面优化">
+      <created>1539686553280</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1539686553281</updated>
+    </task>
+    <task id="LOCAL-00096" summary="广外界面调整">
+      <created>1539934196221</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1539934196222</updated>
+    </task>
+    <task id="LOCAL-00097" summary="教室管理显示分页，导出成绩">
+      <created>1539939787807</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1539939787808</updated>
+    </task>
+    <task id="LOCAL-00098" summary="学位审核，材料提交条件">
+      <created>1539941768976</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1539941768976</updated>
+    </task>
+    <task id="LOCAL-00099" summary="广外个性化成绩打印">
+      <created>1539946505221</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1539946505221</updated>
+    </task>
+    <task id="LOCAL-00100" summary="成绩单打印，显示毕业论文免修免考成绩">
+      <created>1539950229035</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1539950229035</updated>
+    </task>
+    <task id="LOCAL-00101" summary="成绩单打印-学分">
+      <created>1539951391826</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1539951391826</updated>
+    </task>
+    <task id="LOCAL-00102" summary="成绩单打印默认毕业日期">
+      <created>1539953211925</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1539953211925</updated>
+    </task>
+    <task id="LOCAL-00103" summary="成绩单打-免修免考绩点">
+      <created>1539956053118</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1539956053118</updated>
+    </task>
+    <task id="LOCAL-00104" summary="保存专业">
+      <created>1540179545453</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1540179545454</updated>
+    </task>
+    <task id="LOCAL-00105" summary="广外艺个性化打印">
+      <created>1540201061038</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1540201061039</updated>
+    </task>
+    <task id="LOCAL-00106" summary="打印控件脚本配置优化 - 添加java例外站点">
+      <created>1540261189315</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1540261189316</updated>
+    </task>
+    <task id="LOCAL-00107" summary="课程安排表显示去重">
+      <created>1540280637111</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1540280637111</updated>
+    </task>
+    <task id="LOCAL-00108" summary="导出学籍异动">
+      <created>1540354055630</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1540354055631</updated>
+    </task>
+    <task id="LOCAL-00109" summary="导出学籍异动">
+      <created>1540362833208</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1540362833210</updated>
+    </task>
+    <task id="LOCAL-00110" summary="导出学籍异动2">
+      <created>1540365102117</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1540365102117</updated>
+    </task>
+    <task id="LOCAL-00111" summary="补考成绩录入bug">
+      <created>1540374773795</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1540374773795</updated>
+    </task>
+    <task id="LOCAL-00112" summary="师资管理提交">
+      <created>1540376914301</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1540376914301</updated>
+    </task>
+    <task id="LOCAL-00113" summary="安排上课时间 - 去重功能">
+      <created>1540437140150</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1540437140150</updated>
+    </task>
+    <task id="LOCAL-00114" summary="预毕业">
+      <created>1540449887581</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1540449887582</updated>
+    </task>
+    <task id="LOCAL-00115" summary="文件下载优化 - 自动创建目录">
+      <created>1540454601956</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1540454601956</updated>
+    </task>
+    <task id="LOCAL-00116" summary="文件下载，路径匹配忽略大小写">
+      <created>1540462183488</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1540462183488</updated>
+    </task>
+    <task id="LOCAL-00117" summary="2162任务修复">
+      <created>1540469730226</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1540469730226</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1662384000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="116" y="-8" width="1812" height="1096" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4751462" visible="true" weight="0.30154198" />
+      <window_info id="Designer" order="1" />
+      <window_info id="JRebel" order="2" sideWeight="0.52422905" side_tool="true" weight="0.23222223" />
+      <window_info id="UI Designer" order="3" />
+      <window_info id="Favorites" order="4" sideWeight="0.5248538" side_tool="true" weight="0.2878355" />
+      <window_info id="Web" order="5" sideWeight="0.5198238" side_tool="true" weight="0.3020544" />
+      <window_info id="Image Layers" order="6" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info id="Learn" order="8" weight="0.33333334" />
+      <window_info anchor="bottom" id="FindBugs-IDEA" order="0" sideWeight="0.4991671" weight="0.32916668" />
+      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.463735" side_tool="true" weight="0.32916668" />
+      <window_info anchor="bottom" id="JRebel Console" order="2" sideWeight="0.46430612" side_tool="true" weight="0.32916668" />
+      <window_info anchor="bottom" id="CheckStyle" order="3" sideWeight="0.49861187" weight="0.32916668" />
+      <window_info anchor="bottom" id="Java Enterprise" order="4" sideWeight="0.49805662" weight="0.32916668" />
+      <window_info anchor="bottom" id="Application Servers" order="5" sideWeight="0.49743003" weight="0.32916668" />
+      <window_info anchor="bottom" id="Spring" order="6" sideWeight="0.49805662" weight="0.32916668" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="8" weight="0.32916668" />
+      <window_info anchor="bottom" id="Statistic" order="9" sideWeight="0.4991671" weight="0.32916668" />
+      <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" sideWeight="0.49972236" weight="0.32916668" />
+      <window_info anchor="bottom" id="Tail" order="11" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.5356939" weight="0.32916668" />
+      <window_info anchor="bottom" id="Message" order="13" />
+      <window_info anchor="bottom" id="Find" order="14" sideWeight="0.4905768" weight="0.32916668" />
+      <window_info anchor="bottom" id="Run" order="15" sideWeight="0.82695603" weight="0.32916668" />
+      <window_info anchor="bottom" id="Cvs" order="16" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="17" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="18" sideWeight="0.586522" weight="0.27604166" />
+      <window_info anchor="bottom" id="Problems" order="19" sideWeight="0.49800113" weight="0.32916668" />
+      <window_info anchor="bottom" id="Profiler" order="20" />
+      <window_info active="true" anchor="bottom" id="Inspection Results" order="21" visible="true" weight="0.32916668" />
+      <window_info anchor="bottom" id="Run with VisualVM" order="22" />
+      <window_info anchor="bottom" id="Debug with VisualVM" order="23" sideWeight="0.49972236" weight="0.32916668" />
+      <window_info anchor="bottom" id="Database" order="24" show_stripe_button="false" sideWeight="0.4991671" weight="0.29791668" />
+      <window_info anchor="bottom" id="Version Control" order="25" sideWeight="0.5882353" weight="0.2875" />
+      <window_info anchor="bottom" id="Terminal" order="26" sideWeight="0.55625355" weight="0.32916668" />
+      <window_info active="true" anchor="bottom" id="SVN Repositories" order="27" sideWeight="0.49972236" visible="true" weight="0.32916668" />
+      <window_info anchor="bottom" id="TeamCity" order="28" sideWeight="0.49857223" weight="0.32916668" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" show_stripe_button="false" weight="0.24986118" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" visible="true" weight="0.24986118" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="BPMNPalette" order="4" />
+      <window_info anchor="right" id="TODO" order="5" sideWeight="0.49750137" weight="0.32870626" />
+      <window_info anchor="right" id="Structure" order="6" sideWeight="0.54347825" weight="0.27241576" />
+      <window_info anchor="right" id="RestServices" order="7" weight="0.32981676" />
+      <window_info anchor="right" id="Maven Projects" order="8" weight="0.17418619" />
+      <window_info anchor="right" id="Key Promoter X" order="9" weight="0.32981676" />
+      <window_info anchor="right" id="Palette&#9;" order="10" />
+      <window_info anchor="right" x="799" y="250" width="594" height="644" id="Documentation" order="11" side_tool="true" weight="0.32981676" />
+      <window_info anchor="right" id="Capture Analysis" order="12" />
+      <window_info anchor="right" id="Theme Preview" order="13" />
+      <window_info anchor="right" id="Coverage" order="14" side_tool="true" weight="0.32981676" />
+      <window_info anchor="right" id="Maven" order="15" />
+      <window_info anchor="right" id="Mybatis datasource" order="16" side_tool="true" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.47708333" visible="true" weight="0.2524272" />
+      <window_info id="Designer" order="1" />
+      <window_info id="JRebel" order="2" sideWeight="0.52422905" side_tool="true" weight="0.23222223" />
+      <window_info id="UI Designer" order="3" />
+      <window_info id="Favorites" order="4" sideWeight="0.5229167" side_tool="true" weight="0.23222223" />
+      <window_info id="Web" order="5" sideWeight="0.5198238" side_tool="true" weight="0.3020544" />
+      <window_info id="Image Layers" order="6" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info id="Learn" order="8" weight="0.33333334" />
+      <window_info anchor="bottom" id="FindBugs-IDEA" order="0" sideWeight="0.4991671" weight="0.32916668" />
+      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.40376928" side_tool="true" visible="true" weight="0.290625" />
+      <window_info anchor="bottom" id="JRebel Console" order="2" sideWeight="0.39311492" side_tool="true" weight="0.290625" />
+      <window_info anchor="bottom" id="CheckStyle" order="3" sideWeight="0.49861187" weight="0.32916668" />
+      <window_info anchor="bottom" id="Java Enterprise" order="4" sideWeight="0.49805662" weight="0.32916668" />
+      <window_info anchor="bottom" id="Application Servers" order="5" sideWeight="0.49805662" weight="0.32916668" />
+      <window_info anchor="bottom" id="Spring" order="6" sideWeight="0.49805662" weight="0.32916668" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="8" weight="0.32916668" />
+      <window_info anchor="bottom" id="Statistic" order="9" sideWeight="0.4991671" weight="0.32916668" />
+      <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" sideWeight="0.49972236" weight="0.32916668" />
+      <window_info anchor="bottom" id="Tail" order="11" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.55691284" weight="0.32916668" />
+      <window_info anchor="bottom" id="Message" order="13" />
+      <window_info anchor="bottom" id="Find" order="14" sideWeight="0.4922901" weight="0.32916668" />
+      <window_info anchor="bottom" id="Run" order="15" sideWeight="0.8295391" weight="0.32916668" />
+      <window_info anchor="bottom" id="Cvs" order="16" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="17" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="18" sideWeight="0.59623075" weight="0.290625" />
+      <window_info anchor="bottom" id="Problems" order="19" sideWeight="0.49861187" weight="0.32916668" />
+      <window_info anchor="bottom" id="Profiler" order="20" />
+      <window_info active="true" anchor="bottom" id="Inspection Results" order="21" visible="true" weight="0.32916668" />
+      <window_info anchor="bottom" id="Run with VisualVM" order="22" />
+      <window_info anchor="bottom" id="Debug with VisualVM" order="23" sideWeight="0.49972236" weight="0.32916668" />
+      <window_info anchor="bottom" id="Database" order="24" show_stripe_button="false" sideWeight="0.4991671" weight="0.29791668" />
+      <window_info anchor="bottom" id="Version Control" order="25" sideWeight="0.5956596" weight="0.2875" />
+      <window_info anchor="bottom" id="Terminal" order="26" sideWeight="0.55625355" weight="0.32916668" />
+      <window_info anchor="bottom" id="SVN Repositories" order="27" sideWeight="0.49972236" weight="0.32916668" />
+      <window_info anchor="bottom" id="TeamCity" order="28" sideWeight="0.49914333" weight="0.32916668" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" show_stripe_button="false" weight="0.24986118" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" visible="true" weight="0.24986118" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="BPMNPalette" order="4" />
+      <window_info anchor="right" id="TODO" order="5" sideWeight="0.49750137" weight="0.32870626" />
+      <window_info anchor="right" id="Structure" order="6" sideWeight="0.54347825" weight="0.27241576" />
+      <window_info anchor="right" id="RestServices" order="7" weight="0.32981676" />
+      <window_info anchor="right" id="Maven Projects" order="8" weight="0.17434758" />
+      <window_info anchor="right" id="Key Promoter X" order="9" weight="0.32981676" />
+      <window_info anchor="right" id="Palette&#9;" order="10" />
+      <window_info anchor="right" x="799" y="250" width="594" height="644" id="Documentation" order="11" side_tool="true" weight="0.32981676" />
+      <window_info anchor="right" id="Capture Analysis" order="12" />
+      <window_info anchor="right" id="Theme Preview" order="13" />
+      <window_info anchor="right" id="Coverage" order="14" side_tool="true" weight="0.32981676" />
+      <window_info anchor="right" id="Maven" order="15" />
+      <window_info anchor="right" id="Mybatis datasource" order="16" side_tool="true" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+      <path value="$PROJECT_DIR$/.idea" />
+    </ignored-roots>
+    <MESSAGE value="课程安排表界面修改" />
+    <MESSAGE value="导出注册统计" />
+    <MESSAGE value="桂林医毕业审核及学位审核" />
+    <MESSAGE value="学位审核界面优化" />
+    <MESSAGE value="广外界面调整" />
+    <MESSAGE value="教室管理显示分页，导出成绩" />
+    <MESSAGE value="学位审核，材料提交条件" />
+    <MESSAGE value="广外个性化成绩打印" />
+    <MESSAGE value="成绩单打印，显示毕业论文免修免考成绩" />
+    <MESSAGE value="成绩单打印-学分" />
+    <MESSAGE value="成绩单打印默认毕业日期" />
+    <MESSAGE value="成绩单打-免修免考绩点" />
+    <MESSAGE value="保存专业" />
+    <MESSAGE value="广外艺个性化打印" />
+    <MESSAGE value="打印控件脚本配置优化 - 添加java例外站点" />
+    <MESSAGE value="课程安排表显示去重" />
+    <MESSAGE value="导出学籍异动" />
+    <MESSAGE value="导出学籍异动2" />
+    <MESSAGE value="补考成绩录入bug" />
+    <MESSAGE value="师资管理提交" />
+    <MESSAGE value="安排上课时间 - 去重功能" />
+    <MESSAGE value="预毕业" />
+    <MESSAGE value="文件下载优化 - 自动创建目录" />
+    <MESSAGE value="文件下载，路径匹配忽略大小写" />
+    <MESSAGE value="2162任务修复" />
+    <option name="LAST_COMMIT_MESSAGE" value="2162任务修复" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/StandbyMenuController.java</url>
+          <line>384</line>
+          <properties />
+          <option name="timeStamp" value="309" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-security-v3/src/main/java/com/hnjk/security/SpringSecurityHelper.java</url>
+          <line>126</line>
+          <properties />
+          <option name="timeStamp" value="310" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2292</line>
+          <properties />
+          <option name="timeStamp" value="315" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ElectiveExamResultsController.java</url>
+          <line>255</line>
+          <properties />
+          <option name="timeStamp" value="324" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/util/Test.java</url>
+          <line>153</line>
+          <properties />
+          <option name="timeStamp" value="326" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2777</line>
+          <properties />
+          <option name="timeStamp" value="328" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ReruitPlanController.java</url>
+          <line>756</line>
+          <properties />
+          <option name="timeStamp" value="331" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeacherManageController.java</url>
+          <line>528</line>
+          <properties />
+          <option name="timeStamp" value="336" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamPrintController.java</url>
+          <line>1234</line>
+          <properties />
+          <option name="timeStamp" value="350" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>4704</line>
+          <properties />
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>4719</line>
+          <properties />
+          <option name="timeStamp" value="357" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamPrintController.java</url>
+          <line>1267</line>
+          <properties />
+          <option name="timeStamp" value="358" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ExamResultsServiceImpl.java</url>
+          <line>5603</line>
+          <properties />
+          <option name="timeStamp" value="360" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ElectiveExamResultsController.java</url>
+          <line>128</line>
+          <properties />
+          <option name="timeStamp" value="367" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>4294</line>
+          <properties />
+          <option name="timeStamp" value="368" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>4215</line>
+          <properties />
+          <option name="timeStamp" value="369" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>10441</line>
+          <properties />
+          <option name="timeStamp" value="379" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/jdbcimpl/TeachingJDBCServiceImpl.java</url>
+          <line>2675</line>
+          <properties />
+          <option name="timeStamp" value="381" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>4072</line>
+          <properties />
+          <option name="timeStamp" value="382" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/jdbcimpl/TeachingJDBCServiceImpl.java</url>
+          <line>2671</line>
+          <properties />
+          <option name="timeStamp" value="383" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>10486</line>
+          <properties />
+          <option name="timeStamp" value="392" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamPrintController.java</url>
+          <line>1721</line>
+          <properties />
+          <option name="timeStamp" value="393" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ExamResultsServiceImpl.java</url>
+          <line>2644</line>
+          <properties />
+          <option name="timeStamp" value="394" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ExamResultsServiceImpl.java</url>
+          <line>301</line>
+          <properties />
+          <option name="timeStamp" value="395" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>10467</line>
+          <properties />
+          <option name="timeStamp" value="397" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java</url>
+          <line>9177</line>
+          <properties />
+          <option name="timeStamp" value="398" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/TeachingPlanCourseServiceImpl.java</url>
+          <line>156</line>
+          <properties />
+          <option name="timeStamp" value="407" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/TeachingPlanCourseServiceImpl.java</url>
+          <line>163</line>
+          <properties />
+          <option name="timeStamp" value="408" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2313</line>
+          <properties />
+          <option name="timeStamp" value="421" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>1308</line>
+          <properties />
+          <option name="timeStamp" value="422" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>768</line>
+          <properties />
+          <option name="timeStamp" value="427" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>1327</line>
+          <properties />
+          <option name="timeStamp" value="431" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>785</line>
+          <properties />
+          <option name="timeStamp" value="432" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>2409</line>
+          <properties />
+          <option name="timeStamp" value="435" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java</url>
+          <line>2344</line>
+          <properties />
+          <option name="timeStamp" value="436" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/ExStringUtils.java</url>
+          <line>1251</line>
+          <properties />
+          <option name="timeStamp" value="437" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/ExStringUtils.java</url>
+          <line>1258</line>
+          <properties />
+          <option name="timeStamp" value="438" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ExameeInfoController.java</url>
+          <line>2124</line>
+          <properties />
+          <option name="timeStamp" value="440" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ExameeInfoController.java</url>
+          <line>2144</line>
+          <properties />
+          <option name="timeStamp" value="442" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ExameeInfoController.java</url>
+          <line>2163</line>
+          <properties />
+          <option name="timeStamp" value="444" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/service/jdbcImpl/StudentGDAuditJDBCServiceImpl.java</url>
+          <line>138</line>
+          <properties />
+          <option name="timeStamp" value="448" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java</url>
+          <line>2350</line>
+          <properties />
+          <option name="timeStamp" value="449" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java</url>
+          <line>1756</line>
+          <properties />
+          <option name="timeStamp" value="450" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java</url>
+          <line>2369</line>
+          <properties />
+          <option name="timeStamp" value="456" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/finance/controller/ReturnAmountsController.java</url>
+          <line>105</line>
+          <properties />
+          <option name="timeStamp" value="457" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationStudentController.java</url>
+          <line>3672</line>
+          <properties />
+          <option name="timeStamp" value="462" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/NoExamApplyController.java</url>
+          <line>1133</line>
+          <properties />
+          <option name="timeStamp" value="475" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2355</line>
+          <properties />
+          <option name="timeStamp" value="487" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>6726</line>
+          <properties />
+          <option name="timeStamp" value="488" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>6636</line>
+          <properties />
+          <option name="timeStamp" value="496" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>6654</line>
+          <properties />
+          <option name="timeStamp" value="498" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>6711</line>
+          <properties />
+          <option name="timeStamp" value="499" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2924</line>
+          <properties />
+          <option name="timeStamp" value="501" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>6665</line>
+          <properties />
+          <option name="timeStamp" value="508" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/MajorController.java</url>
+          <line>186</line>
+          <properties />
+          <option name="timeStamp" value="509" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StudentInfoController.java</url>
+          <line>5723</line>
+          <properties />
+          <option name="timeStamp" value="512" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2574</line>
+          <properties />
+          <option name="timeStamp" value="513" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2760</line>
+          <properties />
+          <option name="timeStamp" value="514" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2616</line>
+          <properties />
+          <option name="timeStamp" value="515" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingReportController.java</url>
+          <line>2627</line>
+          <properties />
+          <option name="timeStamp" value="517" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/SysFileManageController.java</url>
+          <line>679</line>
+          <properties />
+          <option name="timeStamp" value="518" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StuChangeInfoController.java</url>
+          <line>1720</line>
+          <properties />
+          <option name="timeStamp" value="519" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StuChangeInfoController.java</url>
+          <line>1838</line>
+          <properties />
+          <option name="timeStamp" value="520" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/StuChangeInfoController.java</url>
+          <line>396</line>
+          <properties />
+          <option name="timeStamp" value="521" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeacherManageController.java</url>
+          <line>450</line>
+          <properties />
+          <option name="timeStamp" value="524" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/EdumanagerServiceImpl.java</url>
+          <line>547</line>
+          <properties />
+          <option name="timeStamp" value="525" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java</url>
+          <line>2583</line>
+          <properties />
+          <option name="timeStamp" value="528" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/jdbcimpl/TeachingJDBCServiceImpl.java</url>
+          <line>2844</line>
+          <properties />
+          <option name="timeStamp" value="529" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/service/impl/ExameeInfoServiceImpl.java</url>
+          <line>206</line>
+          <properties />
+          <option name="timeStamp" value="530" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/service/impl/ExameeInfoServiceImpl.java</url>
+          <line>382</line>
+          <properties />
+          <option name="timeStamp" value="531" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/SysFileManageController.java</url>
+          <line>320</line>
+          <properties />
+          <option name="timeStamp" value="533" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/support/base/controller/FileUploadAndDownloadSupportController.java</url>
+          <line>154</line>
+          <properties />
+          <option name="timeStamp" value="534" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="true" />
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>examResult.courseId</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>stu.getStudentName();</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>stu.getStudentName()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>stu.studentName;</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>vo.integratedScore</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/timeperiod/timeperiod-list.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/themes/css/pintuer.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="12" selection-start-column="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/themes/css/luqu.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="247" column="20" lean-forward="true" selection-start-line="247" selection-start-column="20" selection-end-line="247" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/model/GraduateData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="52" column="38" lean-forward="true" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/service/jdbcImpl/StudentGDAuditJDBCServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="138" selection-start-line="138" selection-end-line="138" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationQualifController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="2587" column="62" lean-forward="true" selection-start-line="2587" selection-start-column="62" selection-end-line="2587" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/TeachingPlanServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="655" column="68" lean-forward="true" selection-start-line="655" selection-start-column="68" selection-end-line="655" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examResult/searchExamResult_list.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="104" column="33" lean-forward="true" selection-start-line="104" selection-start-column="33" selection-end-line="104" selection-end-column="33" />
+          <folding>
+            <element signature="n#style#0;n#li#1;n#ul#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#li#1;n#ul#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#2;n#ul#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#li#2;n#ul#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/controller/ExameeInfoController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="318" column="78" selection-start-line="318" selection-start-column="78" selection-end-line="318" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/helper/ExameeInfoConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/rao/configuration/xml/JaxbUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="48" column="18" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/helper/ExameeInfoHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="65" column="61" selection-start-line="65" selection-start-column="61" selection-end-line="65" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/service/impl/ExameeInfoServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="437" column="64" lean-forward="true" selection-start-line="437" selection-start-column="64" selection-end-line="437" selection-end-column="64" />
+          <folding>
+            <element signature="e#13802#13823#0" expanded="true" />
+            <element signature="e#14073#14089#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/rao/dao/hibernate/BaseHibernateTemplate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="399" selection-start-line="399" selection-end-line="399" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/service/impl/EnrolleeInfoServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="764" column="16" selection-start-line="764" selection-start-column="16" selection-end-line="764" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/commons-lang/commons-lang/2.5/commons-lang-2.5-sources.jar!/org/apache/commons/lang/StringUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="6308" column="26" selection-start-line="6308" selection-start-column="26" selection-end-line="6308" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/rao/configuration/property/ConfigPropertyUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="103" column="19" selection-start-line="103" selection-start-column="19" selection-end-line="103" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/ExFileUtils.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/support/context/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="36" column="31" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/learning/studentleanplan/student-card.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="491" column="76" selection-start-line="491" selection-start-column="29" selection-end-line="491" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/Program Files/Java/jdk1.6.0_43/src.zip!/java/io/File.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="1179" column="19" selection-start-line="1179" selection-start-column="19" selection-end-line="1179" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/foundation/utils/FileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="183" column="25" selection-start-line="183" selection-start-column="25" selection-end-line="183" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/SysFileManageController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="74">
+          <caret line="313" column="22" lean-forward="true" selection-start-line="313" selection-start-column="22" selection-end-line="313" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/teachingplan/teachingplan-view.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="113" column="64" lean-forward="true" selection-start-line="113" selection-start-column="64" selection-end-line="113" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/controller/GraduationStudentController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="58">
+          <caret line="2906" column="73" lean-forward="true" selection-start-line="2906" selection-start-column="73" selection-end-line="2906" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-core-v3/src/main/java/com/hnjk/core/support/base/controller/FileUploadAndDownloadSupportController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+          <folding>
+            <element signature="e#2207#2208#0" expanded="true" />
+            <element signature="e#2234#2235#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/teachingplan/teachingplan-form.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4950" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanCourseArrangeController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14140">
+          <caret line="785" selection-start-line="785" selection-end-line="785" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingPlanController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="259" column="76" lean-forward="true" selection-start-line="259" selection-start-column="76" selection-end-line="259" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ExamResultController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="4070" column="29" lean-forward="true" selection-start-line="4070" selection-start-column="29" selection-end-line="4070" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ExamResultsServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1342">
+          <caret line="3855" column="46" selection-start-line="3855" selection-start-column="33" selection-end-line="3855" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/jdbcimpl/TeachingJDBCServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="602">
+          <caret line="2834" column="13" selection-start-line="2834" selection-start-column="13" selection-end-line="2834" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/Major.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1280">
+          <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeachingGuidePlanController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ElectiveExamResults.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/electiveExamResult/electiveExam-list.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5100">
+          <caret line="255" column="81" selection-start-line="255" selection-start-column="32" selection-end-line="255" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/ElectiveExamResultsController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2400">
+          <caret line="174" column="86" selection-start-line="174" selection-start-column="86" selection-end-line="174" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/service/impl/ElectiveExamResultsServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="384" column="40" lean-forward="true" selection-start-line="384" selection-start-column="40" selection-end-line="384" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/TeachingPlanCourse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="165" column="14" selection-start-line="165" selection-start-column="14" selection-end-line="165" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/templates/system/printview.ftl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/model/ExamInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examSub/examInfo-config.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="94" column="68" selection-start-line="94" selection-start-column="48" selection-end-line="94" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/platform/system/controller/StandbyMenuController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="210" column="43" selection-start-line="210" selection-start-column="31" selection-end-line="210" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/resources/jdbc/database.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="22" column="39" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/RecruitPlan.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="36" column="36" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/service/impl/EdumanagerServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="523" column="98" lean-forward="true" selection-start-line="523" selection-start-column="98" selection-end-line="523" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/teaching/controller/TeacherManageController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="784" column="47" lean-forward="true" selection-start-line="784" selection-start-column="47" selection-end-line="784" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/ExameeInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="65" column="36" selection-start-line="65" selection-start-column="36" selection-end-line="65" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/roll/model/StudentInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4172">
+          <caret line="414" column="23" selection-start-line="414" selection-start-column="17" selection-end-line="414" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-commons/src/main/java/com/hnjk/edu/basedata/model/StudentBaseInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="152" column="26" selection-start-line="152" selection-start-column="20" selection-end-line="152" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hnjk-webapp-medicine-adultedu/src/main/java/com/hnjk/edu/recruit/model/EnrolleeInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1720">
+          <caret line="35" column="15" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="ideajad">
+    <property name="annotate" value="false" />
+    <property name="annotateFully" value="false" />
+    <property name="braces" value="false" />
+    <property name="clear" value="false" />
+    <property name="confirmNavigationTriggeredDecompile" value="true" />
+    <property name="dead" value="true" />
+    <property name="defaultInitializers" value="false" />
+    <property name="dissassemblerOnly" value="false" />
+    <property name="fieldsFirst" value="true" />
+    <property name="fileExtension" value="java" />
+    <property name="fullyQualifiedNames" value="false" />
+    <property name="indentation" value="4" />
+    <property name="intRadix" value="10" />
+    <property name="lineNumbersAsComments" value="true" />
+    <property name="longRadix" value="10" />
+    <property name="maxStringLength" value="64" />
+    <property name="nocast" value="false" />
+    <property name="noclass" value="false" />
+    <property name="nocode" value="false" />
+    <property name="noconv" value="false" />
+    <property name="noctor" value="false" />
+    <property name="nodos" value="false" />
+    <property name="nofd" value="false" />
+    <property name="noinner" value="false" />
+    <property name="nolvt" value="false" />
+    <property name="nonlb" value="false" />
+    <property name="outputDirectory" value="" />
+    <property name="packFields" value="3" />
+    <property name="packImports" value="7" />
+    <property name="prefixNumericalClasses" value="_cls" />
+    <property name="prefixNumericalFields" value="_fld" />
+    <property name="prefixNumericalLocals" value="_lcl" />
+    <property name="prefixNumericalMethods" value="_mth" />
+    <property name="prefixNumericalParameters" value="_prm" />
+    <property name="prefixUnusedExceptions" value="_ex" />
+    <property name="readonly" value="false" />
+    <property name="safe" value="false" />
+    <property name="sort" value="false" />
+    <property name="spaceAfterKeyword" value="false" />
+    <property name="splitStringsAtNewline" value="false" />
+    <property name="useTabs" value="false" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>hnjk-webapp-medicine-adultedu:war exploded</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>JRebel</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>JRebel|hnjk-webapp-medicine-adultedu</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: org.springframework.security:spring-security-core-tiger:2.0.4</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.51944166" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <last-edited>jsp</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.35624284" />
+              </list>
+            </option>
+          </splitter-proportions>
+          <order>
+            <scope name="jsp" />
+          </order>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

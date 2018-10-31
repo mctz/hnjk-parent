@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<!--  
+全局条件定义 by hzg
+-->
+
+<workflow>
+    <global-conditions>
+        <conditions type="AND">
+            <condition name="TestCondition1" type="beanshell">
+                <arg name="script"><![CDATA[true]]></arg>
+            </condition>
+            <condition name="TestCondition2" type="beanshell">
+                <arg name="script"><![CDATA[
+                !transientVars.containsKey("global-test");
+				]]></arg>
+            </condition>
+        </conditions>
+    </global-conditions>
+    <global-actions>
+        <action id="1000" name="终止流程" finish="true">
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="-1"/>
+            </results>
+        </action>
+    </global-actions>
+    <common-actions>
+        <action id="1001" name="发送邮件">
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="-1">
+                    <post-functions>
+                        <function type="beanshell">
+                            <arg name="script">
+                                System.out.println("send email~");
+                            </arg>
+                        </function>
+                    </post-functions>
+                </unconditional-result>
+            </results>
+        </action>
+    </common-actions>
+    <initial-actions>
+        <action id="1" name="流程开始">
+            <results>
+                <unconditional-result old-status="Finished" status="Underway" step="1"/>
+            </results>
+        </action>
+    </initial-actions>
+    <steps>
+        <step id="1" name="第一步">
+            <actions>
+                <common-action id="1001"/>
+                <action id="2" name="The first action">
+                    <restrict-to>
+                        <conditions>
+                            <conditions type="OR">
+                                <condition type="beanshell">
+                                    <arg name="script">true</arg>
+                                </condition>
+                                <condition type="beanshell">
+                                    <arg name="script">false</arg>
+                                </condition>
+                            </conditions>
+                        </conditions>
+                    </restrict-to>
+                    <results>
+                        <unconditional-result old-status="Finished" status="Queued" step="2"/>
+                    </results>
+                </action>
+            </actions>
+        </step>
+        <step name="end" id="2"/>
+    </steps>
+</workflow>
+

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<distributable />
+	<display-name>HnjkFramework</display-name>
+	<description>
+	hnjk framework.
+	(c)2009 hnjk.com All rights reserved.
+	</description>
+
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>xy.root</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:spring/applicationContext-*.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>defaultHtmlEscape</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>facelets.SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<!-- OpenSessionInView -->
+	<filter>
+		<filter-name>HibernateFilter</filter-name>
+		<filter-class>com.hnjk.core.support.context.OpenSessionInViewFilter</filter-class>
+		<init-param>
+			<param-name>singleSession</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<!-- MVC Servlet -->
+	<servlet>
+		<servlet-name>hnjk</servlet-name>
+		<servlet-class>com.hnjk.core.support.base.controller.BaseController</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>hnjk</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+	<!-- <servlet> <servlet-name>remoting</servlet-name> <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> 
+		<load-on-startup>101</load-on-startup> </servlet> <servlet-mapping> <servlet-name>remoting</servlet-name> 
+		<url-pattern>*.rpc</url-pattern> </servlet-mapping> -->
+
+	<!-- 验证码图片Servlet -->
+	<servlet>
+		<servlet-name>imageCaptcha</servlet-name>
+		<servlet-class>com.hnjk.security.verifyimage.ImageCaptchaServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>imageCaptcha</servlet-name>
+		<url-pattern>/imageCaptcha</url-pattern>
+	</servlet-mapping>
+
+	<!--Druid 数据库连接池监控 -->
+	<servlet>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+		<init-param>
+			<!-- 用户名 -->
+			<param-name>loginUsername</param-name>
+			<param-value>druid</param-value>
+		</init-param>
+		<init-param>
+			<!-- 密码 -->
+			<param-name>loginPassword</param-name>
+			<param-value>diurd</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+	<!-- druid web监控 -->
+	<filter>
+		<filter-name>DruidWebStatFilter</filter-name>
+		<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+		<!-- 例外：不拦截的文件后缀 -->
+		<init-param>
+			<param-name>exclusions</param-name>
+			<param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+		</init-param>
+		<!-- 最大计数，默认1000 -->
+		<init-param>
+			<param-name>sessionStatMaxCount</param-name>
+			<param-value>1000</param-value>
+		</init-param>
+		<!-- 是否使用，默认 true -->
+		<init-param>
+			<param-name>sessionStatEnable</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>principalSessionName</param-name>
+			<param-value>userName</param-value>
+		</init-param>
+		<!-- <init-param> -->
+		<!-- <param-name>principalCookieName</param-name> -->
+		<!-- <param-value>xxx.user</param-value> -->
+		<!-- </init-param> -->
+		<!--
+		<init-param>
+  		<param-name>allow</param-name>
+  		<param-value>128.242.127.1/24,128.242.128.1</param-value>
+  	</init-param>
+  	<init-param>
+  		<param-name>deny</param-name>
+  		<param-value>128.242.127.4</param-value>
+  	</init-param>
+  	-->
+<!--能够监控单个url调用的sql列表 -->
+		<init-param>
+			<param-name>profileEnable</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>DruidWebStatFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- spring security 过滤器 -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+
+	<!-- encoding filter -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+
+	<!-- 用于加载页面装饰的过滤器 -->
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+	</filter>
+
+
+	<!--###################### Filter mapping ############################### -->
+	<filter-mapping>
+		<filter-name>HibernateFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+	<!-- CAS Filter <filter> <filter-name>CASSSO</filter-name> <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class> 
+		</filter> <filter-mapping> <filter-name>CASSSO</filter-name> <url-pattern>/*</url-pattern> 
+		</filter-mapping> -->
+
+	<!-- spring listener -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- litener session num -->
+	<listener>
+		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<!-- servlet listener -->
+	<listener>
+		<listener-class>com.hnjk.core.support.context.ServletContexLoaderListener</listener-class>
+	</listener>
+
+	<!-- Spring Introspector 防止内存泄漏 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<!-- session 监听 -->
+	<listener>
+		<listener-class>com.hnjk.cache.CustomSessionListener</listener-class>
+	</listener>
+
+	<!-- cas listener <listener> <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class> 
+		</listener> -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<listener>  
+            <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>  
+      </listener>
+	<!-- DWR Servlet <servlet> <servlet-name>dwr-invoker</servlet-name> <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class> 
+		<init-param> <param-name>debug</param-name> <param-value>true</param-value> 
+		</init-param> <init-param> <param-name>activeReverseAjaxEnabled</param-name> 
+		<param-value>true</param-value> </init-param> <init-param> <param-name>initApplicationScopeCreatorsAtStartup</param-name> 
+		<param-value>true</param-value> </init-param> <init-param> <param-name>maxWaitAfterWrite</param-name> 
+		<param-value>1</param-value> </init-param> <load-on-startup>1</load-on-startup> 
+		</servlet> <servlet-mapping> <servlet-name>dwr-invoker</servlet-name> <url-pattern>/dwr/*</url-pattern> 
+		</servlet-mapping> -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- <error-page> <error-code>500</error-code> <location>/common/500.htm</location> 
+		</error-page> <error-page> <error-code>404</error-code> <location>/common/404.htm</location> 
+		</error-page> <error-page> <error-code>403</error-code> <location>/common/403.htm</location> 
+		</error-page> -->
+</web-app>

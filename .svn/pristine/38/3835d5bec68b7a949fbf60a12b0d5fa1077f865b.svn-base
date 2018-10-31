@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:s="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"
+	default-autowire="byName" default-lazy-init="false">
+	
+	<s:global-method-security secured-annotations="enabled" />	
+	
+	<s:http entry-point-ref="authenticationProcessingFilterEntryPoint" access-denied-page="/common/403.jsp">				
+		<s:intercept-url pattern="/common/**" filters="none" />
+		<s:intercept-url pattern="/style/**" filters="none" />
+		<s:intercept-url pattern="/images/**" filters="none" />
+		<s:intercept-url pattern="/jscript/**" filters="none" />
+		<s:intercept-url pattern="/themes/**" filters="none" />		
+		<!-- 用户登录启用HTTPS安全会话 ，需要在tomcat中配置证书-->
+		<!-- <s:intercept-url pattern="/edu3/login**" requires-channel="https"/> -->
+		<s:intercept-url pattern="/edu3/relogin.html" filters="none"/>
+		<!-- <s:intercept-url pattern="/j_spring_security_check" requires-channel="https"/> -->	
+		<!-- <s:intercept-url pattern="/**" requires-channel="http"/> -->
+		<s:logout logout-success-url="/edu3/login.html?type=logout" invalidate-session="true"/>
+		<s:remember-me key="e37f4b31-0c45-11dd-bd0b-0800200c9a66" />
+		<!-- 
+		<s:port-mappings>			
+	     <s:port-mapping http="8080" https="8443"/>
+		</s:port-mappings>
+		 -->
+	</s:http>
+	
+	<s:authentication-manager alias="authenticationManager"/> 
+	
+    <s:authentication-provider user-service-ref="userDetailsService">
+		<s:password-encoder hash="md5"/>
+	</s:authentication-provider>
+		
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.vote.AffirmativeBased">  
+        <beans:property name="allowIfAllAbstainDecisions" value="false"/>  
+        <beans:property name="decisionVoters">  
+            <beans:list>  
+                <beans:bean class="org.springframework.security.vote.RoleVoter"/>
+                <beans:bean class="org.springframework.security.vote.AuthenticatedVoter"/>  
+            </beans:list>  
+        </beans:property>  
+    </beans:bean>  
+	
+	<beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+	    <beans:property name="loginFormUrl" value="/edu3/login.html?relogin=true" />
+	    <beans:property name="forceHttps" value="false" />	   
+	    <beans:property name="serverSideRedirect" value="true"/>	   
+	</beans:bean>
+	
+	<beans:bean id="resourceSecurityInterceptor" class="org.springframework.security.intercept.web.FilterSecurityInterceptor">  
+        <s:custom-filter before="FILTER_SECURITY_INTERCEPTOR" />
+        <beans:property name="authenticationManager" ref="authenticationManager"/>  
+        <beans:property name="accessDecisionManager" ref="accessDecisionManager"/>  
+        <beans:property name="objectDefinitionSource" ref="dbFilterInvocationDefinitionSource" />  
+        <beans:property name="observeOncePerRequest" value="false" />  
+       <!-- <beans:property name="alwaysReauthenticate" value="true" />  -->        
+    </beans:bean>  
+      
+      <!-- 定义SwitchUserProcessingFilter -->
+     <beans:bean id="switchUserProcessingFilter" class="com.hnjk.security.filter.ExSwitchUserProcessingFilter">
+       <s:custom-filter position="SWITCH_USER_FILTER" />
+       <beans:property name="userDetailsService" ref="userDetailsService"/>
+       <beans:property name="targetUrl" value="/edu3/framework/index.html"/>
+     </beans:bean> 
+     
+     <!-- 自定义SSO登录 -->
+     <beans:bean id="ssoProcessingFilter" class="com.hnjk.security.filter.SSOProcessingFilter">
+      	<s:custom-filter after="SWITCH_USER_FILTER"/>
+       <beans:property name="userService" ref="userService"/>
+       <beans:property name="targetUrl" value="/edu3/framework/index.html"/>
+       <beans:property name="ssoFailureUrl" value="/edu3/login.html?relogin=true"/>
+     </beans:bean> 
+     
+     <beans:bean id="securityLogFilter" class="com.hnjk.security.filter.SecurityHttpServletRequestFilter">
+     	<s:custom-filter position="LAST" />
+     </beans:bean>
+     
+     <!-- 自定义AuthenticationProcessingFilter，可以在这个过滤器增加扩展功能 -->
+	<!--  <beans:bean id="authenticationProcessingFilter" class="com.hnjk.security.filter.ExAuthenticationProcessingFilter"> -->       
+	 <beans:bean id="authenticationProcessingFilter" class="com.hnjk.cache.ExAuthenticationProcessingFilter">            
+         <s:custom-filter position="AUTHENTICATION_PROCESSING_FILTER" />
+         <beans:property name="authenticationFailureUrl" value="/edu3/login.html?error=true" />        
+         <beans:property name="authenticationManager" ref="authenticationManager" />  
+         <beans:property name="defaultTargetUrl" value="/edu3/framework/index.html" /> 
+         <beans:property name="filterProcessesUrl" value="/j_spring_security_check"/> 
+         <!-- 登录成功后总指向主页 --> 
+         <beans:property name="alwaysUseDefaultTargetUrl" value="true"/>       
+     </beans:bean>  
+     
+    <beans:bean id="dbFilterInvocationDefinitionSource" class="com.hnjk.security.filter.DbFilterInvocationDefinitionSource"> 
+    	<!-- 配置例外页面 -->
+    	<beans:property name="excludePages" value="/edu3/recruit/enroll/webenrolleeinfo-save.html,
+    	/edu3/recruit/matriculate/studentinfoquery-list.html,
+    	/cx.html,
+    	/edu3/framework/get-RecruitMajorStartPoint.html,    	
+    	/edu3/framework/get-examcode.html,
+    	/edu3/framework/checkexistsuser.html,
+    	/edu3/framework/checkidnumber.html,
+    	/edu3/framework/checkclassic.html,
+    	/edu3/framework/delResume.html,
+    	/edu3/framework/branschoollimit/getmajor.html,
+    	/edu3/framework/branchshoolplan/branchSchoolPlan-list.html,
+    	/edu3/framework/branchshoolMajor/branchMajor-list.html,
+    	/edu3/framework/get-examsubjectlist.html,
+    	/edu3/framework/filemanage/public/download.html,
+    	/downloads.html,
+    	/edu3/framework/filemanage/public/simpleDownload.html,
+    	/bachelorExam.html,
+    	/pay/result.html,
+    	/order/result.html,
+    	/order/deleteResult.html,
+    	/mas/getMsgAuthCode.html,
+    	/recruitQuery.html,
+    	/edu3/system/org/synopsis.html,/edu3/system/org/reportingGuidelines.html,
+    	/edu3/system/org/distribution.html,/edu3/system/org/unitInfo.html,
+    	/edu3/sysmanager/getMajorJson.html,
+   		/edu3/sysmanager/pictureViewPlancourse.html,
+   		/edu3/sysmanager/pictureViewTextbook.html,
+   		/edu3/busi/majorSet.html,
+   		/edu3/busi/teachMaterialList.html,
+   		/edu3/finance/studentpayment/replenishByPos.html,
+   		/edu3/system/reportInform.html,
+   		/edu3/finance/queryBatchByTimePeriod.html,
+   		/edu3/finance/queryByCertNum.html,
+   		/tuitionFee.html,
+   		/simpleDownloads.html,
+   		/edu3/finance/testTextbookFee.html,
+   		/tuitionFee/payResult.html,
+   		/tuitionFee/returnUrl.html,
+    	"/>
+<!--    /edu3/sysmanager/pictureViewPlancourse.html, -->
+<!--    /edu3/sysmanager/pictureViewTextbook.html, -->
+	</beans:bean>
+	<!-- 用户查询验证服务 -->
+	<beans:bean id="userDetailsService" class="com.hnjk.security.service.impl.UserDetailsServiceImpl"/>
+	
+	<!-- 国际化 -->
+	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basename" value="classpath:messages"/>
+	</beans:bean>
+		
+	<!-- 用户登录成功的过滤器 
+	<beans:bean id="customLoginFilter" class="com.hnjk.security.filter.CustomLoginFilter"/>
+	-->	
+	<!-- 用户退出、注销的过滤器 
+	 <beans:bean id="customLogoutFilter" class="com.hnjk.security.filter.CustomLogoutFilter"/>
+		-->
+	<!-- 
+	<beans:bean id="casProcessingFilter" class="org.springframework.security.ui.cas.CasProcessingFilter">
+        <s:custom-filter after="CAS_PROCESSING_FILTER"/>
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="authenticationFailureUrl" value="/casfailed.jsp"/>
+        <beans:property name="defaultTargetUrl" value="/"/>
+        <beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+        <beans:property name="proxyReceptorUrl" value="/" />
+    </beans:bean>
+
+    <beans:bean id="casProcessingFilterEntryPoint" class="org.springframework.security.ui.cas.CasProcessingFilterEntryPoint">
+        <beans:property name="loginUrl" value="${url.cas}/login"/>
+        <beans:property name="serviceProperties" ref="casServiceProperties"/>
+    </beans:bean>
+
+    <beans:bean id="casAuthenticationProvider" class="org.springframework.security.providers.cas.CasAuthenticationProvider">
+        <s:custom-authentication-provider/>
+        <beans:property name="userDetailsService" ref="userDetailsService"/>
+        <beans:property name="serviceProperties" ref="casServiceProperties" />
+        <beans:property name="ticketValidator">
+        	<beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+        		<beans:constructor-arg index="0" value="${url.cas}"/>
+        		<beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+        		<beans:property name="proxyCallbackUrl" value="${url.app}" />
+            </beans:bean>
+        </beans:property>
+        <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
+    </beans:bean>
+    
+    <beans:bean id="proxyGrantingTicketStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
+    
+    <beans:bean id="casServiceProperties" class="org.springframework.security.ui.cas.ServiceProperties">
+        <beans:property name="service" value="${url.app}/j_spring_cas_security_check"/>
+        <beans:property name="sendRenew" value="false"/>
+    </beans:bean>
+	 -->
+</beans:beans>

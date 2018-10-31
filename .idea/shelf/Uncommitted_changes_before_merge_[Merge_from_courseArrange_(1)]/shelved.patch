@@ -1,0 +1,598 @@
+Index: hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examResult/examResultManager_list_1.jsp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examResult/examResultManager_list_1.jsp	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/teaching/examResult/examResultManager_list_1.jsp	(date 1536042114781)
+@@ -1,12 +1,12 @@
+-<%@ page contentType="text/html;charset=UTF-8"%>
+-<%@ include file="/common/common.jsp"%>
++<%@ page contentType="text/html;charset=UTF-8" %>
++<%@ include file="/common/common.jsp" %>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <title>成绩管理</title>
+ 
+ </head>
+ <body>
+-	<script type="text/javascript">
++<script type="text/javascript">
+ //打开页面或者点击查询（即加载页面执行）
+ function examResultsManagerQueryBegin() {
+ 	var defaultValue = "${condition['branchSchool']}";
+@@ -49,7 +49,7 @@
+ }
+ 
+ </script>
+-	<div class="page">
++<div class="page">
+ 		<div class="pageHeader">
+ 			<form id="examResultsManagerSearchForm"
+ 				onsubmit="return submitValidate(this);"
+@@ -161,75 +161,66 @@
+ 									<c:otherwise>
+ 									${ghfn:dictCode2Val('CodeCourseExamType',examInfo.examType)}
+ 								</c:otherwise>
+-								</c:choose></td>
+-							<td style="text-align: center; vertical-align: middle;">${examInfo.orderNumber}</td>
+-							<c:set var="statusKey"
+-								value="${examInfo.classesid }${examInfo.examInfoResourceId }"></c:set>
+-							<td style="text-align: left; vertical-align: middle;">
+-								${statusMap[statusKey] }</td>
+-							<td style="text-align: center; vertical-align: middle;"><a
+-								href="javaScript:void(0)"
+-								onclick="examResultsAuditManager('${condition['branchSchool']}','${planCourse.gradeId}','${planCourse.classicId }','${planCourse.majorId}','${planCourse.courseId}','${planCourse.courseName}','${condition['teachType'] }','${planCourse.classesid }','single','${planCourse.examInfoId }','${planCourse.teachType }')">个别审核</a>
+-								| <a href="javaScript:void(0)" style="color: green"
+-								onclick="examResultsAuditManager('${condition['branchSchool']}','${planCourse.gradeId}','${planCourse.classicId }','${planCourse.majorId}','${planCourse.courseId}','${planCourse.courseName}','${condition['teachType'] }','${planCourse.classesid }','all','${planCourse.examInfoId }','${planCourse.teachType }')">全部通过</a>
+-
+-								<c:set var="chStatus"
+-									value="CheckStatus${examInfo.examInfoResourceId}" scope="page"></c:set>
+-								<c:choose>
+-									<c:when test="${statusMap[chStatus] == '1'}">
+-										<a href="javaScript:void(0)" style="color: green"
+-											onclick="examResultsAuditManagerCancel('${examInfo.examInfoResourceId}','${examInfo.courseName}')">撤销提交</a>
+-									</c:when>
+-									<c:otherwise></c:otherwise>
+-								</c:choose></td>
+-							<td style="text-align: center; vertical-align: middle;"><c:if
+-									test="${ghfn:hasAuth('RES_TEACHING_RESULT_MANAGE_ADJUSTMENT')}">
+-									<a href="javaScript:void(0)"
+-										onclick="adjustmentExamResults('${examInfo.examInfoResourceId}','${examInfo.courseName}')">调试</a>
+-								</c:if></td>
+-							<%-- 
++				            </c:choose>
++						</td>
++			            <td  style="text-align: center;vertical-align: middle;">${examInfo.orderNumber}</td>
++			            <td  style="text-align: left;vertical-align: middle;" >
++			           		${statusMap[examInfo.examInfoResourceId] }
++			            </td>  
++			            <td style="text-align: center;vertical-align: middle;">
++			            	<a href="javaScript:void(0)"  onclick="examResultsAuditManager('${examInfo.examInfoResourceId}','${examInfo.courseName}','single')">个别审核</a> |
++			            	<a href="javaScript:void(0)" style="color:green"  onclick="examResultsAuditManager('${examInfo.examInfoResourceId}','${examInfo.courseName}','all')">全部通过</a>
++			            	
++			            	<c:set var="chStatus" value="CheckStatus${examInfo.examInfoResourceId}" scope="page"></c:set>
++		            		<c:choose>
++								<c:when test="${statusMap[chStatus] == '1'}">
++									<a href="javaScript:void(0)" style="color:green"  onclick="examResultsAuditManagerCancel('${examInfo.examInfoResourceId}','${examInfo.courseName}')">撤销提交</a>
++								</c:when>
++								<c:otherwise></c:otherwise>
++						    </c:choose> 
++			            </td> 
++			            <td style="text-align: center;vertical-align: middle;">
++				            <c:if test="${ghfn:hasAuth('RES_TEACHING_RESULT_MANAGE_ADJUSTMENT')}">         	
++				            	<a href="javaScript:void(0)"  onclick="adjustmentExamResults('${examInfo.examInfoResourceId}','${examInfo.courseName}')">调试</a>
++				            </c:if>	  
++			            </td> 
++			           <%-- 
+ 			            <td style="text-align: center;vertical-align: middle;">
+ 			            	<c:if test="${ghfn:hasAuth('RES_TEACHING_RESULT_MANAGE_PUBLISHED') }">
+ 			            		<a href="javaScript:void(0)"  onclick="publishedExamResults('${examInfo.examInfoResourceId}','${examInfo.courseName}')">发布</a>
+ 			            	</c:if>
+ 			            </td>
+ 			            --%>
+-							<td style="text-align: center; vertical-align: middle;"><a
+-								href="javaScript:void(0)" title="打印复审成绩"
+-								onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','${examInfo.classesid }','printReview')">打印1</a>
+-								<a href="javaScript:void(0)" title="打印所有成绩"
+-								onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','${examInfo.classesid }','printAll')">打印2</a>
+-								<a href="javaScript:void(0)" title="导出复审成绩"
+-								onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','${examInfo.classesid }','export')">导出1</a>
+-								<a href="javaScript:void(0)" title="导出所有成绩"
+-								onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','${examInfo.classesid }','exportAll')">导出2</a>
+-							</td>
+-						</tr>
+-					</c:forEach>
+-				</tbody>
+-			</table>
+-			<gh:page page="${page}" targetType="navTab"
+-				goPageUrl="${baseUrl }/edu3/teaching/result/list.html"
+-				pageType="sys" condition="${condition }" />
+-		</div>
+-	</div>
+-	<script type="text/javascript">
++			            <td style="text-align: center;vertical-align: middle;">
++			           		 <a href="javaScript:void(0)" title="打印复审成绩" onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','printReview')">打印1</a>
++			           		 <a href="javaScript:void(0)" title="打印所有成绩" onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','printAll')">打印2</a>
++			           		 <a href="javaScript:void(0)"  title="导出复审成绩" onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','export')">导出1</a>
++			           		 <a href="javaScript:void(0)"  title="导出所有成绩" onclick="printExamResultsReview('${examInfo.examInfoResourceId}','${examInfo.courseName}','exportAll')">导出2</a>
++			            </td>
++			        </tr>
++	       		</c:forEach>
++			</tbody>
++		 </table> 
++	   	<gh:page page="${page}" targetType="navTab" goPageUrl="${baseUrl }/edu3/teaching/result/list.html" pageType="sys" condition="${condition }"/>	
++	</div>
++</div>
++<script type="text/javascript">
+ 
+ $(document).ready(function(){
+ 	examResultsManagerQueryBegin();
+ });
+ 	//成绩审核
+-	function examResultsAuditManager(brSchool,grade,classic,major,courseId,courseName,teachType,classesid,operatType,examInfoId,examCourseType){
+-		var examSubId     = "${condition['examSubId']}";
+-		var examSubStatus ="${examSub.examsubStatus}";
++	function examResultsAuditManager(examInfoId,courseName,operatingType){
++		
++		var examSubId = "${condition['examSubId']}";
++		var examSubStatus     ="${examSub.examsubStatus}";
+ 		if(parseInt(examSubStatus) <= 2){
+ 			alertMsg.warn('该考试预约批次未关闭，不允许审核成绩！');
+ 		}else{
+-			if("all"==operatType){
++			if("all"==operatingType){
+ 				alertMsg.confirm("确认要将《<font color='red'>"+courseName+"</font>》所有成绩记录审核通过吗？", {
+ 					okCall: function(){
+-						var url = "${baseUrl}/edu3/teaching/result/examresults-audit-pass.html?operatingType=all&examSubId="+examSubId+"&courseId="+courseId;
+-						url    += "&teachType="+teachType+"&branchSchool="+brSchool+"&gradeid="+grade+"&major="+major+"&classic="+classic+"&classesid="+classesid+"&examInfoId="+examInfoId+"&examCourseType="+examCourseType;
++						var url = "${baseUrl}/edu3/teaching/result/examresults-audit-pass.html?operatingType=all&examSubId="+examSubId+"&examInfoId="+examInfoId;
+ 						$.ajax({
+ 							type:'POST',
+ 							url:url,
+@@ -244,85 +235,22 @@
+ 									alertMsg.warn(msg);
+ 								}else{
+ 									alertMsg.info(msg);
+-									navTabPageBreak();
++									navTab.reload($("#examResultsManagerSearchForm").attr("action"), $("#examResultsManagerSearchForm").serializeArray());
+ 								}
+ 							}
+ 						});
+ 					}
+-				});
++				})
+ 			}else{
+-				var url = "${baseUrl}/edu3/teaching/result/audit-examresults-list.html?operatingType=single&examSubId="+examSubId+"&branchSchool="+brSchool;
+-				url    += "&gradeid="+grade+"&classic="+classic+"&major="+major+"&courseId="+courseId+"&teachType="+teachType+"&classesid="+classesid+"&examInfoId="+examInfoId+"&examCourseType="+examCourseType;
++				var url = "${baseUrl}/edu3/teaching/result/audit-examresults-list.html?operatingType=single&examSubId="+examSubId+"&examInfoId="+examInfoId;
+ 				navTab.openTab("RES_TEACHING_RESULT_MANAGE_AUDIT_LIST",url,courseName+"成绩审核");	
+ 			}
+-		}
+-	}
+-	
+-	//全部审核
+-	function examResultsAuditManagerOfAll(){
+-		var examSubId     = "${condition['examSubId']}";
+-		var examSubStatus ="${examSub.examsubStatus}";
+-		var brSchool     = "${condition['branchSchool']}";
+-		var examInfo     ="${examInfo.examInfoResourceId}";
+-		//var checkStatus = $("#examResultsCheckStatus").val();
+-		if(parseInt(examSubStatus) <= 2){
+-			alertMsg.warn('该考试预约批次未关闭，不允许审核成绩！');
+-		}else{
+-			var url = "${baseUrl}/edu3/teaching/result/examresults-batchAudit-pass.html?examSubId="+examSubId;
+-			var resIds = "";
+-			var k = 0;
+-			var num = $("#examResultsManagerBody input[name='resourceid']:checked").size();
+-			if(num>0){//按照勾选条件审核
+-				$("#examResultsManagerBody input[@name='resourceid']:checked").each(function(){
+-					var checekObj = $(this);
+-					resIds += checekObj.val();
+-			        if(k != num -1 ) {
+-			        	resIds += ",";
+-			        }
+-			        k++;
+-			    });
+-				//url += "&operatingType=checked&gradeIds"+gradeIds+"&classics"+classics+"&majorIds"+majorIds+"&classesIds"+classesIds+"&courseIds"+courseIds;
+-			}else{//按照查询条件审核
+-				num = "${page.totalCount}";
+-				//url += "&gradeId"+gradeId+"&classic"+classic+"&majorId"+majorId+"&classesId"+classesId+"&courseId"+courseId+"&checkStatus"+checkStatus;
+-				$('#examResultsManagerBody input[name="resourceid"]').each(function(){
+-					var checekObj = $(this);
+-					resIds += checekObj.val();
+-			        if(k != num -1 ) {
+-			        	resIds += ",";
+-			        }
+-			        k++;
+-			    });
+-			}
+-			url += "&operatingType=checked&resIds="+resIds;
+-			alertMsg.confirm("确认要将《<font color='red'>"+num+"</font>》条记录审核通过吗？", {
+-				okCall: function(){
+-					$.ajax({
+-						type:'POST',
+-						url:url,
+-						data:{},
+-						dataType:"json",
+-						cache: false,
+-						error: DWZ.ajaxError,
+-						success: function(resultData){
+-							var success  = resultData['success'];
+-							var msg      = resultData['msg'];
+-							if(success==false){
+-								alertMsg.warn(msg);
+-							}else{
+-								alertMsg.info(msg);
+-								navTabPageBreak();
+-								//navTab.reload($("#examResultsManagerForFaceTeachTypeSearchForm").attr("action"), $("#examResultsManagerForFaceTeachTypeSearchForm").serializeArray());
+-							}
+-						}
+-					});
+-				}
+-			});
++			
+ 		}
++			
+ 	}
+-	
+ 	//打印、导出复审后的总评成绩
+-	function printExamResultsReview(examInfoId,courseName,classesid,opreatingType){
++	function printExamResultsReview(examInfoId,courseName,opreatingType){
+ 		var examSubStatus     ="${examSub.examsubStatus}";
+ 		var url               = "${baseUrl}/edu3/teaching/result/examresultsreview-print-view.html?examSubId=${examSub.resourceid}&examInfoId="+examInfoId;
+ 		
+@@ -334,7 +262,7 @@
+ 			var branchSchoolName = $("#examResultsManagerForNetWorkStudyTeachType_brSchoolName_flexselect").val();
+ 			url += "&branchSchool="+branchSchool;
+ 			if("export"==opreatingType||"exportAll"==opreatingType){
+-				url    =  "${baseUrl}/edu3/teaching/result/examresultsreview-print.html?operatingType="+opreatingType+"&examSubId=${examSub.resourceid}&examInfoId="+examInfoId+"&branchSchool="+branchSchool+"&classesid="+classesid;
++				url    =  "${baseUrl}/edu3/teaching/result/examresultsreview-print.html?operatingType="+opreatingType+"&examSubId=${examSub.resourceid}&examInfoId="+examInfoId+"&branchSchool="+branchSchool;
+ 				
+ 				alertMsg.confirm("export"==opreatingType?"确定导出 "+branchSchoolName+" 《"+courseName+"》的复审成绩单？":"确定导出 "+branchSchoolName+" 《"+courseName+"》的总评成绩单？", {
+ 					okCall: function(){
+@@ -342,8 +270,9 @@
+ 					}
+ 				});
+ 			}else{
+-				$.pdialog.open(url+"&printType="+opreatingType+"&classesid="+classesid,"RES_TEACHING_RESULT_REVIEW","打印 "+branchSchoolName+" "+courseName+"总评成绩",{width:800, height:600});	
++				$.pdialog.open(url+"&printType="+opreatingType,"RES_TEACHING_RESULT_REVIEW","打印 "+branchSchoolName+" "+courseName+"总评成绩",{width:800, height:600});	
+ 			}
++			
+ 		}
+ 	}
+ 	
+@@ -442,7 +371,7 @@
+ 	function examResultsAuditManagerCancel(examInfoResourceId, courseName){
+ 		alertMsg.confirm("确认要将《<font color='red'>"+courseName+"</font>》成绩撤销提交吗？", {
+ 			okCall: function(){
+-				var url = "${baseUrl}/edu3/teaching/result/input-examresults-cancelsubmit.html?examInfoResourceId="+examInfoResourceId + "&courseName=" + encodeURI(courseName);
++				var url = "${baseUrl}/edu3/teaching/result/input-examresults-cancelsubmit.html?examInfoResourceId="+examInfoResourceId + "&courseName=" + courseName;
+ 				$.ajax({
+ 					type:'POST',
+ 					url:url,
+Index: hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-list.jsp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-list.jsp	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-list.jsp	(date 1536041781699)
+@@ -1,5 +1,5 @@
+-<%@ page contentType="text/html;charset=UTF-8"%>
+-<%@ include file="/common/common.jsp"%>
++<%@ page contentType="text/html;charset=UTF-8" %>
++<%@ include file="/common/common.jsp" %>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <title>课室管理</title>
+@@ -57,81 +57,100 @@
+ </script>
+ </head>
+ <body>
+-	<div class="page">
+-		<div class="pageHeader">
+-			<form id="classroomForm" onsubmit="return navTabSearch(this);"
+-				action="${baseUrl }/edu3/sysmanager/exclassroom/list.html"
+-				method="post">
+-				<div class="searchBar">
+-					<ul class="searchContent">
+-						<c:if test="${not isBrschool }">
+-							<li class="custom-li"><label>教学站：</label> <gh:brSchoolAutocomplete
+-									name="brSchoolid" tabindex="1" id="classroom_brschoolid"
+-									defaultValue="${condition['brSchoolid'] }" displayType="code"
+-									style="width:240px;"></gh:brSchoolAutocomplete></li>
+-						</c:if>
+-						<li class="custom-li"><label>教室名称：</label><input type="text" id="classroomName"
+-							name="classroomName" value="${condition['classroomName']}" class="custom-inp"/></li>
+-						<li><label>教室类型：</label>
+-						<gh:select name="classroomType" style="witdh:120px;"
+-								value="${condition['classroomType']}"
+-								dictionaryCode="CodeClassRoomStyle" /></li>
+-						<div class="buttonActive" style="float: right;">
+-							<div class="buttonContent">
+-								<button type="submit">查 询</button>
+-							</div>
+-						</div>
+-					</ul>
+-				</div>
+-			</form>
+-		</div>
+-		<div class="pageContent">
+-			<gh:resAuth parentCode="RES_BASEDATA_BUILDING" pageType="sublist"></gh:resAuth>
+-			<table class="table" layouth="115">
+-				<thead>
+-					<tr>
+-						<th width="5%"><input type="checkbox" name="checkall"
+-							id="check_all_classroom"
+-							onclick="checkboxAll('#check_all_classroom','resourceid','#classroomBody')" /></th>
+-						<th width="20%">教学站</th>
+-						<th width="20%">教室名称</th>
+-						<th width="10%">教室类型</th>
+-						<th width="5%">楼号</th>
+-						<th width="5%">试室号</th>
+-						<th width="5%">座位数</th>
+-						<th width="5%">单隔位数</th>
+-						<th width="5%">双隔位数</th>
+-						<th width="5%">是否直播室</th>
+-						<th width="15%">备注</th>
+-					</tr>
+-				</thead>
+-				<tbody id="classroomBody">
+-					<c:forEach items="${classroomPage.result}" var="classroom"
+-						varStatus="vs">
+-						<tr>
+-							<td><input type="checkbox" name="resourceid"
+-								value="${classroom.resourceid }" autocomplete="off" /></td>
+-							<td align="left">${classroom.building.branchSchool.unitName }</td>
+-							<td align="left">${classroom.classroomName }</td>
+-							<td align="left">${ghfn:dictCode2Val('CodeClassRoomStyle',classroom.classroomType ) }</td>
+-							<td align="left">${classroom.layerNo }</td>
+-							<td align="left">${classroom.unitNo }</td>
+-							<td align="left">${classroom.seatNum }</td>
+-							<td align="left">${classroom.singleSeatNum }</td>
+-							<td align="left">${classroom.doubleSeatNum }</td>
+-							<td align="left">${ghfn:dictCode2Val('yesOrNo',classroom.isLiving ) }</td>
+-							<td align="left">${classroom.memo }</td>
+-						</tr>
+-					</c:forEach>
+-				</tbody>
+-			</table>
+-		</div>
+-		<div  class="pageContent" style="position: absolute;bottom: 0px;width: 100%">
+-			<gh:page page="${classroomPage}"
+-				goPageUrl="${baseUrl }/edu3/sysmanager/exclassroom/list.html"
+-				pageType="sys" condition="${condition}" />
+-		</div>
+-	</div>
++<div class="page">
++	<div class="pageHeader">
++		<form id="classroomForm" onsubmit="return navTabSearch(this);" action="${baseUrl }/edu3/sysmanager/exclassroom/list.html" method="post">
++		<div class="searchBar">
++			<ul class="searchContent">	
++			<c:if test="${not isBrschool }">		
++				<li>
++					<label>教学站：</label>
++					<gh:brSchoolAutocomplete name="brSchoolid" tabindex="1" id="classroom_brschoolid" defaultValue="${condition['brSchoolid'] }" displayType="code" style="width:52%;"></gh:brSchoolAutocomplete>
++				</li>
++				</c:if>	
++				<li>
++					<label>教室名称：</label><input type="text" id="classroomName" name="classroomName" value="${condition['classroomName']}"/>
++				</li>
++				<li>
++					<label>教室类型：</label><gh:select name="classroomType" value="${condition['classroomType']}" dictionaryCode="CodeClassRoomStyle" style="width:52%;"/>	
++				</li>
++			</ul>
++			<ul class="searchContent">	
++				<li>
++					<label>排课可用：</label>
++					<gh:select name="isUseCourse" value="${condition['isUsecourse']}" dictionaryCode="yesOrNo" style="width:52%;"/>	
++				</li>
++				<li>
++					<label>排考可用：</label><gh:select name="isUseExam" value="${condition['isUseExam']}" dictionaryCode="yesOrNo" style="width:52%;"/>	
++				</li>
++				<li>
++					<label>有无空调：</label><gh:select name="hasAir" value="${condition['hasAir']}" dictionaryCode="yesOrNo" style="width:52%;"/>	
++				</li>
++				<li>
++					<label>状态：</label><gh:select name="status" value="${condition['status']}" dictionaryCode="CodeClassroomStatus" style="width:52%;"/>	
++				</li>
++			</ul>		
++			<div class="subBar">
++				<ul>
++					<li><div class="buttonActive"><div class="buttonContent"><button type="submit"> 查 询 </button></div></div></li>					
++				</ul>
++			</div>
++		</div>
++		</form>
++	</div>
++	<div class="pageContent">
++		<gh:resAuth parentCode="RES_BASEDATA_BUILDING" pageType="sublist"></gh:resAuth>
++		<table class="table" layouth="138">
++			<thead>
++			    <tr>
++			    	<th width="3%"><input type="checkbox" name="checkall" id="check_all_classroom" onclick="checkboxAll('#check_all_classroom','resourceid','#classroomBody')"/></th>
++			        <th width="10%">教学站</th>
++			        <th width="6%">课室号</th>
++			        <th width="6%">教室名称</th>
++			        <th width="6%">教室类型</th>
++			        <th width="5%">楼号</th>
++			        <th width="5%">试室号</th>
++			        <th width="5%">座位数</th>	
++			        <th width="5%">单隔位数</th>		
++			        <th width="5%">双隔位数</th>	
++			        <th width="5%">排课可用</th>
++			        <th width="5%">排考可用</th>
++			        <th width="5%">开始时间</th>
++			        <th width="5%">结束时间</th>
++			        <th width="5%">有无空调</th>
++			        <th width="5%">是否直播室</th>	
++			        <th width="5%">状态</th>
++			        <th width="5%">备注</th>	  
++			    </tr>
++		   	</thead>
++		   	<tbody id="classroomBody">
++	     	<c:forEach items="${classroomPage.result}" var="classroom" varStatus="vs">
++		        <tr>
++		        	<td><input type="checkbox" name="resourceid" value="${classroom.resourceid }" autocomplete="off" /></td>
++		        	<td align="left">${classroom.building.branchSchool.unitName }</td>
++		            <td align="left">${classroom.classroomName }</td>
++		            <td align="left">${classroom.roomCode }</td>
++		            <td align="left">${ghfn:dictCode2Val('CodeClassRoomStyle',classroom.classroomType ) }</td>
++		            <td align="left">${classroom.layerNo }</td>
++		            <td align="left">${classroom.unitNo }</td>
++		            <td align="left">${classroom.seatNum }</td>
++		            <td align="left">${classroom.singleSeatNum }</td>
++		            <td align="left">${classroom.doubleSeatNum }</td>
++		            <td align="left">${classroom.isUseCourse }</td>
++		            <td align="left">${classroom.isUseExam }</td>
++		            <td align="left"><fmt:formatDate value="${classroom.startDate }" pattern="yyyy-MM-dd" /></td>
++		            <td align="left"><fmt:formatDate value="${classroom.endDate }" pattern="yyyy-MM-dd" /></td>
++		            <td align="left">${classroom.hasAir }</td>
++		            <td align="left">${ghfn:dictCode2Val('yesOrNo',classroom.isLiving ) }</td>
++		            <td align="left">${classroom.status }</td>
++		            <td align="left">${classroom.memo }</td>
++		        </tr>
++	       </c:forEach>
++	       </tbody>
++	</table>
++	 <gh:page page="${classroomPage}" goPageUrl="${baseUrl }/edu3/sysmanager/exclassroom/list.html" pageType="sys" condition="${condition}"/>
++	</div>
++</div>
+ 
+ </body>
+ </html>
+\ No newline at end of file
+Index: hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-form.jsp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-form.jsp	(revision 3126)
++++ hnjk-webapp-medicine-adultedu/src/main/webapp/WEB-INF/jsp/edu3/basedata/classroom/classroom-form.jsp	(date 1536041728013)
+@@ -1,36 +1,100 @@
+ <%@ page contentType="text/html;charset=UTF-8"%>
+ <%@ include file="/common/common.jsp"%>
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+-<title>教室管理</title>
++	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++	<title>教室管理</title>	
+ </head>
+ <body>
+ 	<h2 class="contentTitle">${(empty classroom.resourceid)?'新增':'编辑' }教室</h2>
+ 	<div class="page">
+-		<div class="pageContent">
+-			<form method="post"
+-				action="${baseUrl}/edu3/sysmanager/exclassroom/save.html"
+-				class="pageForm" onsubmit="return validateCallback(this);">
+-				<input type="hidden" name="resourceid"
+-					value="${classroom.resourceid }" /> <input type="hidden"
+-					name="buildingId" value="${classroom.building.resourceid }" />
+-				<div class="pageFormContent" layoutH="97">
+-					<table class="form">
+-						<tr>
+-							<td width="20%">教室名称:</td>
+-							<td width="30%"><input type="text" name="classroomName"
+-								style="width: 50%" value="${classroom.classroomName }"
+-								class="required" /></td>
+-							<td width="20%">教学站:</td>
+-							<td width="30%"><c:choose>
+-									<c:when
+-										test="${empty classroom.resourceid and not isBrschool }">
+-										<gh:brSchoolAutocomplete name="brSchoolid" tabindex="1"
+-											id="classroom_form_brschoolid" defaultValue=""
+-											displayType="code" style="width:80%;"></gh:brSchoolAutocomplete>
+-									</c:when>
+-									<c:otherwise>
++	<div class="pageContent">	
++	<form method="post" action="${baseUrl}/edu3/sysmanager/exclassroom/save.html" class="pageForm" onsubmit="return validateCallback(this);">
++		<input type="hidden" name="resourceid" value="${classroom.resourceid }"/>  
++		<input type="hidden" name="buildingId" value="${classroom.building.resourceid }"/>     		
++		<div class="pageFormContent" layoutH="97">
++			<table class="form">
++				<tr>
++					<td width="20%">教学站:</td>
++					<td width="30%" colspan="3">
++					<c:choose>
++					<c:when test="${empty classroom.resourceid and not isBrschool }">
++					<gh:brSchoolAutocomplete name="brSchoolid" tabindex="1" id="classroom_form_brschoolid" defaultValue="" displayType="code" style="width:80%;"></gh:brSchoolAutocomplete>
++					</c:when>
++					<c:otherwise>
+ 					${classroom.building.branchSchool.unitName }
++					<input type="hidden" name="brSchoolid" value="${classroom.building.branchSchool.resourceid }"/> 
++					</c:otherwise>
++					</c:choose>
++					</td>
++				</tr>
++				<tr>
++					<td width="20%">教室名称:</td>
++					<td width="30%"><input type="text" name="classroomName" style="width:50%" value="${classroom.classroomName }" class="required"/></td>
++					<td width="20%">教室类型:</td>
++					<td width="30%"><gh:select name="classroomType" value="${classroom.classroomType }" dictionaryCode="CodeClassRoomStyle" style="width:100px;" classCss="required" /><font color="red">*</font></td>
++				</tr>
++				<tr>
++					<td>楼号：</td>
++					<td><input type="text" name="layerNo" value="${classroom.layerNo }" class="required number"/></td>
++					<td>课室号</td>
++					<td><input type="text" name="roomCode" style="width:50px" value="${classroom.roomCode }" class="required"/></td>
++				</tr>
++				<tr>
++					<td>所在房号:</td>
++					<td><input type="text" name="unitNo" style="width:50px" value="${classroom.unitNo }" class="required number"/></td>
++					<td>座位数:</td>
++					<td><input type="text" name="seatNum" style="width:50px" value="${classroom.seatNum }" class="required number"/></td>
++				</tr>
++				<tr>
++					<td>双座位数:</td>
++					<td><input type="text" name="doubleSeatNum" style="width:50px" value="${classroom.doubleSeatNum }" class="required number"/></td>
++					<td>单座位数:</td>
++					<td><input type="text" name="singleSeatNum" style="width:50px" value="${classroom.singleSeatNum }" class="required number"/></td>
++				</tr>
++				<tr>
++					<td>排课可用:</td>
++					<td><gh:select name="isUseCourse" value="${classroom.isUseCourse }" dictionaryCode="yesOrNo" style="width:100px;" classCss="required"/></td>
++					<td>排考可用:</td>
++					<td><gh:select name="isUseExam" value="${classroom.isUseExam }" dictionaryCode="yesOrNo" style="width:100px;" classCss="required"/></td>
++				</tr>
++				<tr>
++					<td>可用开始时间：</td>
++					<td><input type="text" name="startDate" size="40" style="width:50%" value="<fmt:formatDate value="${classroom.startDate }" pattern="yyyy-MM-dd" />"
++							 onFocus="WdatePicker({isShowWeek:true})"/>
++					<td>可用结束时间：</td>
++					<td><input type="text" name="endDate" size="40" style="width:50%" value="<fmt:formatDate value="${classroom.endDate }" pattern="yyyy-MM-dd" />"
++							 onFocus="WdatePicker({isShowWeek:true})"/>
++					</td>
++				</tr>
++				<tr>
++					<td>有无空调:</td>
++					<td><gh:select name="hasAir" value="${classroom.hasAir }" dictionaryCode="yesOrNo" style="width:100px;" /></td>
++					<td>是否直播室:</td>
++					<td><gh:select name="isLiving" value="${classroom.isLiving }" dictionaryCode="yesOrNo" style="width:100px;" /></td>
++				</tr>
++				<tr>
++					<td>排序号:</td>
++					<td><input type="text" name="showOrder" style="width:50px" value="${classroom.showOrder }"/></td>
++					<td>状态:</td>
++					<td><gh:select name="status" value="${classroom.status }" dictionaryCode="CodeClassroomStatus" style="width:100px;" /></td>
++				</tr>
++				<tr>
++					<td>备注:</td>
++					<td colspan="3"><textarea name="memo" style="width:50%" cols="" rows="3">${classroom.memo }</textarea></td>
++				</tr>
++			</table>
++		</div>
++		<div class="formBar">
++			<ul>
++				<li><div class="buttonActive"><div class="buttonContent">
++					<button type="submit">提交</button>
++					</div></div></li>
++					<li><div class="button"><div class="buttonContent"><button type="button" class="close" onclick="navTab.closeCurrentTab();">取消</button></div></div></li>
++			</ul>
++		</div>
++	</form>
++	</div>
++	</div>	
+ 					<input type="hidden" name="brSchoolid"
+ 											value="${classroom.building.branchSchool.resourceid }" />
+ 									</c:otherwise>
